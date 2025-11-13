@@ -252,10 +252,16 @@ $wbCount = 0
 foreach($wb in $config.workbooks.value.workbooks){
     if($wb.enabled -eq $true) {
         Write-Host "  Deploying: $($wb.bicepFile)" -ForegroundColor Gray
+        
+        # Sanitize workbook name for deployment name (remove spaces and special chars)
+        $sanitizedName = $wb.name -replace '[^a-zA-Z0-9\-\.]', '-'
+        $sanitizedName = $sanitizedName -replace '-+', '-'  # Replace multiple dashes with single dash
+        $sanitizedName = $sanitizedName.Trim('-')          # Remove leading/trailing dashes
+        
         az deployment group create -g $rg `
             --template-file ".\workbooks\bicep\$($wb.bicepFile)" `
             --parameters workspaceId=$wbId `
-            -n "wb-$($wb.name)-$ts" `
+            -n "wb-$sanitizedName-$ts" `
             -o none 2>&1 | Out-File "$logDir\wb-$($wb.name).log"
         
         if($LASTEXITCODE -eq 0) {
