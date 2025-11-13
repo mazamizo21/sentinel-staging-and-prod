@@ -57,7 +57,7 @@ resource cyrenWorkbook 'Microsoft.Insights/workbooks@2022-04-01' = {
           content: {
             version: 'KqlItem/1.0'
             query: '''
-union Cyren_IpReputation_CL, Cyren_MalwareUrls_CL
+union Cyren_Indicators_CL, Cyren_Indicators_CL
 
 | summarize 
     Total=count(), 
@@ -89,7 +89,7 @@ union Cyren_IpReputation_CL, Cyren_MalwareUrls_CL
           content: {
             version: 'KqlItem/1.0'
             query: '''
-union Cyren_IpReputation_CL, Cyren_MalwareUrls_CL
+union Cyren_Indicators_CL, Cyren_Indicators_CL
 
 | summarize
     Total=count(),
@@ -129,7 +129,7 @@ union Cyren_IpReputation_CL, Cyren_MalwareUrls_CL
           content: {
             version: 'KqlItem/1.0'
             query: '''
-union Cyren_IpReputation_CL, Cyren_MalwareUrls_CL
+union Cyren_Indicators_CL, Cyren_Indicators_CL
 
 | extend Risk = iif(isnull(risk_d), 50, toint(risk_d))
 | summarize
@@ -158,7 +158,7 @@ union Cyren_IpReputation_CL, Cyren_MalwareUrls_CL
           content: {
             version: 'KqlItem/1.0'
             query: '''
-union Cyren_IpReputation_CL, Cyren_MalwareUrls_CL
+union Cyren_Indicators_CL, Cyren_Indicators_CL
 
 | extend Risk = iif(isnull(risk_d), 50, toint(risk_d))
 | extend RiskBucket = case(
@@ -185,7 +185,7 @@ union Cyren_IpReputation_CL, Cyren_MalwareUrls_CL
           content: {
             version: 'KqlItem/1.0'
             query: '''
-union Cyren_IpReputation_CL, Cyren_MalwareUrls_CL
+union Cyren_Indicators_CL, Cyren_Indicators_CL
 
 | where isnotempty(ip_s)
 | extend Risk = iif(isnull(risk_d), 50, toint(risk_d))
@@ -247,7 +247,7 @@ union Cyren_IpReputation_CL, Cyren_MalwareUrls_CL
           content: {
             version: 'KqlItem/1.0'
             query: '''
-union Cyren_IpReputation_CL, Cyren_MalwareUrls_CL
+union Cyren_Indicators_CL, Cyren_Indicators_CL
 
 | where isnotempty(url_s) 
 | extend ShortURL = substring(tostring(url_s), 0, 100)
@@ -304,7 +304,7 @@ union Cyren_IpReputation_CL, Cyren_MalwareUrls_CL
           content: {
             version: 'KqlItem/1.0'
             query: '''
-union Cyren_IpReputation_CL, Cyren_MalwareUrls_CL
+union Cyren_Indicators_CL, Cyren_Indicators_CL
 
 | extend
     Protocol = tostring(protocol_s),
@@ -330,7 +330,7 @@ union Cyren_IpReputation_CL, Cyren_MalwareUrls_CL
           content: {
             version: 'KqlItem/1.0'
             query: '''
-union Cyren_IpReputation_CL, Cyren_MalwareUrls_CL
+union Cyren_Indicators_CL, Cyren_Indicators_CL
 
 | extend Source = tostring(source_s), Category = tostring(category_s)
 | where isnotempty(Source) or isnotempty(Category)
@@ -352,7 +352,7 @@ union Cyren_IpReputation_CL, Cyren_MalwareUrls_CL
           content: {
             version: 'KqlItem/1.0'
             query: '''
-union Cyren_IpReputation_CL, Cyren_MalwareUrls_CL
+union Cyren_Indicators_CL, Cyren_Indicators_CL
 
 | extend Category = case(
     isnotempty(category_s), tostring(category_s),
@@ -378,7 +378,7 @@ union Cyren_IpReputation_CL, Cyren_MalwareUrls_CL
           content: {
             version: 'KqlItem/1.0'
             query: '''
-union Cyren_IpReputation_CL, Cyren_MalwareUrls_CL
+union Cyren_Indicators_CL, Cyren_Indicators_CL
 
 | extend Risk = iif(isnull(risk_d), 50, toint(risk_d))
 | where Risk >= 50
@@ -432,7 +432,7 @@ union Cyren_IpReputation_CL, Cyren_MalwareUrls_CL
           content: {
             version: 'KqlItem/1.0'
             query: '''
-union Cyren_IpReputation_CL, Cyren_MalwareUrls_CL
+union Cyren_Indicators_CL, Cyren_Indicators_CL
 
 | summarize Count = count() by bin(TimeGenerated, 1h)
 | order by TimeGenerated asc

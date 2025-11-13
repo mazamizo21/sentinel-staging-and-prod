@@ -64,10 +64,10 @@ resource workbook 'Microsoft.Insights/workbooks@2022-04-01' = {
           content: {
             version: 'KqlItem/1.0'
             query: '''
-let CurrentData = union Cyren_IpReputation_CL, Cyren_MalwareUrls_CL
+let CurrentData = union Cyren_Indicators_CL, Cyren_Indicators_CL
 
 | summarize CurrentCount = count(), LatestTime = max(TimeGenerated);
-let HistoricalAvg = union Cyren_IpReputation_CL, Cyren_MalwareUrls_CL
+let HistoricalAvg = union Cyren_Indicators_CL, Cyren_Indicators_CL
 | where TimeGenerated between (ago(7d) .. ago(1d))
 | summarize HistoricalCount = count() by bin(TimeGenerated, 1h)
 | summarize AvgCount = avg(HistoricalCount);
@@ -131,7 +131,7 @@ print HealthStatus, OverallHealth, DataFreshness, CurrentCount = toscalar(Curren
           content: {
             version: 'KqlItem/1.0'
             query: '''
-let HistoricalData = union Cyren_IpReputation_CL, Cyren_MalwareUrls_CL
+let HistoricalData = union Cyren_Indicators_CL, Cyren_Indicators_CL
 
 | extend Risk = iif(isnull(risk_d), 50, toint(risk_d))
 | summarize 
@@ -200,7 +200,7 @@ print
           content: {
             version: 'KqlItem/1.0'
             query: '''
-union Cyren_IpReputation_CL, Cyren_MalwareUrls_CL
+union Cyren_Indicators_CL, Cyren_Indicators_CL
 
 | extend Asset = iif(isnotempty(ip_s), ip_s, iif(isnotempty(url_s), url_s, domain_s))
 | extend Risk = iif(isnull(risk_d), 50, toint(risk_d))
@@ -262,7 +262,7 @@ union Cyren_IpReputation_CL, Cyren_MalwareUrls_CL
           content: {
             version: 'KqlItem/1.0'
             query: '''
-union Cyren_IpReputation_CL, Cyren_MalwareUrls_CL
+union Cyren_Indicators_CL, Cyren_Indicators_CL
 
 | extend 
     ThreatType = case(
@@ -328,7 +328,7 @@ union Cyren_IpReputation_CL, Cyren_MalwareUrls_CL
           content: {
             version: 'KqlItem/1.0'
             query: '''
-let TopThreats = union Cyren_IpReputation_CL, Cyren_MalwareUrls_CL
+let TopThreats = union Cyren_Indicators_CL, Cyren_Indicators_CL
 
 | extend Risk = iif(isnull(risk_d), 50, toint(risk_d))
 | where Risk >= 50
@@ -402,7 +402,7 @@ TopThreats
           content: {
             version: 'KqlItem/1.0'
             query: '''
-let Current = union Cyren_IpReputation_CL, Cyren_MalwareUrls_CL
+let Current = union Cyren_Indicators_CL, Cyren_Indicators_CL
 
 | extend Risk = iif(isnull(risk_d), 50, toint(risk_d))
 | summarize 
@@ -462,7 +462,7 @@ Current
           content: {
             version: 'KqlItem/1.0'
             query: '''
-union Cyren_IpReputation_CL, Cyren_MalwareUrls_CL
+union Cyren_Indicators_CL, Cyren_Indicators_CL
 
 | extend Risk = iif(isnull(risk_d), 50, toint(risk_d))
 | summarize 

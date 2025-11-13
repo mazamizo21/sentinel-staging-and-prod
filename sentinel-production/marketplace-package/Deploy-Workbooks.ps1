@@ -86,11 +86,14 @@ foreach ($workbook in $workbooks) {
     $deploymentName = "workbook-$(Get-Date -Format 'yyyyMMddHHmmss')"
     
     try {
+        # Get workspace resource ID
+        $workspaceId = "/subscriptions/774bee0e-b281-4f70-8e40-199e35b65117/resourceGroups/$ResourceGroup/providers/Microsoft.OperationalInsights/workspaces/$WorkspaceName"
+        
         $result = az deployment group create `
             --resource-group $ResourceGroup `
             --name $deploymentName `
             --template-file $workbookFile `
-            --parameters workspaceName=$WorkspaceName location=$Location `
+            --parameters workspaceId=$workspaceId location=$Location `
             --mode Incremental `
             -o json 2>&1
         

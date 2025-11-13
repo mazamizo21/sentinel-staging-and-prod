@@ -62,7 +62,7 @@ resource workbook 'Microsoft.Insights/workbooks@2022-04-01' = {
           content: {
             version: 'KqlItem/1.0'
             query: '''
-union Cyren_IpReputation_CL, Cyren_MalwareUrls_CL
+union Cyren_Indicators_CL, Cyren_Indicators_CL
 
 | extend Risk = toint(coalesce(risk_d, 50))
 | extend Asset = tostring(coalesce(ip_s, url_s, domain_s, source_s, category_s, "Unknown"))
@@ -124,7 +124,7 @@ union Cyren_IpReputation_CL, Cyren_MalwareUrls_CL
           content: {
             version: 'KqlItem/1.0'
             query: '''
-union Cyren_IpReputation_CL, Cyren_MalwareUrls_CL
+union Cyren_Indicators_CL, Cyren_Indicators_CL
 
 | summarize HourlyCount = count() by bin(TimeGenerated, 1h), category_s
 | summarize 
@@ -169,7 +169,7 @@ union Cyren_IpReputation_CL, Cyren_MalwareUrls_CL
             version: 'KqlItem/1.0'
             query: '''
 // IPv4 subnet (/24) clusters
-let IPv4 = union Cyren_IpReputation_CL, Cyren_MalwareUrls_CL
+let IPv4 = union Cyren_Indicators_CL, Cyren_Indicators_CL
 
 | where isnotempty(ip_s) and ip_s matches regex @"^\d{1,3}(\.\d{1,3}){3}$"
 | extend Prefix = extract(@"^(\d+\.\d+\.\d+)\.\d+$", 1, tostring(ip_s))
@@ -179,7 +179,7 @@ let IPv4 = union Cyren_IpReputation_CL, Cyren_MalwareUrls_CL
 | project Cluster=Prefix, ClusterType="IPv4 /24", ItemCount, Detections, MaxRisk, Categories;
 
 // IPv6 prefix clusters (first 4 segments)
-let IPv6 = union Cyren_IpReputation_CL, Cyren_MalwareUrls_CL
+let IPv6 = union Cyren_Indicators_CL, Cyren_Indicators_CL
 
 | where isnotempty(ip_s) and ip_s contains ":"
 | extend Prefix = extract(@"^([0-9A-Fa-f]+:[0-9A-Fa-f]+:[0-9A-Fa-f]+:[0-9A-Fa-f]+)", 1, tostring(ip_s))
@@ -189,7 +189,7 @@ let IPv6 = union Cyren_IpReputation_CL, Cyren_MalwareUrls_CL
 | project Cluster=Prefix, ClusterType="IPv6 /64-ish", ItemCount, Detections, MaxRisk, Categories;
 
 // Domain clusters from domain_s or URL host
-let HostFromUrl = union Cyren_IpReputation_CL, Cyren_MalwareUrls_CL
+let HostFromUrl = union Cyren_Indicators_CL, Cyren_Indicators_CL
 
 | where isnotempty(url_s)
 | extend Host = tostring(extract(@"https?://([^/]+)", 1, tostring(url_s)))
@@ -199,7 +199,7 @@ let HostFromUrl = union Cyren_IpReputation_CL, Cyren_MalwareUrls_CL
 | summarize ItemCount=dcount(Host), Detections=count(), MaxRisk=max(Risk), Categories=make_set(category_s) by Root
 | project Cluster=Root, ClusterType="Domain Family", ItemCount, Detections, MaxRisk, Categories;
 
-let DomainOnly = union Cyren_IpReputation_CL, Cyren_MalwareUrls_CL
+let DomainOnly = union Cyren_Indicators_CL, Cyren_Indicators_CL
 
 | where isnotempty(domain_s)
 | extend Root = tostring(extract(@"([^.]+\.[^.]+)$",1, tostring(domain_s)))
@@ -209,7 +209,7 @@ let DomainOnly = union Cyren_IpReputation_CL, Cyren_MalwareUrls_CL
 | project Cluster=Root, ClusterType="Domain Family", ItemCount, Detections, MaxRisk, Categories;
 
 // Fallback cluster by Category|Source to avoid empty visuals
-let CategorySource = union Cyren_IpReputation_CL, Cyren_MalwareUrls_CL
+let CategorySource = union Cyren_Indicators_CL, Cyren_Indicators_CL
 
 | extend GroupKey = strcat(tostring(category_s), " | ", tostring(source_s))
 | extend Risk = toint(coalesce(risk_d,50))
@@ -253,7 +253,7 @@ union IPv4, IPv6, HostFromUrl, DomainOnly, CategorySource
           content: {
             version: 'KqlItem/1.0'
             query: '''
-union Cyren_IpReputation_CL, Cyren_MalwareUrls_CL
+union Cyren_Indicators_CL, Cyren_Indicators_CL
 
 | extend 
     Hour = hourofday(TimeGenerated),
@@ -326,7 +326,7 @@ union Cyren_IpReputation_CL, Cyren_MalwareUrls_CL
           content: {
             version: 'KqlItem/1.0'
             query: '''
-union Cyren_IpReputation_CL, Cyren_MalwareUrls_CL
+union Cyren_Indicators_CL, Cyren_Indicators_CL
 
 | extend Asset = tostring(coalesce(domain_s, ip_s, url_s, source_s, category_s, "Unknown"))
 | extend Risk = toint(coalesce(risk_d, 50))
@@ -356,7 +356,7 @@ union Cyren_IpReputation_CL, Cyren_MalwareUrls_CL
           content: {
             version: 'KqlItem/1.0'
             query: '''
-union Cyren_IpReputation_CL, Cyren_MalwareUrls_CL
+union Cyren_Indicators_CL, Cyren_Indicators_CL
 
 | extend Risk = toint(coalesce(risk_d, 50))
 | extend Protocol = iif(isnotempty(protocol_s), tostring(protocol_s), "Unknown"), PortVal = toint(port_d)
@@ -411,7 +411,7 @@ union Cyren_IpReputation_CL, Cyren_MalwareUrls_CL
           content: {
             version: 'KqlItem/1.0'
             query: '''
-union Cyren_IpReputation_CL, Cyren_MalwareUrls_CL
+union Cyren_Indicators_CL, Cyren_Indicators_CL
 
 | extend Asset = tostring(coalesce(ip_s, domain_s, url_s, source_s, category_s, "Unknown")), Risk = toint(coalesce(risk_d, 50))
 | summarize ThreatCount=count(), MaxRisk=max(Risk), Categories=make_set(category_s), Sources=make_set(source_s) by Asset
@@ -456,7 +456,7 @@ union Cyren_IpReputation_CL, Cyren_MalwareUrls_CL
           content: {
             version: 'KqlItem/1.0'
             query: '''
-union Cyren_IpReputation_CL, Cyren_MalwareUrls_CL
+union Cyren_Indicators_CL, Cyren_Indicators_CL
 
 | extend Risk = iif(isnull(risk_d), 50, toint(risk_d))
 | summarize 

@@ -62,7 +62,7 @@ resource workbook 'Microsoft.Insights/workbooks@2022-04-01' = {
           content: {
             version: 'KqlItem/1.0'
             query: '''
-let CyrenData = union Cyren_IpReputation_CL, Cyren_MalwareUrls_CL
+let CyrenData = union Cyren_Indicators_CL, Cyren_Indicators_CL
 
 | extend Risk = iif(isnull(risk_d), 50, toint(risk_d));
 CyrenData
@@ -112,7 +112,7 @@ CyrenData
           content: {
             version: 'KqlItem/1.0'
             query: '''
-let CyrenData = union Cyren_IpReputation_CL, Cyren_MalwareUrls_CL
+let CyrenData = union Cyren_Indicators_CL, Cyren_Indicators_CL
 
 | extend Risk = iif(isnull(risk_d), 50, toint(risk_d));
 CyrenData
@@ -180,10 +180,10 @@ CyrenData
           content: {
             version: 'KqlItem/1.0'
             query: '''
-let CurrentPeriod = union Cyren_IpReputation_CL, Cyren_MalwareUrls_CL
+let CurrentPeriod = union Cyren_Indicators_CL, Cyren_Indicators_CL
 
 | summarize CurrentThreats = count();
-let PreviousPeriod = union Cyren_IpReputation_CL, Cyren_MalwareUrls_CL
+let PreviousPeriod = union Cyren_Indicators_CL, Cyren_Indicators_CL
 | where TimeGenerated between (ago(2d) .. ago(1d))
 | summarize PreviousThreats = count();
 CurrentPeriod
@@ -231,7 +231,7 @@ CurrentPeriod
           content: {
             version: 'KqlItem/1.0'
             query: '''
-union Cyren_IpReputation_CL, Cyren_MalwareUrls_CL
+union Cyren_Indicators_CL, Cyren_Indicators_CL
 
 | extend 
     AttackSurface = case(
@@ -265,7 +265,7 @@ union Cyren_IpReputation_CL, Cyren_MalwareUrls_CL
           content: {
             version: 'KqlItem/1.0'
             query: '''
-union Cyren_IpReputation_CL, Cyren_MalwareUrls_CL
+union Cyren_Indicators_CL, Cyren_Indicators_CL
 
 | extend Risk = iif(isnull(risk_d), 50, toint(risk_d))
 | where Risk >= 50
@@ -334,7 +334,7 @@ union Cyren_IpReputation_CL, Cyren_MalwareUrls_CL
           content: {
             version: 'KqlItem/1.0'
             query: '''
-union Cyren_IpReputation_CL, Cyren_MalwareUrls_CL
+union Cyren_Indicators_CL, Cyren_Indicators_CL
 
 | extend 
     Category = coalesce(category_s, "Uncategorized"),
@@ -399,7 +399,7 @@ union Cyren_IpReputation_CL, Cyren_MalwareUrls_CL
           content: {
             version: 'KqlItem/1.0'
             query: '''
-union Cyren_IpReputation_CL, Cyren_MalwareUrls_CL
+union Cyren_Indicators_CL, Cyren_Indicators_CL
 
 | extend 
     DetectionTime = TimeGenerated,
@@ -462,7 +462,7 @@ union Cyren_IpReputation_CL, Cyren_MalwareUrls_CL
           content: {
             version: 'KqlItem/1.0'
             query: '''
-union Cyren_IpReputation_CL, Cyren_MalwareUrls_CL
+union Cyren_Indicators_CL, Cyren_Indicators_CL
 
 | extend Risk = iif(isnull(risk_d), 50, toint(risk_d))
 | summarize 
@@ -486,7 +486,7 @@ union Cyren_IpReputation_CL, Cyren_MalwareUrls_CL
           content: {
             version: 'KqlItem/1.0'
             query: '''
-let CyrenData = union Cyren_IpReputation_CL, Cyren_MalwareUrls_CL
+let CyrenData = union Cyren_Indicators_CL, Cyren_Indicators_CL
 
 | extend Risk = iif(isnull(risk_d), 50, toint(risk_d));
 let CriticalCount = toscalar(CyrenData | where Risk >= 80 | count);
