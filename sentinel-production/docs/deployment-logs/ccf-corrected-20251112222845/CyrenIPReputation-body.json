@@ -1,0 +1,49 @@
+{
+  "type": "Microsoft.SecurityInsights/dataConnectors",
+  "apiVersion": "2022-10-01-preview",
+  "name": "CyrenIPReputation",
+  "kind": "RestApiPoller",
+  "properties": {
+    "connectorDefinitionName": "ThreatIntelligenceFeeds",
+    "dataType": "Cyren_Indicators_CL",
+    "dcrConfig": {
+      "streamName": "Custom-Cyren_Indicators_CL",
+      "dataCollectionEndpoint": "https://dce-threatintel-feeds-58d5.eastus-1.ingest.monitor.azure.com",
+      "dataCollectionRuleImmutableId": "dcr-3adc799dfb154da08654caa29af8c840"
+    },
+    "auth": {
+      "type": "APIKey",
+      "ApiKey": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJleHAiOjE5MzAzNDg3OTksImF1ZCI6ImlwX3JlcHV0YXRpb24iLCJzdWIiOiJOSjUxQlU4MDYwNTNZVjBJMEgxQSIsImp0aSI6IjY5MTA3Njg4LWQ4NTQtMTFlZi05NGY5LWJjMjQxMTNkZTQ4ZSIsImlzcyI6ImNsbSJ9.Aw0gyb5l3OQbizawiOCXaJVE8VKOIo5Mm5aRogTr_RgqZ8yklyjzS52NAz3KEh4OTcl1i6qIO3GtaeRhq4x6LUaqwMTiSMUIIm3xU-2b5Y4GeRhsE5tl8Y7fYblaNcPhEOnLfHi8UtX4Aa_VfmPTslZbFoqpTUcaCkOOTBbz7HYEI7YdgziTIbGk-0Jwt47iI_AsaSy-SA13Syuv82rvRM08tOuyNn9hQgyjo0YAmAUbeC5eMCpbkhmujuDwGOhnurVtjvM8fPPsVJJBLJSYNonurwZi-txYVypd3-tQA0nlRJOZuFXKzDjVZEpkG-ivzqyJIbvcCcTXyeADYQOpnQ",
+      "ApiKeyName": "Authorization",
+      "ApiKeyIdentifier": "Bearer"
+    },
+    "request": {
+      "apiEndpoint": "https://api-feeds.cyren.com/v1/feed/data",
+      "httpMethod": "GET",
+      "queryParameters": {
+        "feedId": "ip_reputation",
+        "count": 100,
+        "offset": 0,
+        "format": "jsonl"
+      },
+      "rateLimitQps": 10,
+      "retryCount": 3,
+      "timeoutInSeconds": 60,
+      "headers": {
+        "Accept": "application/json",
+        "User-Agent": "Microsoft-Sentinel-Cyren/1.0"
+      }
+    },
+    "paging": {
+      "pagingType": "Offset",
+      "offsetParameterName": "offset",
+      "pageSize": 100
+    },
+    "response": {
+      "eventsJsonPaths": [
+        "$"
+      ],
+      "format": "jsonl"
+    }
+  }
+}
