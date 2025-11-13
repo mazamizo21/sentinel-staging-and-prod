@@ -16,7 +16,7 @@ param location string = resourceGroup().location
 param connectorName string = 'ccf-tacitred'
 
 @description('TacitRed API base URL')
-param apiBaseUrl string
+param apiBaseUrl string = 'https://app.tacitred.com/api/v1'
 
 @secure()
 @description('TacitRed API key')
@@ -177,6 +177,7 @@ resource connector 'Microsoft.OperationalInsights/workspaces/providers/dataConne
       ApiKeyName: 'Authorization'
       ApiKeyIdentifier: ''
       ApiKey: apiKey
+      IsApiKeyInPostPayload: false
     }
     request: {
       apiEndpoint: '${apiBaseUrl}/findings'
@@ -185,6 +186,9 @@ resource connector 'Microsoft.OperationalInsights/workspaces/providers/dataConne
       queryWindowInMin: queryWindowInMin
       startTimeAttributeName: 'from'
       endTimeAttributeName: 'until'
+      queryParameters: {
+        page_size: '100'
+      }
       headers: {
         Accept: 'application/json'
         'User-Agent': 'Microsoft-Sentinel-TacitRed-Connector/1.0'

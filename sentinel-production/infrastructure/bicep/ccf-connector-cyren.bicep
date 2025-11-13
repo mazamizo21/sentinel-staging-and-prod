@@ -6,11 +6,17 @@
 @description('Workspace name for Sentinel')
 param workspaceName string
 
+@description('Workspace resource group (if different from current RG)')
+param workspaceResourceGroup string = resourceGroup().name
+
+@description('Location for resources')
+param location string = resourceGroup().location
+
 @description('Connector name')
 param connectorName string = 'ccf-cyren'
 
 @description('Cyren API base URL')
-param apiBaseUrl string
+param apiBaseUrl string = 'https://api-feeds.cyren.com/v1/feed/data'
 
 @secure()
 @description('Cyren API token (JWT)')
@@ -22,20 +28,27 @@ param dcrImmutableId string
 @description('Stream name')
 param streamName string = 'Custom-Cyren_Indicators_CL'
 
+@description('DCE ingestion endpoint (e.g. https://dce-name.region.ingest.monitor.azure.com)')
+param dceIngestionEndpoint string
+
+@description('DCE resource ID for role assignment')
+param dceResourceId string
+
 @description('Polling window in minutes')
 param queryWindowInMin int = 360
 
 @description('Maximum batch size for events')
 param maximumBatchSize int = 1000
 
-// Reference existing workspace
+// Reference existing workspace (potentially in different RG)
 resource workspace 'Microsoft.OperationalInsights/workspaces@2022-10-01' existing = {
   name: workspaceName
+  scope: resourceGroup(workspaceResourceGroup)
 }
 
 // Create the data connector definition first
-resource connectorDefinition 'Microsoft.SecurityInsights/dataConnectorDefinitions@2022-12-01-preview' = {
-  name: '${connectorName}-definition'
+resource connectorDefinition 'Microsoft.OperationalInsights/workspaces/providers/dataConnectorDefinitions@2022-12-01-preview' = {
+  name: '${workspaceName}/Microsoft.SecurityInsights/${connectorName}-definition'
   kind: 'Customizable'
   properties: {
     connectorUiConfig: {
@@ -123,17 +136,19 @@ resource connectorDefinition 'Microsoft.SecurityInsights/dataConnectorDefinition
       ]
     }
   }
-  scope: workspace
 }
 
 // Create the APIPolling connector instance
-resource connector 'Microsoft.SecurityInsights/dataConnectors@2023-02-01-preview' = {
-  name: connectorName
+resource connector 'Microsoft.OperationalInsights/workspaces/providers/dataConnectors@2023-02-01-preview' = {
+  name: '${workspaceName}/Microsoft.SecurityInsights/${connectorName}'
   kind: 'APIPolling'
-  scope: workspace
+  identity: {
+    type: 'SystemAssigned'
+  }
   properties: {
-    connectorDefinitionName: connectorDefinition.name
+    connectorDefinitionName: '${connectorName}-definition'
     dcrConfig: {
+      dataCollectionEndpoint: dceIngestionEndpoint
       dataCollectionRuleImmutableId: dcrImmutableId
       streamName: streamName
     }
@@ -145,13 +160,14 @@ resource connector 'Microsoft.SecurityInsights/dataConnectors@2023-02-01-preview
       apiKey: apiToken
     }
     request: {
-      apiEndpoint: '${apiBaseUrl}/indicators'
-      httpMethod: 'Get'
+      apiEndpoint: apiBaseUrl
+      httpMethod: 'GET'
       queryTimeFormat: 'yyyy-MM-ddTHH:mm:ssZ'
       queryWindowInMin: queryWindowInMin
+      startTimeAttributeName: 'start_date'
+      endTimeAttributeName: 'end_date'
       queryParameters: {
-        since: '{{queryWindowStartTime}}'
-        until: '{{queryWindowEndTime}}'
+        count: '100'
       }
       headers: {
         Accept: 'application/json'
