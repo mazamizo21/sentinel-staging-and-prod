@@ -5,12 +5,12 @@ param workspaceName string
 param location string = resourceGroup().location
 
 @description('Enable or disable individual rules')
-param enableRepeatCompromise bool = true
-param enableHighRiskUser bool = false // Disabled - requires SigninLogs table
-param enableActiveCompromisedAccount bool = false // Disabled - requires IdentityInfo table
-param enableDepartmentCluster bool = false // Disabled - requires IdentityInfo table
-param enableMalwareInfrastructure bool = true
-param enableCrossFeedCorrelation bool = false // Disabled until Cyren is available
+param enableRepeatCompromise bool = true // ✓ Uses: TacitRed_Findings_CL
+param enableHighRiskUser bool = false // ✗ Requires SigninLogs (not available)
+param enableActiveCompromisedAccount bool = false // ✗ Requires IdentityInfo (not available)
+param enableDepartmentCluster bool = false // ✗ Requires IdentityInfo (not available)
+param enableMalwareInfrastructure bool = true // ✓ Uses: TacitRed + Cyren
+param enableCrossFeedCorrelation bool = true // ✓ Uses: TacitRed + Cyren (CCF deployed)
 
 resource workspace 'Microsoft.OperationalInsights/workspaces@2022-10-01' existing = {
   name: workspaceName

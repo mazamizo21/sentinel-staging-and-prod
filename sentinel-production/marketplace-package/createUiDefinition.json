@@ -1,0 +1,229 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/0.1.2-preview/CreateUIDefinition.MultiVm.json#",
+  "handler": "Microsoft.Azure.CreateUIDef",
+  "version": "0.1.2-preview",
+  "parameters": {
+    "basics": [
+      {
+        "name": "infoMessage",
+        "type": "Microsoft.Common.InfoBox",
+        "visible": true,
+        "options": {
+          "icon": "Info",
+          "text": "This solution deploys Threat Intelligence connectors for TacitRed and Cyren to Microsoft Sentinel using the Codeless Connector Framework (CCF)."
+        }
+      }
+    ],
+    "steps": [
+      {
+        "name": "workspace",
+        "label": "Workspace Configuration",
+        "elements": [
+          {
+            "name": "workspaceSelector",
+            "type": "Microsoft.Solutions.ResourceSelector",
+            "label": "Select Microsoft Sentinel Workspace",
+            "toolTip": "Select the Microsoft Sentinel workspace where the solution will be deployed",
+            "resourceType": "Microsoft.OperationalInsights/workspaces",
+            "options": {
+              "filter": {
+                "subscription": "onBasics",
+                "location": "onBasics"
+              }
+            },
+            "visible": true
+          },
+          {
+            "name": "workspaceInfo",
+            "type": "Microsoft.Common.InfoBox",
+            "visible": true,
+            "options": {
+              "icon": "Info",
+              "text": "The solution will create data connectors, analytics rules, and workbooks in the selected workspace."
+            }
+          }
+        ]
+      },
+      {
+        "name": "credentials",
+        "label": "API Credentials",
+        "elements": [
+          {
+            "name": "credentialsInfo",
+            "type": "Microsoft.Common.TextBlock",
+            "visible": true,
+            "options": {
+              "text": "Enter your API credentials for TacitRed and Cyren. These credentials are securely stored and never logged.",
+              "link": {
+                "label": "Learn more about securing credentials",
+                "uri": "https://learn.microsoft.com/azure/azure-resource-manager/templates/best-practices#security-recommendations-for-parameters"
+              }
+            }
+          },
+          {
+            "name": "tacitRedSection",
+            "type": "Microsoft.Common.Section",
+            "label": "TacitRed Configuration",
+            "elements": [
+              {
+                "name": "tacitRedInfo",
+                "type": "Microsoft.Common.InfoBox",
+                "visible": true,
+                "options": {
+                  "icon": "Info",
+                  "text": "Obtain your TacitRed API key from the TacitRed admin console at https://app.tacitred.com"
+                }
+              },
+              {
+                "name": "tacitRedApiKey",
+                "type": "Microsoft.Common.PasswordBox",
+                "label": {
+                  "password": "TacitRed API Key",
+                  "confirmPassword": "Confirm API Key"
+                },
+                "toolTip": "Enter your TacitRed API key for authentication",
+                "constraints": {
+                  "required": true,
+                  "regex": "^[a-zA-Z0-9-]{8,}$",
+                  "validationMessage": "API key must be at least 8 characters and contain only alphanumeric characters and hyphens"
+                },
+                "options": {
+                  "hideConfirmation": false
+                },
+                "visible": true
+              }
+            ],
+            "visible": true
+          },
+          {
+            "name": "cyrenSection",
+            "type": "Microsoft.Common.Section",
+            "label": "Cyren Configuration",
+            "elements": [
+              {
+                "name": "cyrenInfo",
+                "type": "Microsoft.Common.InfoBox",
+                "visible": true,
+                "options": {
+                  "icon": "Info",
+                  "text": "Obtain your Cyren JWT tokens from the Cyren portal. You need separate tokens for IP Reputation and Malware URLs feeds."
+                }
+              },
+              {
+                "name": "cyrenIPJwtToken",
+                "type": "Microsoft.Common.PasswordBox",
+                "label": {
+                  "password": "Cyren IP Reputation JWT Token",
+                  "confirmPassword": "Confirm JWT Token"
+                },
+                "toolTip": "Enter your Cyren JWT token for the IP Reputation feed",
+                "constraints": {
+                  "required": true,
+                  "regex": "^eyJ[a-zA-Z0-9_-]+\\.[a-zA-Z0-9_-]+\\.[a-zA-Z0-9_-]+$",
+                  "validationMessage": "Must be a valid JWT token starting with 'eyJ'"
+                },
+                "options": {
+                  "hideConfirmation": false
+                },
+                "visible": true
+              },
+              {
+                "name": "cyrenMalwareJwtToken",
+                "type": "Microsoft.Common.PasswordBox",
+                "label": {
+                  "password": "Cyren Malware URLs JWT Token",
+                  "confirmPassword": "Confirm JWT Token"
+                },
+                "toolTip": "Enter your Cyren JWT token for the Malware URLs feed",
+                "constraints": {
+                  "required": true,
+                  "regex": "^eyJ[a-zA-Z0-9_-]+\\.[a-zA-Z0-9_-]+\\.[a-zA-Z0-9_-]+$",
+                  "validationMessage": "Must be a valid JWT token starting with 'eyJ'"
+                },
+                "options": {
+                  "hideConfirmation": false
+                },
+                "visible": true
+              }
+            ],
+            "visible": true
+          }
+        ]
+      },
+      {
+        "name": "configuration",
+        "label": "Solution Configuration",
+        "elements": [
+          {
+            "name": "dataCollectionSection",
+            "type": "Microsoft.Common.Section",
+            "label": "Data Collection Settings",
+            "elements": [
+              {
+                "name": "pollingFrequency",
+                "type": "Microsoft.Common.DropDown",
+                "label": "Polling Frequency",
+                "toolTip": "How often the connectors should poll the APIs for new data",
+                "defaultValue": "Every 6 hours",
+                "constraints": {
+                  "allowedValues": [
+                    {
+                      "label": "Every 1 hour",
+                      "value": "60"
+                    },
+                    {
+                      "label": "Every 6 hours",
+                      "value": "360"
+                    },
+                    {
+                      "label": "Every 12 hours",
+                      "value": "720"
+                    },
+                    {
+                      "label": "Every 24 hours",
+                      "value": "1440"
+                    }
+                  ],
+                  "required": true
+                },
+                "visible": true
+              }
+            ]
+          },
+          {
+            "name": "componentsSection",
+            "type": "Microsoft.Common.Section",
+            "label": "Solution Components",
+            "elements": [
+              {
+                "name": "deployAnalytics",
+                "type": "Microsoft.Common.CheckBox",
+                "label": "Deploy Analytics Rules",
+                "toolTip": "Deploy 3 analytics rules for threat detection",
+                "defaultValue": true
+              },
+              {
+                "name": "deployWorkbooks",
+                "type": "Microsoft.Common.CheckBox",
+                "label": "Deploy Workbooks",
+                "toolTip": "Deploy 4 visualization workbooks",
+                "defaultValue": true
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "outputs": {
+      "workspaceName": "[steps('workspace').workspaceSelector.name]",
+      "location": "[steps('workspace').workspaceSelector.location]",
+      "workspaceResourceGroup": "[steps('workspace').workspaceSelector.resourceGroup]",
+      "tacitRedApiKey": "[steps('credentials').tacitRedSection.tacitRedApiKey]",
+      "cyrenIPJwtToken": "[steps('credentials').cyrenSection.cyrenIPJwtToken]",
+      "cyrenMalwareJwtToken": "[steps('credentials').cyrenSection.cyrenMalwareJwtToken]",
+      "pollingFrequencyMinutes": "[int(steps('configuration').dataCollectionSection.pollingFrequency)]",
+      "deployAnalytics": "[steps('configuration').componentsSection.deployAnalytics]",
+      "deployWorkbooks": "[steps('configuration').componentsSection.deployWorkbooks]"
+    }
+  }
+}
