@@ -1,0 +1,39 @@
+{
+  "comment": "CORRECTED CCF Solution - Based on Official Microsoft Examples",
+  "structure": {
+    "connectorDefinition": "ONE shared UI definition: ThreatIntelligenceFeeds",
+    "dataConnectors": [
+      {
+        "name": "TacitRedFindings",
+        "connectorDefinitionName": "ThreatIntelligenceFeeds",
+        "purpose": "Ingest TacitRed compromised credentials"
+      },
+      {
+        "name": "CyrenIPReputation",  
+        "connectorDefinitionName": "ThreatIntelligenceFeeds",
+        "purpose": "Ingest Cyren IP reputation indicators"
+      },
+      {
+        "name": "CyrenMalwareURLs",
+        "connectorDefinitionName": "ThreatIntelligenceFeeds",
+        "purpose": "Ingest Cyren malware URL indicators"
+      }
+    ]
+  },
+  "keyCorrections": {
+    "1": "Resource type: Microsoft.SecurityInsights/dataConnectors (not nested)",
+    "2": "API version: 2022-10-01-preview (proven working)",
+    "3": "All 3 connectors reference SAME connectorDefinitionName",
+    "4": "Use {{parameter}} placeholders for marketplace",
+    "5": "Remove managed identity - not needed for dataConnectors",
+    "6": "Use workspace scope extension resource pattern"
+  },
+  "marketplaceParameters": [
+    "tacitRedApiKey",
+    "cyrenIPJwtToken",
+    "cyrenMalwareJwtToken",
+    "workspace",
+    "dataCollectionEndpoint",
+    "dataCollectionRuleImmutableId"
+  ]
+}

@@ -130,10 +130,10 @@
     },
     "ccf": {
       "value": {
-        "enabled": true,
-        "deployTacitRedCCF": true,
-        "deployCyrenCCF": true,
-        "note": "CCF deployment enabled per user request."
+        "enabled": false,
+        "deployTacitRedCCF": false,
+        "deployCyrenCCF": false,
+        "note": "CCF NOT PRODUCTION READY - Using Logic Apps (tested, working). See docs/CCF-FAILURE-ROOT-CAUSE-ANALYSIS.md"
       }
     },
     "deployment": {

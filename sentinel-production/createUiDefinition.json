@@ -1,0 +1,152 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/0.1.2-preview/CreateUIDefinition.MultiVm.json#",
+  "handler": "Microsoft.Azure.CreateUIDef",
+  "version": "0.1.2-preview",
+  "parameters": {
+    "config": {
+      "isWizard": false,
+      "basics": {
+        "description": "**Threat Intelligence Feeds** - Ingest compromised credentials from TacitRed and threat indicators from Cyren to identify and respond to threats targeting your organization.\n\n**Data Connectors:** 3 connectors\n- TacitRed: Compromised credentials and domain takeovers\n- Cyren IP Reputation: Malicious IP addresses\n- Cyren Malware URLs: Malicious URLs and file hashes\n\n**Analytics Rules:** 6 detection rules included\n\n**Workbooks:** 8 visualization dashboards included\n\n[Learn more about this solution](https://github.com/)",
+        "subscription": {
+          "constraints": {
+            "validations": []
+          },
+          "resourceProviders": [
+            "Microsoft.OperationalInsights"
+          ]
+        },
+        "location": {
+          "label": "Location",
+          "toolTip": "Location for all resources",
+          "resourceTypes": [
+            "Microsoft.OperationalInsights/workspaces"
+          ]
+        },
+        "resourceGroup": {
+          "allowExisting": true
+        }
+      }
+    },
+    "basics": [
+      {
+        "name": "getLAWorkspace",
+        "type": "Microsoft.Solutions.ArmApiControl",
+        "toolTip": "This filters by workspaces that exist in the Resource Group selected",
+        "condition": "[greater(length(resourceGroup().name),0)]",
+        "request": {
+          "method": "GET",
+          "path": "[concat(subscription().id,'/providers/Microsoft.OperationalInsights/workspaces?api-version=2020-08-01')]"
+        }
+      },
+      {
+        "name": "workspace",
+        "type": "Microsoft.Common.DropDown",
+        "label": "Microsoft Sentinel Workspace",
+        "placeholder": "Select a workspace",
+        "toolTip": "Select the Microsoft Sentinel workspace where you want to deploy the solution",
+        "constraints": {
+          "allowedValues": "[map(filter(basics('getLAWorkspace').value, (filter) => contains(toLower(filter.id), toLower(resourceGroup().name))), (item) => parse(concat('{\"label\":\"', item.name, '\",\"value\":\"', item.name, '\"}')))]",
+          "required": true
+        },
+        "visible": true
+      }
+    ],
+    "steps": [
+      {
+        "name": "dataconnectors",
+        "label": "Data Connectors Configuration",
+        "elements": [
+          {
+            "name": "dataconnectortext",
+            "type": "Microsoft.Common.TextBlock",
+            "visible": true,
+            "options": {
+              "text": "This solution installs 3 data connectors that ingest threat intelligence from TacitRed and Cyren. Please provide the required API credentials below.",
+              "link": {
+                "label": "Learn more",
+                "uri": "https://docs.microsoft.com/"
+              }
+            }
+          },
+          {
+            "name": "tacitRedSection",
+            "type": "Microsoft.Common.Section",
+            "label": "TacitRed Configuration",
+            "elements": [
+              {
+                "name": "tacitRedApiKey",
+                "type": "Microsoft.Common.PasswordBox",
+                "label": {
+                  "password": "TacitRed API Key",
+                  "confirmPassword": "Confirm API Key"
+                },
+                "toolTip": "Enter your TacitRed API key. Obtain this from the TacitRed admin console.",
+                "constraints": {
+                  "required": true,
+                  "regex": "^[a-zA-Z0-9-]{30,}$",
+                  "validationMessage": "API key must be at least 30 characters and contain only alphanumeric characters and hyphens"
+                },
+                "options": {
+                  "hideConfirmation": false
+                },
+                "visible": true
+              }
+            ],
+            "visible": true
+          },
+          {
+            "name": "cyrenSection",
+            "type": "Microsoft.Common.Section",
+            "label": "Cyren Configuration",
+            "elements": [
+              {
+                "name": "cyrenIPJwtToken",
+                "type": "Microsoft.Common.PasswordBox",
+                "label": {
+                  "password": "Cyren IP Reputation JWT Token",
+                  "confirmPassword": "Confirm JWT Token"
+                },
+                "toolTip": "Enter your Cyren JWT token for the IP Reputation feed. Obtain this from the Cyren portal.",
+                "constraints": {
+                  "required": true,
+                  "regex": "^eyJ[a-zA-Z0-9_-]+\\.[a-zA-Z0-9_-]+\\.[a-zA-Z0-9_-]+$",
+                  "validationMessage": "Must be a valid JWT token starting with 'eyJ'"
+                },
+                "options": {
+                  "hideConfirmation": false
+                },
+                "visible": true
+              },
+              {
+                "name": "cyrenMalwareJwtToken",
+                "type": "Microsoft.Common.PasswordBox",
+                "label": {
+                  "password": "Cyren Malware URLs JWT Token",
+                  "confirmPassword": "Confirm JWT Token"
+                },
+                "toolTip": "Enter your Cyren JWT token for the Malware URLs feed. Obtain this from the Cyren portal.",
+                "constraints": {
+                  "required": true,
+                  "regex": "^eyJ[a-zA-Z0-9_-]+\\.[a-zA-Z0-9_-]+\\.[a-zA-Z0-9_-]+$",
+                  "validationMessage": "Must be a valid JWT token starting with 'eyJ'"
+                },
+                "options": {
+                  "hideConfirmation": false
+                },
+                "visible": true
+              }
+            ],
+            "visible": true
+          }
+        ]
+      }
+    ],
+    "outputs": {
+      "workspace": "[basics('workspace')]",
+      "workspace-location": "[location()]",
+      "tacitRedApiKey": "[steps('dataconnectors').tacitRedSection.tacitRedApiKey]",
+      "cyrenIPJwtToken": "[steps('dataconnectors').cyrenSection.cyrenIPJwtToken]",
+      "cyrenMalwareJwtToken": "[steps('dataconnectors').cyrenSection.cyrenMalwareJwtToken]"
+    }
+  }
+}
