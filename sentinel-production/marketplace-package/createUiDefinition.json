@@ -215,15 +215,11 @@
       }
     ],
     "outputs": {
-      "workspaceName": "[steps('workspace').workspaceSelector.name]",
-      "location": "[steps('workspace').workspaceSelector.location]",
-      "workspaceResourceGroup": "[steps('workspace').workspaceSelector.resourceGroup]",
+      "workspace": "[steps('workspace').workspaceSelector.name]",
+      "workspace-location": "[steps('workspace').workspaceSelector.location]",
       "tacitRedApiKey": "[steps('credentials').tacitRedSection.tacitRedApiKey]",
       "cyrenIPJwtToken": "[steps('credentials').cyrenSection.cyrenIPJwtToken]",
-      "cyrenMalwareJwtToken": "[steps('credentials').cyrenSection.cyrenMalwareJwtToken]",
-      "pollingFrequencyMinutes": "[int(steps('configuration').dataCollectionSection.pollingFrequency)]",
-      "deployAnalytics": "[steps('configuration').componentsSection.deployAnalytics]",
-      "deployWorkbooks": "[steps('configuration').componentsSection.deployWorkbooks]"
+      "cyrenMalwareJwtToken": "[steps('credentials').cyrenSection.cyrenMalwareJwtToken]"
     }
   }
 }
