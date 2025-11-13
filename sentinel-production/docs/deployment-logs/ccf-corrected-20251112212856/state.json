@@ -1,0 +1,24 @@
+{
+  "duration": 2.7455150633333334,
+  "analyticsDeployed": true,
+  "dceEndpoint": "https://dce-threatintel-feeds-c1a4.eastus-1.ingest.monitor.azure.com",
+  "connectorResults": [
+    {
+      "Name": "TacitRedFindings",
+      "Status": "Success"
+    },
+    {
+      "Name": "CyrenIPReputation",
+      "Status": "Success"
+    },
+    {
+      "Name": "CyrenMalwareURLs",
+      "Status": "Success"
+    }
+  ],
+  "timestamp": "20251112212856",
+  "ipDcrId": "dcr-7d9ef34350904cf38b2210a97c35b52f",
+  "malDcrId": "dcr-b319d8e382c246b0962b7383c473c430",
+  "workbooksDeployed": 0,
+  "tacitRedDcrId": "dcr-c918746df122487385b33e95ab092139"
+}
