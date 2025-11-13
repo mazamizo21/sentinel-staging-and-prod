@@ -1,0 +1,302 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "author": "TacitRed & Cyren",
+    "comments": "Threat Intelligence Feeds for Microsoft Sentinel - CCF Solution"
+  },
+  "parameters": {
+    "workspace": {
+      "type": "string",
+      "metadata": {
+        "description": "Workspace name for Microsoft Sentinel"
+      }
+    },
+    "workspace-location": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().location]",
+      "metadata": {
+        "description": "Location for workspace and solution resources"
+      }
+    },
+    "tacitRedApiKey": {
+      "type": "securestring",
+      "metadata": {
+        "description": "TacitRed API Key for authentication"
+      }
+    },
+    "cyrenIPJwtToken": {
+      "type": "securestring",
+      "metadata": {
+        "description": "Cyren JWT Token for IP Reputation feed"
+      }
+    },
+    "cyrenMalwareJwtToken": {
+      "type": "securestring",
+      "metadata": {
+        "description": "Cyren JWT Token for Malware URLs feed"
+      }
+    }
+  },
+  "variables": {
+    "workspaceResourceId": "[resourceId('Microsoft.OperationalInsights/Workspaces', parameters('workspace'))]",
+    "dceName": "dce-threatintel-feeds",
+    "tacitRedDcrName": "dcr-tacitred-findings",
+    "cyrenIPDcrName": "dcr-cyren-ip-reputation",
+    "cyrenMalwareDcrName": "dcr-cyren-malware-urls",
+    "_solutionName": "ThreatIntelligenceFeeds",
+    "_solutionVersion": "1.0.0",
+    "solutionId": "threatintel.sentinel-solution-threatintel-feeds",
+    "dataConnectorContentId": "ThreatIntelligenceFeeds",
+    "dataConnectorId": "[extensionResourceId(resourceId('Microsoft.OperationalInsights/workspaces', parameters('workspace')), 'Microsoft.SecurityInsights/dataConnectorDefinitions', variables('dataConnectorContentId'))]"
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Insights/dataCollectionEndpoints",
+      "apiVersion": "2022-06-01",
+      "name": "[variables('dceName')]",
+      "location": "[parameters('workspace-location')]",
+      "properties": {
+        "networkAcls": {
+          "publicNetworkAccess": "Enabled"
+        }
+      }
+    },
+    {
+      "type": "Microsoft.OperationalInsights/workspaces/tables",
+      "apiVersion": "2023-09-01",
+      "name": "[concat(parameters('workspace'), '/TacitRed_Findings_CL')]",
+      "properties": {
+        "schema": {
+          "name": "TacitRed_Findings_CL",
+          "columns": [
+            {"name": "TimeGenerated", "type": "datetime"},
+            {"name": "email_s", "type": "string"},
+            {"name": "domain_s", "type": "string"},
+            {"name": "findingType_s", "type": "string"},
+            {"name": "confidence_d", "type": "int"},
+            {"name": "firstSeen_t", "type": "datetime"},
+            {"name": "lastSeen_t", "type": "datetime"},
+            {"name": "notes_s", "type": "string"},
+            {"name": "source_s", "type": "string"},
+            {"name": "severity_s", "type": "string"},
+            {"name": "status_s", "type": "string"},
+            {"name": "campaign_id_s", "type": "string"},
+            {"name": "user_id_s", "type": "string"},
+            {"name": "username_s", "type": "string"},
+            {"name": "detection_ts_t", "type": "datetime"},
+            {"name": "metadata_s", "type": "string"}
+          ]
+        }
+      }
+    },
+    {
+      "type": "Microsoft.OperationalInsights/workspaces/tables",
+      "apiVersion": "2023-09-01",
+      "name": "[concat(parameters('workspace'), '/Cyren_Indicators_CL')]",
+      "properties": {
+        "schema": {
+          "name": "Cyren_Indicators_CL",
+          "columns": [
+            {"name": "TimeGenerated", "type": "datetime"},
+            {"name": "url_s", "type": "string"},
+            {"name": "ip_s", "type": "string"},
+            {"name": "fileHash_s", "type": "string"},
+            {"name": "domain_s", "type": "string"},
+            {"name": "protocol_s", "type": "string"},
+            {"name": "port_d", "type": "int"},
+            {"name": "category_s", "type": "string"},
+            {"name": "risk_d", "type": "int"},
+            {"name": "firstSeen_t", "type": "datetime"},
+            {"name": "lastSeen_t", "type": "datetime"},
+            {"name": "source_s", "type": "string"},
+            {"name": "relationships_s", "type": "string"},
+            {"name": "detection_methods_s", "type": "string"},
+            {"name": "action_s", "type": "string"},
+            {"name": "type_s", "type": "string"},
+            {"name": "identifier_s", "type": "string"},
+            {"name": "detection_ts_t", "type": "datetime"},
+            {"name": "object_type_s", "type": "string"}
+          ]
+        }
+      }
+    },
+    {
+      "type": "Microsoft.Insights/dataCollectionRules",
+      "apiVersion": "2022-06-01",
+      "name": "[variables('tacitRedDcrName')]",
+      "location": "[parameters('workspace-location')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Insights/dataCollectionEndpoints', variables('dceName'))]",
+        "[resourceId('Microsoft.OperationalInsights/workspaces/tables', parameters('workspace'), 'TacitRed_Findings_CL')]"
+      ],
+      "properties": {
+        "dataCollectionEndpointId": "[resourceId('Microsoft.Insights/dataCollectionEndpoints', variables('dceName'))]",
+        "streamDeclarations": {
+          "Custom-TacitRed_Findings_CL": {
+            "columns": [
+              {"name": "TimeGenerated", "type": "datetime"},
+              {"name": "email", "type": "string"},
+              {"name": "domain", "type": "string"},
+              {"name": "findingType", "type": "string"},
+              {"name": "confidence", "type": "int"},
+              {"name": "firstSeen", "type": "datetime"},
+              {"name": "lastSeen", "type": "datetime"},
+              {"name": "notes", "type": "string"},
+              {"name": "source", "type": "string"},
+              {"name": "severity", "type": "string"},
+              {"name": "status", "type": "string"},
+              {"name": "campaign_id", "type": "string"},
+              {"name": "user_id", "type": "string"},
+              {"name": "username", "type": "string"},
+              {"name": "detection_ts", "type": "datetime"},
+              {"name": "metadata", "type": "string"}
+            ]
+          }
+        },
+        "destinations": {
+          "logAnalytics": [
+            {
+              "workspaceResourceId": "[variables('workspaceResourceId')]",
+              "name": "clv2ws1"
+            }
+          ]
+        },
+        "dataFlows": [
+          {
+            "streams": ["Custom-TacitRed_Findings_CL"],
+            "destinations": ["clv2ws1"],
+            "transformKql": "source | extend TimeGenerated = now()",
+            "outputStream": "Custom-TacitRed_Findings_CL"
+          }
+        ]
+      }
+    },
+    {
+      "type": "Microsoft.Insights/dataCollectionRules",
+      "apiVersion": "2022-06-01",
+      "name": "[variables('cyrenIPDcrName')]",
+      "location": "[parameters('workspace-location')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Insights/dataCollectionEndpoints', variables('dceName'))]",
+        "[resourceId('Microsoft.OperationalInsights/workspaces/tables', parameters('workspace'), 'Cyren_Indicators_CL')]"
+      ],
+      "properties": {
+        "dataCollectionEndpointId": "[resourceId('Microsoft.Insights/dataCollectionEndpoints', variables('dceName'))]",
+        "streamDeclarations": {
+          "Custom-Cyren_Indicators_CL": {
+            "columns": [
+              {"name": "TimeGenerated", "type": "datetime"},
+              {"name": "url", "type": "string"},
+              {"name": "ip", "type": "string"},
+              {"name": "fileHash", "type": "string"},
+              {"name": "domain", "type": "string"},
+              {"name": "protocol", "type": "string"},
+              {"name": "port", "type": "int"},
+              {"name": "category", "type": "string"},
+              {"name": "risk", "type": "int"},
+              {"name": "firstSeen", "type": "datetime"},
+              {"name": "lastSeen", "type": "datetime"},
+              {"name": "source", "type": "string"},
+              {"name": "relationships", "type": "string"},
+              {"name": "detection_methods", "type": "string"},
+              {"name": "action", "type": "string"},
+              {"name": "type", "type": "string"},
+              {"name": "identifier", "type": "string"},
+              {"name": "detection_ts", "type": "datetime"},
+              {"name": "object_type", "type": "string"}
+            ]
+          }
+        },
+        "destinations": {
+          "logAnalytics": [
+            {
+              "workspaceResourceId": "[variables('workspaceResourceId')]",
+              "name": "clv2ws1"
+            }
+          ]
+        },
+        "dataFlows": [
+          {
+            "streams": ["Custom-Cyren_Indicators_CL"],
+            "destinations": ["clv2ws1"],
+            "transformKql": "source | extend TimeGenerated = now()",
+            "outputStream": "Custom-Cyren_Indicators_CL"
+          }
+        ]
+      }
+    },
+    {
+      "type": "Microsoft.Insights/dataCollectionRules",
+      "apiVersion": "2022-06-01",
+      "name": "[variables('cyrenMalwareDcrName')]",
+      "location": "[parameters('workspace-location')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Insights/dataCollectionEndpoints', variables('dceName'))]",
+        "[resourceId('Microsoft.OperationalInsights/workspaces/tables', parameters('workspace'), 'Cyren_Indicators_CL')]"
+      ],
+      "properties": {
+        "dataCollectionEndpointId": "[resourceId('Microsoft.Insights/dataCollectionEndpoints', variables('dceName'))]",
+        "streamDeclarations": {
+          "Custom-Cyren_Indicators_CL": {
+            "columns": [
+              {"name": "TimeGenerated", "type": "datetime"},
+              {"name": "url", "type": "string"},
+              {"name": "ip", "type": "string"},
+              {"name": "fileHash", "type": "string"},
+              {"name": "domain", "type": "string"},
+              {"name": "protocol", "type": "string"},
+              {"name": "port", "type": "int"},
+              {"name": "category", "type": "string"},
+              {"name": "risk", "type": "int"},
+              {"name": "firstSeen", "type": "datetime"},
+              {"name": "lastSeen", "type": "datetime"},
+              {"name": "source", "type": "string"},
+              {"name": "relationships", "type": "string"},
+              {"name": "detection_methods", "type": "string"},
+              {"name": "action", "type": "string"},
+              {"name": "type", "type": "string"},
+              {"name": "identifier", "type": "string"},
+              {"name": "detection_ts", "type": "datetime"},
+              {"name": "object_type", "type": "string"}
+            ]
+          }
+        },
+        "destinations": {
+          "logAnalytics": [
+            {
+              "workspaceResourceId": "[variables('workspaceResourceId')]",
+              "name": "clv2ws1"
+            }
+          ]
+        },
+        "dataFlows": [
+          {
+            "streams": ["Custom-Cyren_Indicators_CL"],
+            "destinations": ["clv2ws1"],
+            "transformKql": "source | extend TimeGenerated = now()",
+            "outputStream": "Custom-Cyren_Indicators_CL"
+          }
+        ]
+      }
+    }
+  ],
+  "outputs": {
+    "dceEndpoint": {
+      "type": "string",
+      "value": "[reference(resourceId('Microsoft.Insights/dataCollectionEndpoints', variables('dceName'))).logsIngestion.endpoint]"
+    },
+    "tacitRedDcrImmutableId": {
+      "type": "string",
+      "value": "[reference(resourceId('Microsoft.Insights/dataCollectionRules', variables('tacitRedDcrName'))).immutableId]"
+    },
+    "cyrenIPDcrImmutableId": {
+      "type": "string",
+      "value": "[reference(resourceId('Microsoft.Insights/dataCollectionRules', variables('cyrenIPDcrName'))).immutableId]"
+    },
+    "cyrenMalwareDcrImmutableId": {
+      "type": "string",
+      "value": "[reference(resourceId('Microsoft.Insights/dataCollectionRules', variables('cyrenMalwareDcrName'))).immutableId]"
+    }
+  }
+}
