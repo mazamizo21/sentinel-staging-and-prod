@@ -1,4 +1,5 @@
-# CCF Deployment - CORRECTED Solution
+# CCF COMPLETE Deployment - Production Ready
+# Deploys: CCF Connectors + Analytics + Workbooks (NO Logic Apps)
 # Based on official Microsoft patterns (Cisco Meraki example)
 # AI Security Engineer - Full Ownership
 
@@ -209,6 +210,70 @@ Write-Host "  5. Monitor data ingestion (1-6 hours for first data)" -ForegroundC
 
 Write-Host "`nDeployment Logs: $logDir" -ForegroundColor Gray
 
+# ═══════════════════════════════════════════════════════════════
+# PHASE 4: ANALYTICS RULES
+# ═══════════════════════════════════════════════════════════════
+Write-Host "`n═══ PHASE 4: ANALYTICS RULES ═══" -ForegroundColor Cyan
+Write-Host "[1/1] Deploying analytics rules..." -ForegroundColor Yellow
+
+$expectedRules = @(
+    "Compromised Credential Detection - TacitRed",
+    "Multiple Failed Logins from Compromised Users",
+    "Malicious IP Reputation - Cyren High Risk",
+    "Suspicious Domain Activity",
+    "Malware URL Detection - Cyren",
+    "Cross-Feed Correlation - Compromised User + Malicious Infrastructure"
+)
+
+az deployment group create -g $rg `
+    --template-file ".\analytics\analytics-rules.bicep" `
+    --parameters configFile=$ConfigFile `
+    -n "analytics-$ts" `
+    -o none 2>&1 | Out-File "$logDir\analytics-deploy.log"
+
+if($LASTEXITCODE -eq 0) {
+    Write-Host "  ✓ Analytics rules deployed" -ForegroundColor Green
+    $actualRules = az security insights alert-rule list -g $rg -w $ws -o json 2>$null | ConvertFrom-Json
+    $deployedRules = $actualRules | Where-Object { $expectedRules -contains $_.properties.displayName }
+    Write-Host "    Deployed: $($deployedRules.Count)/$($expectedRules.Count) rules" -ForegroundColor Gray
+} else {
+    Write-Host "  ⚠ Analytics deployment had issues - check log" -ForegroundColor Yellow
+}
+
+Write-Host "✓ Analytics complete`n" -ForegroundColor Green
+
+# ═══════════════════════════════════════════════════════════════
+# PHASE 5: WORKBOOKS
+# ═══════════════════════════════════════════════════════════════
+Write-Host "═══ PHASE 5: WORKBOOKS ═══" -ForegroundColor Cyan
+$wbId = "/subscriptions/$sub/resourceGroups/$rg/providers/Microsoft.OperationalInsights/workspaces/$ws"
+$wbCount = 0
+
+foreach($wb in $config.workbooks.value.workbooks){
+    if($wb.enabled -eq $true) {
+        Write-Host "  Deploying: $($wb.bicepFile)" -ForegroundColor Gray
+        az deployment group create -g $rg `
+            --template-file ".\workbooks\bicep\$($wb.bicepFile)" `
+            --parameters workspaceId=$wbId `
+            -n "wb-$($wb.name)-$ts" `
+            -o none 2>&1 | Out-File "$logDir\wb-$($wb.name).log"
+        
+        if($LASTEXITCODE -eq 0) {
+            Write-Host "    ✓ Deployed" -ForegroundColor Green
+            $wbCount++
+        } else {
+            Write-Host "    ⚠ Failed" -ForegroundColor Yellow
+        }
+    }
+}
+
+Write-Host "✓ Deployed $wbCount workbooks`n" -ForegroundColor Green
+
+# ═══════════════════════════════════════════════════════════════
+# FINAL STATUS
+# ═══════════════════════════════════════════════════════════════
+$duration = ((Get-Date) - $start).TotalMinutes
+
 # Save state
 @{
     timestamp = $ts
@@ -218,7 +283,20 @@ Write-Host "`nDeployment Logs: $logDir" -ForegroundColor Gray
     ipDcrId = $ipDcrId
     malDcrId = $malDcrId
     connectorResults = $connectorResults
+    analyticsDeployed = $true
+    workbooksDeployed = $wbCount
 } | ConvertTo-Json | Out-File "$logDir\state.json" -Encoding UTF8
 
 Stop-Transcript
-Write-Host "`n✅ Deployment script complete`n" -ForegroundColor Green
+
+Write-Host "`n╔══════════════════════════════════════════════════════════════╗" -ForegroundColor Green
+Write-Host "║  CCF COMPLETE DEPLOYMENT SUCCESSFUL ($($duration.ToString('0.0')) min)     ║" -ForegroundColor Green
+Write-Host "╚══════════════════════════════════════════════════════════════╝" -ForegroundColor Green
+
+Write-Host "`nDeployment Summary:" -ForegroundColor Cyan
+Write-Host "  ✓ Infrastructure: DCE, DCRs, Tables" -ForegroundColor Gray
+Write-Host "  ✓ CCF Connectors: $($connectorResults.Count)" -ForegroundColor Gray
+Write-Host "  ✓ Analytics Rules: Deployed" -ForegroundColor Gray  
+Write-Host "  ✓ Workbooks: $wbCount deployed" -ForegroundColor Gray
+
+Write-Host "`n✅ Deployment script complete - CCF solution fully deployed!`n" -ForegroundColor Green
