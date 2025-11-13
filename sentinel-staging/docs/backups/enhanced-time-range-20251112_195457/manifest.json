@@ -1,0 +1,9 @@
+{
+  "files": [
+    ".\\workbooks\\bicep\\workbook-cyren-threat-intelligence-enhanced.bicep",
+    ".\\workbooks\\bicep\\workbook-threat-intelligence-command-center-enhanced.bicep",
+    ".\\workbooks\\bicep\\workbook-executive-risk-dashboard-enhanced.bicep",
+    ".\\workbooks\\bicep\\workbook-threat-hunters-arsenal-enhanced.bicep"
+  ],
+  "timestamp": "20251112_195457"
+}

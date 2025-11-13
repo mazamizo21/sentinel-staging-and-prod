@@ -1,0 +1,17 @@
+[
+  {
+    "LogicApp": "logic-cyren-ip-reputation",
+    "Status": "RBAC Assigned",
+    "Principal": "00a9b02f-3e62-4093-9378-bae8a17a3cd8"
+  },
+  {
+    "LogicApp": "logic-cyren-malware-urls",
+    "Status": "RBAC Assigned",
+    "Principal": "92129816-a09b-4fc7-a82b-b9ef1da6f51c"
+  },
+  {
+    "LogicApp": "logic-tacitred-ingestion",
+    "Status": "Error",
+    "Principal": "N/A"
+  }
+]

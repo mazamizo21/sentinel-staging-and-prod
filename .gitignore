@@ -1,0 +1,63 @@
+# Logs and temporary files
+*.log
+*.tmp
+temp_*.json
+temp-*.json
+full-la-output.json
+tacitred-la-current.json
+temp-dcr-check.json
+temp-la-check.json
+temp-la-output.json
+temp-tacitred-dcr.json
+temp-tacitred-logic.json
+test-la-arm.json
+rbac-comparison.txt
+rbac-status.txt
+status-now.txt
+
+# PowerShell transcripts
+transcript*.log
+
+# Deployment logs (keep structure, ignore content)
+docs/deployment-logs/*
+!docs/deployment-logs/.gitkeep
+docs/diagnostic-logs/*
+!docs/diagnostic-logs/.gitkeep
+docs/fix-logs/*
+!docs/fix-logs/.gitkeep
+logs/*
+!logs/.gitkeep
+
+# Old/backup files
+*.backup
+*.old
+*.broken
+*.outofscope
+*-old/
+workbooks-old/
+
+# IDE and system files
+.vscode/
+.vs/
+*.swp
+*.bak
+Thumbs.db
+.DS_Store
+
+# Scripts that are not needed
+CREATE-PRODUCTION-COPY.ps1
+CLEANUP-PROJECT.ps1
+CHECK-TABLES.ps1
+DEPLOY-CYREN-FIX.ps1
+FIX-CYREN-DCR-TRANSFORMATION.ps1
+TEST-ANALYTICS-ONLY.ps1
+TEST-KQL-QUERIES.ps1
+TEST-TACITRED-END-TO-END.ps1
+deploy-fixed-workbooks.ps1
+REDEPLOY-WORKBOOKS-ONLY.ps1
+
+# Documentation that's not essential
+QUICK-START-CLEANUP.md
+REDEPLOY-WORKBOOKS-GUIDE.md
+DEMO-README.md
+CODEMAP-AND-CLEANUP-GUIDE.md
