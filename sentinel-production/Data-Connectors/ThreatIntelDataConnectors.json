@@ -67,12 +67,11 @@
         "apiEndpoint": "https://api-feeds.cyren.com/v1/feed/data",
         "httpMethod": "GET",
         "queryParameters": {
-          "count": 100
+          "feedId": "ip_reputation",
+          "count": 100,
+          "offset": 0,
+          "format": "jsonl"
         },
-        "queryWindowInMin": 360,
-        "queryTimeFormat": "yyyy-MM-ddTHH:mm:ssZ",
-        "startTimeAttributeName": "start_date",
-        "endTimeAttributeName": "end_date",
         "rateLimitQps": 10,
         "retryCount": 3,
         "timeoutInSeconds": 60,
@@ -82,11 +81,13 @@
         }
       },
       "paging": {
-        "pagingType": "LinkHeader",
-        "linkHeaderRelLinkName": "rel=next"
+        "pagingType": "Offset",
+        "offsetParameterName": "offset",
+        "pageSize": 100
       },
       "response": {
-        "eventsJsonPaths": ["$"]
+        "eventsJsonPaths": ["$"],
+        "format": "jsonl"
       }
     }
   },
@@ -113,12 +114,11 @@
         "apiEndpoint": "https://api-feeds.cyren.com/v1/feed/data",
         "httpMethod": "GET",
         "queryParameters": {
-          "count": 100
+          "feedId": "malware_urls",
+          "count": 100,
+          "offset": 0,
+          "format": "jsonl"
         },
-        "queryWindowInMin": 360,
-        "queryTimeFormat": "yyyy-MM-ddTHH:mm:ssZ",
-        "startTimeAttributeName": "start_date",
-        "endTimeAttributeName": "end_date",
         "rateLimitQps": 10,
         "retryCount": 3,
         "timeoutInSeconds": 60,
@@ -128,11 +128,13 @@
         }
       },
       "paging": {
-        "pagingType": "LinkHeader",
-        "linkHeaderRelLinkName": "rel=next"
+        "pagingType": "Offset",
+        "offsetParameterName": "offset",
+        "pageSize": 100
       },
       "response": {
-        "eventsJsonPaths": ["$"]
+        "eventsJsonPaths": ["$"],
+        "format": "jsonl"
       }
     }
   }

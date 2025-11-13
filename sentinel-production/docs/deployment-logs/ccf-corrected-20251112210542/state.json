@@ -1,0 +1,34 @@
+{
+  "connectorResults": [
+    {
+      "Name": "TacitRedFindings",
+      "Error": {
+        "value": "ERROR: Bad Request({\"error\":{\"code\":\"BadRequest\",\"message\":\"The connector definition `ThreatIntelligenceFeeds` does not exist.\"}})",
+        "PSMessageDetails": null
+      },
+      "Status": "Failed"
+    },
+    {
+      "Name": "CyrenIPReputation",
+      "Error": {
+        "value": "ERROR: Bad Request({\"error\":{\"code\":\"BadRequest\",\"message\":\"The connector definition `ThreatIntelligenceFeeds` does not exist.\"}})",
+        "PSMessageDetails": null
+      },
+      "Status": "Failed"
+    },
+    {
+      "Name": "CyrenMalwareURLs",
+      "Error": {
+        "value": "ERROR: Bad Request({\"error\":{\"code\":\"BadRequest\",\"message\":\"The connector definition `ThreatIntelligenceFeeds` does not exist.\"}})",
+        "PSMessageDetails": null
+      },
+      "Status": "Failed"
+    }
+  ],
+  "malDcrId": "dcr-886c252c87b8426281ea3f42117a07e1",
+  "dceEndpoint": "https://dce-threatintel-feeds-nveq.eastus-1.ingest.monitor.azure.com",
+  "ipDcrId": "dcr-8f30573163324a3a894ec9f52481eec5",
+  "duration": 1.1254426416666667,
+  "timestamp": "20251112210542",
+  "tacitRedDcrId": "dcr-52e906441b0942499caadc7d803e32be"
+}

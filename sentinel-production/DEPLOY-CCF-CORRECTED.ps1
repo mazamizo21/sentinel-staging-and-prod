@@ -76,7 +76,7 @@ Write-Host "✓ Cyren Malware DCR: $malDcrId" -ForegroundColor Green
 Write-Host "`n═══ PHASE 2: CONNECTOR DEFINITION ═══" -ForegroundColor Cyan
 Write-Host "[2/3] Deploying connector UI definition..." -ForegroundColor Yellow
 
-$connDefUrl = "https://management.azure.com/subscriptions/$sub/resourceGroups/$rg/providers/Microsoft.OperationalInsights/workspaces/$ws/providers/Microsoft.SecurityInsights/dataConnectorDefinitions/ThreatIntelligenceFeeds?api-version=2022-01-01-preview"
+$connDefUrl = "https://management.azure.com/subscriptions/$sub/resourceGroups/$rg/providers/Microsoft.OperationalInsights/workspaces/$ws/providers/Microsoft.SecurityInsights/dataConnectorDefinitions/ThreatIntelligenceFeeds?api-version=2024-09-01"
 
 az rest --method PUT `
     --url $connDefUrl `
