@@ -1,0 +1,56 @@
+{
+  "DCRs": [
+    {
+      "Name": "dcr-tacitred-findings",
+      "Status": "Failed",
+      "Error": "The term 'Get-AzDataCollectionRule' is not recognized as a name of a cmdlet, function, script file, or executable program.\r\nCheck the spelling of the name, or if a path was included, verify that the path is correct and try again.",
+      "Timestamp": "2025-11-13 20:42:40"
+    },
+    {
+      "Name": "dcr-cyren-ip-reputation",
+      "Status": "Failed",
+      "Error": "The term 'Get-AzDataCollectionRule' is not recognized as a name of a cmdlet, function, script file, or executable program.\r\nCheck the spelling of the name, or if a path was included, verify that the path is correct and try again.",
+      "Timestamp": "2025-11-13 20:42:40"
+    },
+    {
+      "Name": "dcr-cyren-malware-urls",
+      "Status": "Failed",
+      "Error": "The term 'Get-AzDataCollectionRule' is not recognized as a name of a cmdlet, function, script file, or executable program.\r\nCheck the spelling of the name, or if a path was included, verify that the path is correct and try again.",
+      "Timestamp": "2025-11-13 20:42:40"
+    }
+  ],
+  "DCE": "Failed: The term 'Get-AzDataCollectionEndpoint' is not recognized as a name of a cmdlet, function, script file, or executable program.\r\nCheck the spelling of the name, or if a path was included, verify that the path is correct and try again.",
+  "DataConnectors": [
+    {
+      "Name": "TacitRedFindings",
+      "Status": "Failed",
+      "Error": "Conversion from JSON failed with error: Unexpected character encountered while parsing value: E. Path '', line 0, position 0.",
+      "Timestamp": "2025-11-13 20:42:23"
+    },
+    {
+      "Name": "CyrenIPReputation",
+      "Status": "Failed",
+      "Error": "Conversion from JSON failed with error: Unexpected character encountered while parsing value: E. Path '', line 0, position 0.",
+      "Timestamp": "2025-11-13 20:42:25"
+    },
+    {
+      "Name": "CyrenMalwareURLs",
+      "Status": "Failed",
+      "Error": "Conversion from JSON failed with error: Unexpected character encountered while parsing value: E. Path '', line 0, position 0.",
+      "Timestamp": "2025-11-13 20:42:29"
+    }
+  ],
+  "Tables": [
+    {
+      "Name": "TacitRed_Findings_CL",
+      "Status": "Deleted",
+      "Timestamp": "2025-11-13 20:42:50"
+    },
+    {
+      "Name": "Cyren_Indicators_CL",
+      "Status": "Deleted",
+      "Timestamp": "2025-11-13 20:43:01"
+    }
+  ],
+  "ConnectorDefinition": "Deleted"
+}

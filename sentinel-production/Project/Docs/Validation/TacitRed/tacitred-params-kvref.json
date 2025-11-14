@@ -1,0 +1,14 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "tacitRedApiKey": {
+      "reference": {
+        "keyVault": {
+          "id": "/subscriptions/774bee0e-b281-4f70-8e40-199e35b65117/resourceGroups/SentinelTestStixImport/providers/Microsoft.KeyVault/vaults/kv-tacitred-secure01"
+        },
+        "secretName": "tacitred-api-key"
+      }
+    }
+  }
+}

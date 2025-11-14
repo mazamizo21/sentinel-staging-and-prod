@@ -1,0 +1,488 @@
+{
+  "id": "/subscriptions/774bee0e-b281-4f70-8e40-199e35b65117/resourceGroups/SentinelTestStixImport/providers/Microsoft.Resources/deployments/tacitred-arm-kvref-20251114083037",
+  "location": null,
+  "name": "tacitred-arm-kvref-20251114083037",
+  "properties": {
+    "correlationId": "c27631bd-419a-40a1-a3ff-ee05f0842de1",
+    "debugSetting": null,
+    "dependencies": [
+      {
+        "dependsOn": [
+          {
+            "id": "/subscriptions/774bee0e-b281-4f70-8e40-199e35b65117/resourceGroups/SentinelTestStixImport/providers/Microsoft.Insights/dataCollectionEndpoints/dce-threatintel-feeds",
+            "resourceGroup": "SentinelTestStixImport",
+            "resourceName": "dce-threatintel-feeds",
+            "resourceType": "Microsoft.Insights/dataCollectionEndpoints"
+          },
+          {
+            "id": "/subscriptions/774bee0e-b281-4f70-8e40-199e35b65117/resourceGroups/SentinelTestStixImport/providers/Microsoft.OperationalInsights/workspaces/SentinelThreatIntelWorkspace/tables/TacitRed_Findings_CL",
+            "resourceGroup": "SentinelTestStixImport",
+            "resourceName": "SentinelThreatIntelWorkspace/TacitRed_Findings_CL",
+            "resourceType": "Microsoft.OperationalInsights/workspaces/tables"
+          }
+        ],
+        "id": "/subscriptions/774bee0e-b281-4f70-8e40-199e35b65117/resourceGroups/SentinelTestStixImport/providers/Microsoft.Insights/dataCollectionRules/dcr-tacitred-findings",
+        "resourceGroup": "SentinelTestStixImport",
+        "resourceName": "dcr-tacitred-findings",
+        "resourceType": "Microsoft.Insights/dataCollectionRules"
+      },
+      {
+        "dependsOn": [
+          {
+            "id": "/subscriptions/774bee0e-b281-4f70-8e40-199e35b65117/resourceGroups/SentinelTestStixImport/providers/Microsoft.ManagedIdentity/userAssignedIdentities/uami-ccf-deployment",
+            "resourceGroup": "SentinelTestStixImport",
+            "resourceName": "uami-ccf-deployment",
+            "resourceType": "Microsoft.ManagedIdentity/userAssignedIdentities"
+          },
+          {
+            "apiVersion": "2023-01-31",
+            "id": "/subscriptions/774bee0e-b281-4f70-8e40-199e35b65117/resourceGroups/SentinelTestStixImport/providers/Microsoft.ManagedIdentity/userAssignedIdentities/uami-ccf-deployment",
+            "resourceGroup": "SentinelTestStixImport",
+            "resourceName": "uami-ccf-deployment",
+            "resourceType": "Microsoft.ManagedIdentity/userAssignedIdentities"
+          }
+        ],
+        "id": "/subscriptions/774bee0e-b281-4f70-8e40-199e35b65117/resourceGroups/SentinelTestStixImport/providers/Microsoft.OperationalInsights/Workspaces/SentinelThreatIntelWorkspace/providers/Microsoft.Authorization/roleAssignments/aab37708-51c7-5515-a9b9-3558b2c64d93",
+        "resourceGroup": "SentinelTestStixImport",
+        "resourceName": "aab37708-51c7-5515-a9b9-3558b2c64d93",
+        "resourceType": "Microsoft.Authorization/roleAssignments"
+      },
+      {
+        "dependsOn": [
+          {
+            "id": "/subscriptions/774bee0e-b281-4f70-8e40-199e35b65117/resourceGroups/SentinelTestStixImport/providers/Microsoft.ManagedIdentity/userAssignedIdentities/uami-ccf-deployment",
+            "resourceGroup": "SentinelTestStixImport",
+            "resourceName": "uami-ccf-deployment",
+            "resourceType": "Microsoft.ManagedIdentity/userAssignedIdentities"
+          },
+          {
+            "apiVersion": "2023-01-31",
+            "id": "/subscriptions/774bee0e-b281-4f70-8e40-199e35b65117/resourceGroups/SentinelTestStixImport/providers/Microsoft.ManagedIdentity/userAssignedIdentities/uami-ccf-deployment",
+            "resourceGroup": "SentinelTestStixImport",
+            "resourceName": "uami-ccf-deployment",
+            "resourceType": "Microsoft.ManagedIdentity/userAssignedIdentities"
+          }
+        ],
+        "id": "/subscriptions/774bee0e-b281-4f70-8e40-199e35b65117/resourceGroups/SentinelTestStixImport/providers/Microsoft.Authorization/roleAssignments/05df21ac-bd74-54f0-93b1-abb67abf6b34",
+        "resourceGroup": "SentinelTestStixImport",
+        "resourceName": "05df21ac-bd74-54f0-93b1-abb67abf6b34",
+        "resourceType": "Microsoft.Authorization/roleAssignments"
+      },
+      {
+        "dependsOn": [
+          {
+            "id": "/subscriptions/774bee0e-b281-4f70-8e40-199e35b65117/resourceGroups/SentinelTestStixImport/providers/Microsoft.ManagedIdentity/userAssignedIdentities/uami-ccf-deployment",
+            "resourceGroup": "SentinelTestStixImport",
+            "resourceName": "uami-ccf-deployment",
+            "resourceType": "Microsoft.ManagedIdentity/userAssignedIdentities"
+          }
+        ],
+        "id": "/subscriptions/774bee0e-b281-4f70-8e40-199e35b65117/resourceGroups/SentinelTestStixImport/providers/Microsoft.KeyVault/vaults/kv-tacitred-secure01/secrets/tacitred-api-key",
+        "resourceGroup": "SentinelTestStixImport",
+        "resourceName": "kv-tacitred-secure01/tacitred-api-key",
+        "resourceType": "Microsoft.KeyVault/vaults/secrets"
+      },
+      {
+        "dependsOn": [
+          {
+            "id": "/subscriptions/774bee0e-b281-4f70-8e40-199e35b65117/resourceGroups/SentinelTestStixImport/providers/Microsoft.ManagedIdentity/userAssignedIdentities/uami-ccf-deployment",
+            "resourceGroup": "SentinelTestStixImport",
+            "resourceName": "uami-ccf-deployment",
+            "resourceType": "Microsoft.ManagedIdentity/userAssignedIdentities"
+          },
+          {
+            "apiVersion": "2023-01-31",
+            "id": "/subscriptions/774bee0e-b281-4f70-8e40-199e35b65117/resourceGroups/SentinelTestStixImport/providers/Microsoft.ManagedIdentity/userAssignedIdentities/uami-ccf-deployment",
+            "resourceGroup": "SentinelTestStixImport",
+            "resourceName": "uami-ccf-deployment",
+            "resourceType": "Microsoft.ManagedIdentity/userAssignedIdentities"
+          }
+        ],
+        "id": "/subscriptions/774bee0e-b281-4f70-8e40-199e35b65117/resourceGroups/SentinelTestStixImport/providers/Microsoft.KeyVault/vaults/kv-tacitred-secure01/providers/Microsoft.Authorization/roleAssignments/643b886d-ae01-5daa-a483-e5716ae691eb",
+        "resourceGroup": "SentinelTestStixImport",
+        "resourceName": "643b886d-ae01-5daa-a483-e5716ae691eb",
+        "resourceType": "Microsoft.Authorization/roleAssignments"
+      },
+      {
+        "dependsOn": [
+          {
+            "id": "/subscriptions/774bee0e-b281-4f70-8e40-199e35b65117/resourceGroups/SentinelTestStixImport/providers/Microsoft.ManagedIdentity/userAssignedIdentities/uami-ccf-deployment",
+            "resourceGroup": "SentinelTestStixImport",
+            "resourceName": "uami-ccf-deployment",
+            "resourceType": "Microsoft.ManagedIdentity/userAssignedIdentities"
+          }
+        ],
+        "id": "/subscriptions/774bee0e-b281-4f70-8e40-199e35b65117/resourceGroups/SentinelTestStixImport/providers/Microsoft.KeyVault/vaults/kv-tacitred-secure01/providers/Microsoft.Insights/diagnosticSettings/keyVaultDiagnostics",
+        "resourceGroup": "SentinelTestStixImport",
+        "resourceName": "keyVaultDiagnostics",
+        "resourceType": "Microsoft.Insights/diagnosticSettings"
+      },
+      {
+        "dependsOn": [
+          {
+            "id": "/subscriptions/774bee0e-b281-4f70-8e40-199e35b65117/resourceGroups/SentinelTestStixImport/providers/Microsoft.Insights/dataCollectionEndpoints/dce-threatintel-feeds",
+            "resourceGroup": "SentinelTestStixImport",
+            "resourceName": "dce-threatintel-feeds",
+            "resourceType": "Microsoft.Insights/dataCollectionEndpoints"
+          },
+          {
+            "id": "/subscriptions/774bee0e-b281-4f70-8e40-199e35b65117/resourceGroups/SentinelTestStixImport/providers/Microsoft.Insights/dataCollectionRules/dcr-tacitred-findings",
+            "resourceGroup": "SentinelTestStixImport",
+            "resourceName": "dcr-tacitred-findings",
+            "resourceType": "Microsoft.Insights/dataCollectionRules"
+          }
+        ],
+        "id": "/subscriptions/774bee0e-b281-4f70-8e40-199e35b65117/resourceGroups/SentinelTestStixImport/providers/Microsoft.OperationalInsights/workspaces/SentinelThreatIntelWorkspace/providers/Microsoft.SecurityInsights/dataConnectorDefinitions/TacitRedThreatIntel",
+        "resourceGroup": "SentinelTestStixImport",
+        "resourceName": "SentinelThreatIntelWorkspace/Microsoft.SecurityInsights/TacitRedThreatIntel",
+        "resourceType": "Microsoft.OperationalInsights/workspaces/providers/dataConnectorDefinitions"
+      },
+      {
+        "dependsOn": [
+          {
+            "id": "/subscriptions/774bee0e-b281-4f70-8e40-199e35b65117/resourceGroups/SentinelTestStixImport/providers/Microsoft.Insights/dataCollectionEndpoints/dce-threatintel-feeds",
+            "resourceGroup": "SentinelTestStixImport",
+            "resourceName": "dce-threatintel-feeds",
+            "resourceType": "Microsoft.Insights/dataCollectionEndpoints"
+          },
+          {
+            "id": "/subscriptions/774bee0e-b281-4f70-8e40-199e35b65117/resourceGroups/SentinelTestStixImport/providers/Microsoft.Insights/dataCollectionRules/dcr-tacitred-findings",
+            "resourceGroup": "SentinelTestStixImport",
+            "resourceName": "dcr-tacitred-findings",
+            "resourceType": "Microsoft.Insights/dataCollectionRules"
+          },
+          {
+            "id": "/subscriptions/774bee0e-b281-4f70-8e40-199e35b65117/resourceGroups/SentinelTestStixImport/providers/Microsoft.OperationalInsights/workspaces/SentinelThreatIntelWorkspace/providers/Microsoft.SecurityInsights/dataConnectorDefinitions/TacitRedThreatIntel",
+            "resourceGroup": "SentinelTestStixImport",
+            "resourceName": "TacitRedThreatIntel",
+            "resourceType": "Microsoft.SecurityInsights/dataConnectorDefinitions"
+          },
+          {
+            "apiVersion": "2022-06-01",
+            "id": "/subscriptions/774bee0e-b281-4f70-8e40-199e35b65117/resourceGroups/SentinelTestStixImport/providers/Microsoft.Insights/dataCollectionEndpoints/dce-threatintel-feeds",
+            "resourceGroup": "SentinelTestStixImport",
+            "resourceName": "dce-threatintel-feeds",
+            "resourceType": "Microsoft.Insights/dataCollectionEndpoints"
+          },
+          {
+            "apiVersion": "2022-06-01",
+            "id": "/subscriptions/774bee0e-b281-4f70-8e40-199e35b65117/resourceGroups/SentinelTestStixImport/providers/Microsoft.Insights/dataCollectionRules/dcr-tacitred-findings",
+            "resourceGroup": "SentinelTestStixImport",
+            "resourceName": "dcr-tacitred-findings",
+            "resourceType": "Microsoft.Insights/dataCollectionRules"
+          }
+        ],
+        "id": "/subscriptions/774bee0e-b281-4f70-8e40-199e35b65117/resourceGroups/SentinelTestStixImport/providers/Microsoft.OperationalInsights/workspaces/SentinelThreatIntelWorkspace/providers/Microsoft.SecurityInsights/dataConnectors/TacitRedFindings",
+        "resourceGroup": "SentinelTestStixImport",
+        "resourceName": "SentinelThreatIntelWorkspace/Microsoft.SecurityInsights/TacitRedFindings",
+        "resourceType": "Microsoft.OperationalInsights/workspaces/providers/dataConnectors"
+      }
+    ],
+    "duration": "PT6.9856149S",
+    "error": null,
+    "mode": "Incremental",
+    "onErrorDeployment": null,
+    "outputResources": [
+      {
+        "id": "/subscriptions/774bee0e-b281-4f70-8e40-199e35b65117/resourceGroups/SentinelTestStixImport/providers/Microsoft.Authorization/roleAssignments/05df21ac-bd74-54f0-93b1-abb67abf6b34",
+        "resourceGroup": "SentinelTestStixImport"
+      },
+      {
+        "id": "/subscriptions/774bee0e-b281-4f70-8e40-199e35b65117/resourceGroups/SentinelTestStixImport/providers/Microsoft.Insights/dataCollectionEndpoints/dce-threatintel-feeds",
+        "resourceGroup": "SentinelTestStixImport"
+      },
+      {
+        "id": "/subscriptions/774bee0e-b281-4f70-8e40-199e35b65117/resourceGroups/SentinelTestStixImport/providers/Microsoft.Insights/dataCollectionRules/dcr-tacitred-findings",
+        "resourceGroup": "SentinelTestStixImport"
+      },
+      {
+        "id": "/subscriptions/774bee0e-b281-4f70-8e40-199e35b65117/resourceGroups/SentinelTestStixImport/providers/Microsoft.KeyVault/vaults/kv-tacitred-secure01/providers/Microsoft.Authorization/roleAssignments/643b886d-ae01-5daa-a483-e5716ae691eb",
+        "resourceGroup": "SentinelTestStixImport"
+      },
+      {
+        "id": "/subscriptions/774bee0e-b281-4f70-8e40-199e35b65117/resourceGroups/SentinelTestStixImport/providers/Microsoft.KeyVault/vaults/kv-tacitred-secure01/providers/Microsoft.Insights/diagnosticSettings/keyVaultDiagnostics",
+        "resourceGroup": "SentinelTestStixImport"
+      },
+      {
+        "id": "/subscriptions/774bee0e-b281-4f70-8e40-199e35b65117/resourceGroups/SentinelTestStixImport/providers/Microsoft.KeyVault/vaults/kv-tacitred-secure01/secrets/tacitred-api-key",
+        "resourceGroup": "SentinelTestStixImport"
+      },
+      {
+        "id": "/subscriptions/774bee0e-b281-4f70-8e40-199e35b65117/resourceGroups/SentinelTestStixImport/providers/Microsoft.ManagedIdentity/userAssignedIdentities/uami-ccf-deployment",
+        "resourceGroup": "SentinelTestStixImport"
+      },
+      {
+        "id": "/subscriptions/774bee0e-b281-4f70-8e40-199e35b65117/resourceGroups/SentinelTestStixImport/providers/Microsoft.OperationalInsights/Workspaces/SentinelThreatIntelWorkspace/providers/Microsoft.Authorization/roleAssignments/aab37708-51c7-5515-a9b9-3558b2c64d93",
+        "resourceGroup": "SentinelTestStixImport"
+      },
+      {
+        "id": "/subscriptions/774bee0e-b281-4f70-8e40-199e35b65117/resourceGroups/SentinelTestStixImport/providers/Microsoft.OperationalInsights/workspaces/SentinelThreatIntelWorkspace/providers/Microsoft.SecurityInsights/dataConnectorDefinitions/TacitRedThreatIntel",
+        "resourceGroup": "SentinelTestStixImport"
+      },
+      {
+        "id": "/subscriptions/774bee0e-b281-4f70-8e40-199e35b65117/resourceGroups/SentinelTestStixImport/providers/Microsoft.OperationalInsights/workspaces/SentinelThreatIntelWorkspace/providers/Microsoft.SecurityInsights/dataConnectors/TacitRedFindings",
+        "resourceGroup": "SentinelTestStixImport"
+      },
+      {
+        "id": "/subscriptions/774bee0e-b281-4f70-8e40-199e35b65117/resourceGroups/SentinelTestStixImport/providers/Microsoft.OperationalInsights/workspaces/SentinelThreatIntelWorkspace/tables/TacitRed_Findings_CL",
+        "resourceGroup": "SentinelTestStixImport"
+      }
+    ],
+    "outputs": {
+      "dceEndpoint": {
+        "type": "String",
+        "value": "https://dce-threatintel-feeds-jfcg.eastus-1.ingest.monitor.azure.com"
+      },
+      "deploymentMessage": {
+        "type": "String",
+        "value": "TacitRed infrastructure, CCF connector, analytics, and workbooks deployed successfully."
+      },
+      "tacitRedDcrImmutableId": {
+        "type": "String",
+        "value": "dcr-17ccb13049654e90b45840c887fb069b"
+      }
+    },
+    "parameters": {
+      "deployAnalytics": {
+        "type": "Bool",
+        "value": false
+      },
+      "deployConnectors": {
+        "type": "Bool",
+        "value": true
+      },
+      "deployWorkbooks": {
+        "type": "Bool",
+        "value": false
+      },
+      "enableKeyVault": {
+        "type": "Bool",
+        "value": true
+      },
+      "enablePrivateEndpoint": {
+        "type": "Bool",
+        "value": false
+      },
+      "forceUpdateTag": {
+        "type": "String",
+        "value": "2025-11-14 13:30:42Z"
+      },
+      "keyVaultName": {
+        "type": "String",
+        "value": "kv-tacitred-secure01"
+      },
+      "keyVaultOption": {
+        "type": "String",
+        "value": "existing"
+      },
+      "keyVaultResourceGroup": {
+        "type": "String",
+        "value": "SentinelTestStixImport"
+      },
+      "subnetId": {
+        "type": "String",
+        "value": ""
+      },
+      "tacitRedApiKey": {
+        "reference": {
+          "keyVault": {
+            "id": "/subscriptions/774bee0e-b281-4f70-8e40-199e35b65117/resourceGroups/SentinelTestStixImport/providers/Microsoft.KeyVault/vaults/kv-tacitred-secure01",
+            "resourceGroup": "SentinelTestStixImport"
+          },
+          "secretName": "tacitred-api-key"
+        },
+        "type": "SecureString"
+      },
+      "workspace": {
+        "type": "String",
+        "value": "SentinelThreatIntelWorkspace"
+      },
+      "workspace-location": {
+        "type": "String",
+        "value": "eastus"
+      }
+    },
+    "parametersLink": null,
+    "providers": [
+      {
+        "id": null,
+        "namespace": "Microsoft.Insights",
+        "providerAuthorizationConsentState": null,
+        "registrationPolicy": null,
+        "registrationState": null,
+        "resourceTypes": [
+          {
+            "aliases": null,
+            "apiProfiles": null,
+            "apiVersions": null,
+            "capabilities": null,
+            "defaultApiVersion": null,
+            "locationMappings": null,
+            "locations": [
+              "eastus"
+            ],
+            "properties": null,
+            "resourceType": "dataCollectionEndpoints",
+            "zoneMappings": null
+          },
+          {
+            "aliases": null,
+            "apiProfiles": null,
+            "apiVersions": null,
+            "capabilities": null,
+            "defaultApiVersion": null,
+            "locationMappings": null,
+            "locations": [
+              "eastus"
+            ],
+            "properties": null,
+            "resourceType": "dataCollectionRules",
+            "zoneMappings": null
+          },
+          {
+            "aliases": null,
+            "apiProfiles": null,
+            "apiVersions": null,
+            "capabilities": null,
+            "defaultApiVersion": null,
+            "locationMappings": null,
+            "locations": [
+              null
+            ],
+            "properties": null,
+            "resourceType": "diagnosticSettings",
+            "zoneMappings": null
+          }
+        ]
+      },
+      {
+        "id": null,
+        "namespace": "Microsoft.OperationalInsights",
+        "providerAuthorizationConsentState": null,
+        "registrationPolicy": null,
+        "registrationState": null,
+        "resourceTypes": [
+          {
+            "aliases": null,
+            "apiProfiles": null,
+            "apiVersions": null,
+            "capabilities": null,
+            "defaultApiVersion": null,
+            "locationMappings": null,
+            "locations": [
+              null
+            ],
+            "properties": null,
+            "resourceType": "workspaces/tables",
+            "zoneMappings": null
+          },
+          {
+            "aliases": null,
+            "apiProfiles": null,
+            "apiVersions": null,
+            "capabilities": null,
+            "defaultApiVersion": null,
+            "locationMappings": null,
+            "locations": [
+              null
+            ],
+            "properties": null,
+            "resourceType": "workspaces/providers/dataConnectorDefinitions",
+            "zoneMappings": null
+          },
+          {
+            "aliases": null,
+            "apiProfiles": null,
+            "apiVersions": null,
+            "capabilities": null,
+            "defaultApiVersion": null,
+            "locationMappings": null,
+            "locations": [
+              null
+            ],
+            "properties": null,
+            "resourceType": "workspaces/providers/dataConnectors",
+            "zoneMappings": null
+          }
+        ]
+      },
+      {
+        "id": null,
+        "namespace": "Microsoft.ManagedIdentity",
+        "providerAuthorizationConsentState": null,
+        "registrationPolicy": null,
+        "registrationState": null,
+        "resourceTypes": [
+          {
+            "aliases": null,
+            "apiProfiles": null,
+            "apiVersions": null,
+            "capabilities": null,
+            "defaultApiVersion": null,
+            "locationMappings": null,
+            "locations": [
+              "eastus"
+            ],
+            "properties": null,
+            "resourceType": "userAssignedIdentities",
+            "zoneMappings": null
+          }
+        ]
+      },
+      {
+        "id": null,
+        "namespace": "Microsoft.Authorization",
+        "providerAuthorizationConsentState": null,
+        "registrationPolicy": null,
+        "registrationState": null,
+        "resourceTypes": [
+          {
+            "aliases": null,
+            "apiProfiles": null,
+            "apiVersions": null,
+            "capabilities": null,
+            "defaultApiVersion": null,
+            "locationMappings": null,
+            "locations": [
+              null
+            ],
+            "properties": null,
+            "resourceType": "roleAssignments",
+            "zoneMappings": null
+          }
+        ]
+      },
+      {
+        "id": null,
+        "namespace": "Microsoft.KeyVault",
+        "providerAuthorizationConsentState": null,
+        "registrationPolicy": null,
+        "registrationState": null,
+        "resourceTypes": [
+          {
+            "aliases": null,
+            "apiProfiles": null,
+            "apiVersions": null,
+            "capabilities": null,
+            "defaultApiVersion": null,
+            "locationMappings": null,
+            "locations": [
+              null
+            ],
+            "properties": null,
+            "resourceType": "vaults/secrets",
+            "zoneMappings": null
+          }
+        ]
+      }
+    ],
+    "provisioningState": "Succeeded",
+    "templateHash": "10997555267667437620",
+    "templateLink": null,
+    "timestamp": "2025-11-14T13:30:49.486859+00:00",
+    "validatedResources": null
+  },
+  "resourceGroup": "SentinelTestStixImport",
+  "tags": null,
+  "type": "Microsoft.Resources/deployments"
+}

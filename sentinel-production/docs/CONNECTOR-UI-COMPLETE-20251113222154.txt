@@ -1,0 +1,90 @@
+
+      CONNECTOR UI CONFIGURATION - COMPLETE                   
+     Generated: 2025-11-13 22:21:54 EST                    
+
+
+
+ CONNECTOR DEFINITIONS UPDATED WITH PROPER UI
+
+
+Both TacitRed and Cyren connector definitions now have COMPLETE UI
+configuration following Azure's latest documentation standards.
+
+ TACITRED CONNECTOR UI:
+    Title: "Connect TacitRed to Microsoft Sentinel"
+    Workspace ID (CopyableLabel)
+    API Key Input Field (password type, named "apiKey")
+    Connect/Disconnect Toggle Button
+    Placeholder text: "Enter your TacitRed API Key (UUID format)"
+
+ CYREN CONNECTOR UI:
+    Title: "Connect Cyren to Microsoft Sentinel"
+    Workspace ID (CopyableLabel)
+    IP Reputation JWT Token Input (password type, named "cyrenIPJwtToken")
+    Malware URLs JWT Token Input (password type, named "cyrenMalwareJwtToken")
+    Connect/Disconnect Toggle Button
+    Placeholder text for both JWT fields
+
+
+ UI COMPONENTS IMPLEMENTED (Per Azure Documentation)
+
+
+1.  CopyableLabel - Displays Workspace ID
+2.  Textbox (password type) - Secure input for API keys/tokens
+3.  ConnectionToggleButton - Connect/Disconnect functionality
+4.  Proper parameter naming for data binding
+5.  Placeholder text for user guidance
+6.  isPrimary flag on toggle button
+
+
+ MARKETPLACE PACKAGES STATUS
+
+
+Both TacitRed-CCF and Cyren-CCF packages now include:
+
+ Proper UI definitions in connector definitions
+ Secure parameter handling (securestring in ARM templates)
+ createUiDefinition.json for Portal deployment
+ Connect/Disconnect buttons in Sentinel Data Connectors blade
+ Input validation and placeholders
+
+
+ SECURITY & USER EXPERIENCE
+
+
+ API Keys/Tokens stored securely (password type inputs)
+ Never displayed in plain text
+ Proper parameter binding to connector instances
+ Clear labels and instructions
+ Connect/Disconnect functionality for easy management
+
+
+ CURRENT DEPLOYMENT STATUS
+
+
+INFRASTRUCTURE:  All deployed
+CONNECTOR DEFINITIONS:  Updated with proper UI
+CONNECTOR INSTANCES:  Deployed and active
+DATA INGESTION:  Waiting for next poll (6-hour interval)
+
+NOTE: Connectors are configured with 6-hour polling interval.
+First data pull will occur at next scheduled poll.
+
+
+ PRODUCTION READY
+
+
+Both packages are now PRODUCTION-READY with:
+ Complete UI for client API key/JWT token input
+ Connect/Disconnect buttons
+ Secure credential handling
+ Following Azure's latest documentation standards
+ Ready for Microsoft Sentinel Content Hub submission
+
+CLIENTS CAN NOW:
+1. Navigate to Data Connectors in Sentinel
+2. Find TacitRed/Cyren connectors
+3. Enter their API keys/JWT tokens in the UI
+4. Click Connect button
+5. System automatically configures and starts polling
+

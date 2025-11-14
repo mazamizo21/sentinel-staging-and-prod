@@ -1,0 +1,96 @@
+{
+  "properties": {
+    "dataCollectionEndpointId": "/subscriptions/774bee0e-b281-4f70-8e40-199e35b65117/resourceGroups/SentinelTestStixImport/providers/Microsoft.Insights/dataCollectionEndpoints/dce-threatintel-feeds",
+    "destinations": {
+      "logAnalytics": [
+        {
+          "name": "ws1",
+          "workspaceResourceId": "/subscriptions/774bee0e-b281-4f70-8e40-199e35b65117/resourceGroups/SentinelTestStixImport/providers/Microsoft.OperationalInsights/workspaces/SentinelThreatIntelWorkspace"
+        }
+      ]
+    },
+    "streamDeclarations": {
+      "Custom-TacitRed_Findings_Test_CL": {
+        "columns": [
+          {
+            "type": "datetime",
+            "name": "TimeGenerated"
+          },
+          {
+            "type": "string",
+            "name": "email"
+          },
+          {
+            "type": "string",
+            "name": "domain"
+          },
+          {
+            "type": "string",
+            "name": "findingType"
+          },
+          {
+            "type": "int",
+            "name": "confidence"
+          },
+          {
+            "type": "datetime",
+            "name": "firstSeen"
+          },
+          {
+            "type": "datetime",
+            "name": "lastSeen"
+          },
+          {
+            "type": "string",
+            "name": "notes"
+          },
+          {
+            "type": "string",
+            "name": "source"
+          },
+          {
+            "type": "string",
+            "name": "severity"
+          },
+          {
+            "type": "string",
+            "name": "status"
+          },
+          {
+            "type": "string",
+            "name": "campaign_id"
+          },
+          {
+            "type": "string",
+            "name": "user_id"
+          },
+          {
+            "type": "string",
+            "name": "username"
+          },
+          {
+            "type": "datetime",
+            "name": "detection_ts"
+          },
+          {
+            "type": "string",
+            "name": "metadata"
+          }
+        ]
+      }
+    },
+    "dataFlows": [
+      {
+        "destinations": [
+          "ws1"
+        ],
+        "streams": [
+          "Custom-TacitRed_Findings_Test_CL"
+        ],
+        "outputStream": "Custom-TacitRed_Findings_Test_CL",
+        "transformKql": "source | extend TimeGenerated = now()"
+      }
+    ]
+  },
+  "location": "eastus"
+}

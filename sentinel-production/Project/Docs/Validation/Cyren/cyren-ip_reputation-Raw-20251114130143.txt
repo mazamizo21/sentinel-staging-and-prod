@@ -1,0 +1,5 @@
+Label=IP-Feed-Raw
+Mode=Raw
+Status=Error
+FeedId=ip_reputation
+Error=Invalid URI: The hostname could not be parsed.

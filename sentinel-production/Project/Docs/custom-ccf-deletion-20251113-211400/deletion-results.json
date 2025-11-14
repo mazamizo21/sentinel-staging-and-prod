@@ -1,0 +1,37 @@
+{
+  "Tables": [
+    {
+      "Name": "TacitRed_Findings_CL",
+      "Status": "Deleted",
+      "Timestamp": "2025-11-13 21:14:46"
+    },
+    {
+      "Name": "Cyren_Indicators_CL",
+      "Status": "Deleted",
+      "Timestamp": "2025-11-13 21:14:50"
+    }
+  ],
+  "DCRs": [
+    {
+      "Name": "dcr-tacitred-findings",
+      "Status": "Deleted",
+      "Timestamp": "2025-11-13 21:14:32"
+    }
+  ],
+  "ConnectorDefinitions": [
+    {
+      "Name": "TacitRedThreatIntel",
+      "Status": "Deleted",
+      "Timestamp": "2025-11-13 21:14:25"
+    }
+  ],
+  "DCEs": [
+    {
+      "Name": "dce-tacitred-threatintel",
+      "Status": "Deleted",
+      "Timestamp": "2025-11-13 21:14:41"
+    }
+  ],
+  "LocksRemoved": [],
+  "DataConnectors": []
+}

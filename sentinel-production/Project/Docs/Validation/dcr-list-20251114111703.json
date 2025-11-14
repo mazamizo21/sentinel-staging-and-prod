@@ -1,0 +1,356 @@
+[
+  {
+    "dataCollectionEndpointId": "/subscriptions/774bee0e-b281-4f70-8e40-199e35b65117/resourceGroups/SentinelTestStixImport/providers/Microsoft.Insights/dataCollectionEndpoints/dce-threatintel-feeds",
+    "dataFlows": [
+      {
+        "destinations": [
+          "clv2ws1"
+        ],
+        "outputStream": "Custom-TacitRed_Findings_CL",
+        "streams": [
+          "Custom-TacitRed_Findings_CL"
+        ],
+        "transformKql": "source | extend TimeGenerated = now()"
+      }
+    ],
+    "destinations": {
+      "logAnalytics": [
+        {
+          "name": "clv2ws1",
+          "workspaceId": "524ca34b-b412-4189-a236-7fc453c9a88b",
+          "workspaceResourceId": "/subscriptions/774bee0e-b281-4f70-8e40-199e35b65117/resourceGroups/SentinelTestStixImport/providers/Microsoft.OperationalInsights/Workspaces/SentinelThreatIntelWorkspace"
+        }
+      ]
+    },
+    "etag": "\"9302025f-0000-0100-0000-69172f050000\"",
+    "id": "/subscriptions/774bee0e-b281-4f70-8e40-199e35b65117/resourceGroups/SentinelTestStixImport/providers/Microsoft.Insights/dataCollectionRules/dcr-tacitred-findings",
+    "immutableId": "dcr-17ccb13049654e90b45840c887fb069b",
+    "location": "eastus",
+    "name": "dcr-tacitred-findings",
+    "provisioningState": "Succeeded",
+    "resourceGroup": "SentinelTestStixImport",
+    "streamDeclarations": {
+      "Custom-TacitRed_Findings_CL": {
+        "columns": [
+          {
+            "name": "TimeGenerated",
+            "type": "datetime"
+          },
+          {
+            "name": "email",
+            "type": "string"
+          },
+          {
+            "name": "domain",
+            "type": "string"
+          },
+          {
+            "name": "findingType",
+            "type": "string"
+          },
+          {
+            "name": "confidence",
+            "type": "int"
+          },
+          {
+            "name": "firstSeen",
+            "type": "datetime"
+          },
+          {
+            "name": "lastSeen",
+            "type": "datetime"
+          },
+          {
+            "name": "notes",
+            "type": "string"
+          },
+          {
+            "name": "source",
+            "type": "string"
+          },
+          {
+            "name": "severity",
+            "type": "string"
+          },
+          {
+            "name": "status",
+            "type": "string"
+          },
+          {
+            "name": "campaign_id",
+            "type": "string"
+          },
+          {
+            "name": "user_id",
+            "type": "string"
+          },
+          {
+            "name": "username",
+            "type": "string"
+          },
+          {
+            "name": "detection_ts",
+            "type": "datetime"
+          },
+          {
+            "name": "metadata",
+            "type": "string"
+          }
+        ]
+      }
+    },
+    "systemData": {
+      "createdAt": "2025-11-14T02:19:08.1767598Z",
+      "createdBy": "37303195-5dc3-4ce7-b046-7615a20b8585",
+      "createdByType": "Application",
+      "lastModifiedAt": "2025-11-14T13:30:44.1114457Z",
+      "lastModifiedBy": "37303195-5dc3-4ce7-b046-7615a20b8585",
+      "lastModifiedByType": "Application"
+    },
+    "type": "Microsoft.Insights/dataCollectionRules"
+  },
+  {
+    "dataCollectionEndpointId": "/subscriptions/774bee0e-b281-4f70-8e40-199e35b65117/resourceGroups/SentinelTestStixImport/providers/Microsoft.Insights/dataCollectionEndpoints/dce-threatintel-feeds",
+    "dataFlows": [
+      {
+        "destinations": [
+          "clv2ws1"
+        ],
+        "outputStream": "Custom-Cyren_Indicators_CL",
+        "streams": [
+          "Custom-Cyren_Indicators_CL"
+        ],
+        "transformKql": "source | extend TimeGenerated = now()"
+      }
+    ],
+    "destinations": {
+      "logAnalytics": [
+        {
+          "name": "clv2ws1",
+          "workspaceId": "524ca34b-b412-4189-a236-7fc453c9a88b",
+          "workspaceResourceId": "/subscriptions/774bee0e-b281-4f70-8e40-199e35b65117/resourceGroups/SentinelTestStixImport/providers/Microsoft.OperationalInsights/Workspaces/SentinelThreatIntelWorkspace"
+        }
+      ]
+    },
+    "etag": "\"9102dc1e-0000-0100-0000-6916b1610000\"",
+    "id": "/subscriptions/774bee0e-b281-4f70-8e40-199e35b65117/resourceGroups/SentinelTestStixImport/providers/Microsoft.Insights/dataCollectionRules/dcr-cyren-malware-urls",
+    "immutableId": "dcr-5262b9202d8846ee9879eb2d6be2d01d",
+    "location": "eastus",
+    "name": "dcr-cyren-malware-urls",
+    "provisioningState": "Succeeded",
+    "resourceGroup": "SentinelTestStixImport",
+    "streamDeclarations": {
+      "Custom-Cyren_Indicators_CL": {
+        "columns": [
+          {
+            "name": "TimeGenerated",
+            "type": "datetime"
+          },
+          {
+            "name": "url",
+            "type": "string"
+          },
+          {
+            "name": "ip",
+            "type": "string"
+          },
+          {
+            "name": "fileHash",
+            "type": "string"
+          },
+          {
+            "name": "domain",
+            "type": "string"
+          },
+          {
+            "name": "protocol",
+            "type": "string"
+          },
+          {
+            "name": "port",
+            "type": "int"
+          },
+          {
+            "name": "category",
+            "type": "string"
+          },
+          {
+            "name": "risk",
+            "type": "int"
+          },
+          {
+            "name": "firstSeen",
+            "type": "datetime"
+          },
+          {
+            "name": "lastSeen",
+            "type": "datetime"
+          },
+          {
+            "name": "source",
+            "type": "string"
+          },
+          {
+            "name": "relationships",
+            "type": "string"
+          },
+          {
+            "name": "detection_methods",
+            "type": "string"
+          },
+          {
+            "name": "action",
+            "type": "string"
+          },
+          {
+            "name": "type",
+            "type": "string"
+          },
+          {
+            "name": "identifier",
+            "type": "string"
+          },
+          {
+            "name": "detection_ts",
+            "type": "datetime"
+          },
+          {
+            "name": "object_type",
+            "type": "string"
+          }
+        ]
+      }
+    },
+    "systemData": {
+      "createdAt": "2025-11-14T02:43:23.1503274Z",
+      "createdBy": "37303195-5dc3-4ce7-b046-7615a20b8585",
+      "createdByType": "Application",
+      "lastModifiedAt": "2025-11-14T04:34:40.1248281Z",
+      "lastModifiedBy": "37303195-5dc3-4ce7-b046-7615a20b8585",
+      "lastModifiedByType": "Application"
+    },
+    "type": "Microsoft.Insights/dataCollectionRules"
+  },
+  {
+    "dataCollectionEndpointId": "/subscriptions/774bee0e-b281-4f70-8e40-199e35b65117/resourceGroups/SentinelTestStixImport/providers/Microsoft.Insights/dataCollectionEndpoints/dce-threatintel-feeds",
+    "dataFlows": [
+      {
+        "destinations": [
+          "clv2ws1"
+        ],
+        "outputStream": "Custom-Cyren_Indicators_CL",
+        "streams": [
+          "Custom-Cyren_Indicators_CL"
+        ],
+        "transformKql": "source | extend TimeGenerated = now()"
+      }
+    ],
+    "destinations": {
+      "logAnalytics": [
+        {
+          "name": "clv2ws1",
+          "workspaceId": "524ca34b-b412-4189-a236-7fc453c9a88b",
+          "workspaceResourceId": "/subscriptions/774bee0e-b281-4f70-8e40-199e35b65117/resourceGroups/SentinelTestStixImport/providers/Microsoft.OperationalInsights/Workspaces/SentinelThreatIntelWorkspace"
+        }
+      ]
+    },
+    "etag": "\"9102dd1e-0000-0100-0000-6916b1620000\"",
+    "id": "/subscriptions/774bee0e-b281-4f70-8e40-199e35b65117/resourceGroups/SentinelTestStixImport/providers/Microsoft.Insights/dataCollectionRules/dcr-cyren-ip-reputation",
+    "immutableId": "dcr-39d508f7d577493cab36ab9ec8760f2d",
+    "location": "eastus",
+    "name": "dcr-cyren-ip-reputation",
+    "provisioningState": "Succeeded",
+    "resourceGroup": "SentinelTestStixImport",
+    "streamDeclarations": {
+      "Custom-Cyren_Indicators_CL": {
+        "columns": [
+          {
+            "name": "TimeGenerated",
+            "type": "datetime"
+          },
+          {
+            "name": "url",
+            "type": "string"
+          },
+          {
+            "name": "ip",
+            "type": "string"
+          },
+          {
+            "name": "fileHash",
+            "type": "string"
+          },
+          {
+            "name": "domain",
+            "type": "string"
+          },
+          {
+            "name": "protocol",
+            "type": "string"
+          },
+          {
+            "name": "port",
+            "type": "int"
+          },
+          {
+            "name": "category",
+            "type": "string"
+          },
+          {
+            "name": "risk",
+            "type": "int"
+          },
+          {
+            "name": "firstSeen",
+            "type": "datetime"
+          },
+          {
+            "name": "lastSeen",
+            "type": "datetime"
+          },
+          {
+            "name": "source",
+            "type": "string"
+          },
+          {
+            "name": "relationships",
+            "type": "string"
+          },
+          {
+            "name": "detection_methods",
+            "type": "string"
+          },
+          {
+            "name": "action",
+            "type": "string"
+          },
+          {
+            "name": "type",
+            "type": "string"
+          },
+          {
+            "name": "identifier",
+            "type": "string"
+          },
+          {
+            "name": "detection_ts",
+            "type": "datetime"
+          },
+          {
+            "name": "object_type",
+            "type": "string"
+          }
+        ]
+      }
+    },
+    "systemData": {
+      "createdAt": "2025-11-14T02:43:23.1659852Z",
+      "createdBy": "37303195-5dc3-4ce7-b046-7615a20b8585",
+      "createdByType": "Application",
+      "lastModifiedAt": "2025-11-14T04:34:40.1248281Z",
+      "lastModifiedBy": "37303195-5dc3-4ce7-b046-7615a20b8585",
+      "lastModifiedByType": "Application"
+    },
+    "type": "Microsoft.Insights/dataCollectionRules"
+  }
+]

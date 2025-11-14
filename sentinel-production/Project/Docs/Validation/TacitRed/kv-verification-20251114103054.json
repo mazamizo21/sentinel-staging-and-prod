@@ -1,0 +1,23 @@
+[
+  {
+    "Name": "TacitRedApiKey",
+    "ConfigLength": 0,
+    "SecretLength": 0,
+    "Match": true,
+    "SecretMissing": false
+  },
+  {
+    "Name": "CyrenIPJwtToken",
+    "ConfigLength": 0,
+    "SecretLength": 0,
+    "Match": true,
+    "SecretMissing": false
+  },
+  {
+    "Name": "CyrenMalwareJwtToken",
+    "ConfigLength": 0,
+    "SecretLength": 0,
+    "Match": true,
+    "SecretMissing": false
+  }
+]

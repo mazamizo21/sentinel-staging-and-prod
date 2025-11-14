@@ -1,0 +1,52 @@
+{
+  "etag": "\"e200eef9-0000-0100-0000-69172f080000\"",
+  "id": "/subscriptions/774bee0e-b281-4f70-8e40-199e35b65117/resourceGroups/SentinelTestStixImport/providers/Microsoft.OperationalInsights/workspaces/SentinelThreatIntelWorkspace/providers/Microsoft.SecurityInsights/dataConnectors/TacitRedFindings",
+  "kind": "RestApiPoller",
+  "name": "TacitRedFindings",
+  "properties": {
+    "auth": {
+      "apiKeyName": "Authorization",
+      "type": "APIKey"
+    },
+    "connectorDefinitionName": "TacitRedThreatIntel",
+    "dataType": "TacitRed_Findings_CL",
+    "dcrConfig": {
+      "dataCollectionEndpoint": "https://dce-threatintel-feeds-jfcg.eastus-1.ingest.monitor.azure.com",
+      "dataCollectionRuleImmutableId": "dcr-17ccb13049654e90b45840c887fb069b",
+      "streamName": "Custom-TacitRed_Findings_CL"
+    },
+    "isActive": true,
+    "paging": {
+      "linkHeaderRelLinkName": "rel=next",
+      "pageSize": 0,
+      "pagingType": "LinkHeader"
+    },
+    "request": {
+      "apiEndpoint": "https://app.tacitred.com/api/v1/findings",
+      "endTimeAttributeName": "until",
+      "headers": {
+        "Accept": "application/json",
+        "User-Agent": "Microsoft-Sentinel-TacitRed/1.0"
+      },
+      "httpMethod": "GET",
+      "queryParameters": {
+        "page_size": 100
+      },
+      "queryTimeFormat": "yyyy-MM-ddTHH:mm:ssZ",
+      "queryWindowInMin": 5,
+      "rateLimitQPS": 10,
+      "retryCount": 3,
+      "startTimeAttributeName": "from",
+      "timeoutInSeconds": 60
+    },
+    "response": {
+      "eventsJsonPaths": [
+        "$.results"
+      ],
+      "format": "json"
+    },
+    "shouldJoinNestedData": false,
+    "stepCollectorConfigs": {}
+  },
+  "type": "Microsoft.SecurityInsights/dataConnectors"
+}

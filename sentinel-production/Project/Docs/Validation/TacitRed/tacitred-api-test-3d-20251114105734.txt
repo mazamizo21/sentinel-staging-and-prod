@@ -1,0 +1,6 @@
+Label=Last3Days
+Status=Success
+HttpStatus=200
+From=2025-11-11T15:57:40Z
+Until=2025-11-14T15:57:40Z
+ResultCount=0

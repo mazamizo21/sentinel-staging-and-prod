@@ -1,3 +1,0 @@
-OperationId       ResourceGroup
-----------------  ----------------------
-5D3D4DFFCDFAE76F  SentinelTestStixImport

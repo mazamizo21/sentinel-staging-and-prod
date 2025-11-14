@@ -1,0 +1,4 @@
+Status=Error
+From=2025-11-13
+To=2025-11-14
+Error=Invalid URI: The hostname could not be parsed.

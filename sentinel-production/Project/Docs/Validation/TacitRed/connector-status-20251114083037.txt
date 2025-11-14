@@ -1,0 +1,3 @@
+Name              Kind           Active
+----------------  -------------  --------
+TacitRedFindings  RestApiPoller  True

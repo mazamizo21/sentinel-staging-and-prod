@@ -1,0 +1,6 @@
+
+Name                    Active LastData Created PollWindow
+----                    ------ -------- ------- ----------
+TacitRedFindings          True                          60
+TacitRedFindings-Manual   True                           5
+

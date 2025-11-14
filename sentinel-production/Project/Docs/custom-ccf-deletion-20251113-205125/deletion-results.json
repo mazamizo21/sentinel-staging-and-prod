@@ -1,0 +1,41 @@
+{
+  "DCRs": [
+    {
+      "Name": "dcr-cyren-ip",
+      "Status": "Deleted",
+      "Timestamp": "2025-11-13 20:52:04"
+    },
+    {
+      "Name": "dcr-cyren-malware",
+      "Status": "Deleted",
+      "Timestamp": "2025-11-13 20:52:09"
+    }
+  ],
+  "DataConnectors": [],
+  "DCEs": [],
+  "ConnectorDefinitions": [
+    {
+      "Name": "ccf-tacitred-definition",
+      "Status": "Deleted",
+      "Timestamp": "2025-11-13 20:51:50"
+    },
+    {
+      "Name": "TacitRedThreatIntel",
+      "Status": "Deleted",
+      "Timestamp": "2025-11-13 20:51:57"
+    }
+  ],
+  "LocksRemoved": [],
+  "Tables": [
+    {
+      "Name": "TacitRed_Findings_CL",
+      "Status": "Deleted",
+      "Timestamp": "2025-11-13 20:52:17"
+    },
+    {
+      "Name": "Cyren_Indicators_CL",
+      "Status": "Deleted",
+      "Timestamp": "2025-11-13 20:52:21"
+    }
+  ]
+}

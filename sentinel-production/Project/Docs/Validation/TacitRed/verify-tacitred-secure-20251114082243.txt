@@ -1,0 +1,4 @@
+Name                     Kind           Active    DataType
+-----------------------  -------------  --------  --------------------
+TacitRedFindings-Manual  RestApiPoller  True      TacitRed_Findings_CL
+TacitRedFindings         RestApiPoller  True      TacitRed_Findings_CL
