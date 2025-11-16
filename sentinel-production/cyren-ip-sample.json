@@ -1,0 +1,523 @@
+{
+  "records": [
+    {
+      "payload": {
+        "action": "+",
+        "type": "ip",
+        "identifier": "104.236.37.21",
+        "first_seen": "2025-09-22T14:24:41Z",
+        "last_seen": "2025-11-10T17:57:03.897Z",
+        "detection": {
+          "category": [
+            "malware"
+          ],
+          "detection_ts": "2025-09-22T14:24:41Z",
+          "risk": 50
+        },
+        "meta": {
+          "object_type": "ipv4",
+          "port": 80,
+          "protocol": "http"
+        },
+        "relationships": [
+          {
+            "relationship_type": "serves",
+            "relationship_ts": "2025-11-10T17:55:17Z",
+            "url_id": "2c8439fb-f65b-526d-90de-4c810e8ff08d",
+            "related_entity_category": "malware",
+            "relationship_description": "serves malware url"
+          },
+          {
+            "relationship_type": "serves",
+            "relationship_ts": "2025-11-10T17:55:17Z",
+            "sha256_hash": "f0a78b7dc67aaebad0368f51ad9e04acba59cc174f827e091626bf8b6a10c7e1",
+            "related_entity_category": "malware",
+            "relationship_description": "serves malware file"
+          }
+        ],
+        "detection_methods": [
+          "Malware detection"
+        ]
+      },
+      "offset": 5966,
+      "timestamp": "2025-11-10T17:58:53.816Z"
+    },
+    {
+      "payload": {
+        "action": "+",
+        "type": "ip",
+        "identifier": "110.81.113.223",
+        "first_seen": "2025-11-10T11:56:45Z",
+        "last_seen": "2025-11-10T19:06:46.047Z",
+        "detection": {
+          "category": [
+            "malware"
+          ],
+          "detection_ts": "2025-11-10T11:56:45Z",
+          "risk": 50
+        },
+        "meta": {
+          "object_type": "ipv4",
+          "port": 9000,
+          "protocol": "http"
+        },
+        "relationships": [
+          {
+            "relationship_type": "serves",
+            "relationship_ts": "2025-11-10T19:05:43Z",
+            "url_id": "e340da29-479e-5660-bb9b-e5c2ffa68c84",
+            "related_entity_category": "malware",
+            "relationship_description": "serves malware url"
+          },
+          {
+            "relationship_type": "serves",
+            "relationship_ts": "2025-11-10T19:05:43Z",
+            "sha256_hash": "7126b9932dc0cdfe751340edfa7c4a14b69262eb1afd0530e6d1fdb2e25986dd",
+            "related_entity_category": "malware",
+            "relationship_description": "serves malware file"
+          }
+        ],
+        "detection_methods": [
+          "Malware detection"
+        ]
+      },
+      "offset": 5967,
+      "timestamp": "2025-11-10T19:08:53.381Z"
+    },
+    {
+      "payload": {
+        "action": "=",
+        "type": "ip",
+        "identifier": "121.184.128.134",
+        "first_seen": "2025-10-03T23:56:41Z",
+        "last_seen": "2025-11-10T19:06:46.047Z",
+        "detection": {
+          "category": [
+            "malware"
+          ],
+          "detection_ts": "2025-10-03T23:56:41Z",
+          "risk": 50
+        },
+        "meta": {
+          "object_type": "ipv4",
+          "port": 80,
+          "protocol": "http"
+        },
+        "relationships": [
+          {
+            "relationship_type": "serves",
+            "relationship_ts": "2025-10-30T00:31:42Z",
+            "url_id": "c171347f-9371-5fa7-9f28-d46ff9e51026",
+            "related_entity_category": "malware",
+            "relationship_description": "serves malware url"
+          },
+          {
+            "relationship_type": "serves",
+            "relationship_ts": "2025-11-10T19:05:24Z",
+            "sha256_hash": "7126b9932dc0cdfe751340edfa7c4a14b69262eb1afd0530e6d1fdb2e25986dd",
+            "related_entity_category": "malware",
+            "relationship_description": "serves malware file"
+          },
+          {
+            "relationship_type": "serves",
+            "relationship_ts": "2025-11-10T19:05:24Z",
+            "url_id": "4eeaa055-6b3c-5f90-8d2a-af7c6b1b5648",
+            "related_entity_category": "malware",
+            "relationship_description": "serves malware url"
+          },
+          {
+            "relationship_type": "serves",
+            "relationship_ts": "2025-10-30T00:31:19Z",
+            "url_id": "6d9564e7-0e1c-5a18-8892-beed249493f9",
+            "related_entity_category": "malware",
+            "relationship_description": "serves malware url"
+          }
+        ],
+        "detection_methods": [
+          "Malware detection"
+        ]
+      },
+      "offset": 5968,
+      "timestamp": "2025-11-10T19:08:53.382Z"
+    },
+    {
+      "payload": {
+        "action": "+",
+        "type": "ip",
+        "identifier": "211.169.231.210",
+        "first_seen": "2025-10-18T01:27:17Z",
+        "last_seen": "2025-11-10T19:06:46.053Z",
+        "detection": {
+          "category": [
+            "malware"
+          ],
+          "detection_ts": "2025-10-18T01:27:17Z",
+          "risk": 50
+        },
+        "meta": {
+          "object_type": "ipv4",
+          "port": 7070,
+          "protocol": "http"
+        },
+        "relationships": [
+          {
+            "relationship_type": "serves",
+            "relationship_ts": "2025-11-10T19:05:14Z",
+            "url_id": "b71db271-a0b1-542b-992b-f16b99dc97bf",
+            "related_entity_category": "malware",
+            "relationship_description": "serves malware url"
+          },
+          {
+            "relationship_type": "serves",
+            "relationship_ts": "2025-11-10T19:05:24Z",
+            "sha256_hash": "52ec3ba075a507e62bb6e3272fb13b30a8ddc0f62c4ea194311d558b338eb5ed",
+            "related_entity_category": "malware",
+            "relationship_description": "serves malware file"
+          },
+          {
+            "relationship_type": "serves",
+            "relationship_ts": "2025-11-10T00:10:24Z",
+            "url_id": "b3967bef-2aec-5c4a-987a-fb18574d829e",
+            "related_entity_category": "malware",
+            "relationship_description": "serves malware url"
+          },
+          {
+            "relationship_type": "serves",
+            "relationship_ts": "2025-11-10T19:05:24Z",
+            "url_id": "f3fd3449-976d-55e2-8fd9-b7f012fbe804",
+            "related_entity_category": "malware",
+            "relationship_description": "serves malware url"
+          }
+        ],
+        "detection_methods": [
+          "Malware detection"
+        ]
+      },
+      "offset": 5969,
+      "timestamp": "2025-11-10T19:08:53.383Z"
+    },
+    {
+      "payload": {
+        "action": "=",
+        "type": "ip",
+        "identifier": "200.14.250.72",
+        "first_seen": "2025-09-24T11:26:02Z",
+        "last_seen": "2025-11-10T19:11:34.247Z",
+        "detection": {
+          "category": [
+            "malware"
+          ],
+          "detection_ts": "2025-09-24T11:26:02Z",
+          "risk": 50
+        },
+        "meta": {
+          "object_type": "ipv4",
+          "port": 80,
+          "protocol": "http"
+        },
+        "relationships": [
+          {
+            "relationship_type": "serves",
+            "relationship_ts": "2025-11-10T07:50:15Z",
+            "url_id": "bf1c4d54-8bb5-5d0a-a761-775a8f0b0761",
+            "related_entity_category": "malware",
+            "relationship_description": "serves malware url"
+          },
+          {
+            "relationship_type": "serves",
+            "relationship_ts": "2025-11-10T19:10:23Z",
+            "sha256_hash": "7126b9932dc0cdfe751340edfa7c4a14b69262eb1afd0530e6d1fdb2e25986dd",
+            "related_entity_category": "malware",
+            "relationship_description": "serves malware file"
+          },
+          {
+            "relationship_type": "serves",
+            "relationship_ts": "2025-11-10T19:10:23Z",
+            "url_id": "b6b928c1-1a6e-50ee-aa86-9e93fabb377d",
+            "related_entity_category": "malware",
+            "relationship_description": "serves malware url"
+          },
+          {
+            "relationship_type": "serves",
+            "relationship_ts": "2025-11-10T06:50:38Z",
+            "url_id": "4965224f-67cf-5b9b-a4d0-80976207f08f",
+            "related_entity_category": "malware",
+            "relationship_description": "serves malware url"
+          }
+        ],
+        "detection_methods": [
+          "Malware detection"
+        ]
+      },
+      "offset": 5970,
+      "timestamp": "2025-11-10T19:12:53.348Z"
+    },
+    {
+      "payload": {
+        "action": "=",
+        "type": "ip",
+        "identifier": "201.16.194.227",
+        "first_seen": "2025-09-24T11:26:02Z",
+        "last_seen": "2025-11-10T19:11:34.247Z",
+        "detection": {
+          "category": [
+            "malware"
+          ],
+          "detection_ts": "2025-09-24T11:26:02Z",
+          "risk": 50
+        },
+        "meta": {
+          "object_type": "ipv4",
+          "port": 2550,
+          "protocol": "http"
+        },
+        "relationships": [
+          {
+            "relationship_type": "serves",
+            "relationship_ts": "2025-11-10T17:45:46Z",
+            "url_id": "682b8bea-c91d-5158-b94f-c7458886afcd",
+            "related_entity_category": "malware",
+            "relationship_description": "serves malware url"
+          },
+          {
+            "relationship_type": "serves",
+            "relationship_ts": "2025-11-10T19:10:30Z",
+            "sha256_hash": "7126b9932dc0cdfe751340edfa7c4a14b69262eb1afd0530e6d1fdb2e25986dd",
+            "related_entity_category": "malware",
+            "relationship_description": "serves malware file"
+          },
+          {
+            "relationship_type": "serves",
+            "relationship_ts": "2025-11-10T19:10:30Z",
+            "url_id": "7fba7a15-dff8-5545-b5e0-f8344b532c88",
+            "related_entity_category": "malware",
+            "relationship_description": "serves malware url"
+          },
+          {
+            "relationship_type": "serves",
+            "relationship_ts": "2025-11-10T17:45:26Z",
+            "url_id": "4abca122-b825-5bc1-af37-109250cd72b1",
+            "related_entity_category": "malware",
+            "relationship_description": "serves malware url"
+          }
+        ],
+        "detection_methods": [
+          "Malware detection"
+        ]
+      },
+      "offset": 5971,
+      "timestamp": "2025-11-10T19:12:53.349Z"
+    },
+    {
+      "payload": {
+        "action": "=",
+        "type": "ip",
+        "identifier": "201.16.194.227",
+        "first_seen": "2025-09-24T11:26:02Z",
+        "last_seen": "2025-11-10T19:12:37.287Z",
+        "detection": {
+          "category": [
+            "malware"
+          ],
+          "detection_ts": "2025-09-24T11:26:02Z",
+          "risk": 50
+        },
+        "meta": {
+          "object_type": "ipv4",
+          "port": 2550,
+          "protocol": "http"
+        },
+        "relationships": [
+          {
+            "relationship_type": "serves",
+            "relationship_ts": "2025-11-10T19:10:47Z",
+            "url_id": "d6f9fcdb-e77e-5099-8c28-17195984df3e",
+            "related_entity_category": "malware",
+            "relationship_description": "serves malware url"
+          },
+          {
+            "relationship_type": "serves",
+            "relationship_ts": "2025-11-10T19:11:16Z",
+            "sha256_hash": "7126b9932dc0cdfe751340edfa7c4a14b69262eb1afd0530e6d1fdb2e25986dd",
+            "related_entity_category": "malware",
+            "relationship_description": "serves malware file"
+          },
+          {
+            "relationship_type": "serves",
+            "relationship_ts": "2025-11-10T19:10:47Z",
+            "url_id": "bba48393-8fdf-59f2-bcf4-55fc49991811",
+            "related_entity_category": "malware",
+            "relationship_description": "serves malware url"
+          },
+          {
+            "relationship_type": "serves",
+            "relationship_ts": "2025-11-10T19:11:16Z",
+            "url_id": "d811bc9f-3bbb-5163-b07f-4be94e0b206d",
+            "related_entity_category": "malware",
+            "relationship_description": "serves malware url"
+          }
+        ],
+        "detection_methods": [
+          "Malware detection"
+        ]
+      },
+      "offset": 5972,
+      "timestamp": "2025-11-10T19:14:53.34Z"
+    },
+    {
+      "payload": {
+        "action": "=",
+        "type": "ip",
+        "identifier": "201.16.194.227",
+        "first_seen": "2025-09-24T11:26:02Z",
+        "last_seen": "2025-11-10T19:41:53.967Z",
+        "detection": {
+          "category": [
+            "malware"
+          ],
+          "detection_ts": "2025-09-24T11:26:02Z",
+          "risk": 50
+        },
+        "meta": {
+          "object_type": "ipv4",
+          "port": 2550,
+          "protocol": "http"
+        },
+        "relationships": [
+          {
+            "relationship_type": "serves",
+            "relationship_ts": "2025-11-10T19:40:21Z",
+            "url_id": "7bac0392-ff5e-5b70-ba4e-1842b7a09c91",
+            "related_entity_category": "malware",
+            "relationship_description": "serves malware url"
+          },
+          {
+            "relationship_type": "serves",
+            "relationship_ts": "2025-11-10T19:40:21Z",
+            "sha256_hash": "7126b9932dc0cdfe751340edfa7c4a14b69262eb1afd0530e6d1fdb2e25986dd",
+            "related_entity_category": "malware",
+            "relationship_description": "serves malware file"
+          },
+          {
+            "relationship_type": "serves",
+            "relationship_ts": "2025-11-10T19:40:21Z",
+            "url_id": "7a98383c-9338-594a-8dac-dda3b2dea582",
+            "related_entity_category": "malware",
+            "relationship_description": "serves malware url"
+          },
+          {
+            "relationship_type": "serves",
+            "relationship_ts": "2025-11-10T19:11:16Z",
+            "url_id": "d811bc9f-3bbb-5163-b07f-4be94e0b206d",
+            "related_entity_category": "malware",
+            "relationship_description": "serves malware url"
+          }
+        ],
+        "detection_methods": [
+          "Malware detection"
+        ]
+      },
+      "offset": 5973,
+      "timestamp": "2025-11-10T19:42:53.342Z"
+    },
+    {
+      "payload": {
+        "action": "=",
+        "type": "ip",
+        "identifier": "201.16.194.227",
+        "first_seen": "2025-09-24T11:26:02Z",
+        "last_seen": "2025-11-10T19:52:03.717Z",
+        "detection": {
+          "category": [
+            "malware"
+          ],
+          "detection_ts": "2025-09-24T11:26:02Z",
+          "risk": 50
+        },
+        "meta": {
+          "object_type": "ipv4",
+          "port": 2550,
+          "protocol": "http"
+        },
+        "relationships": [
+          {
+            "relationship_type": "serves",
+            "relationship_ts": "2025-11-10T19:50:24Z",
+            "url_id": "722899fe-0abb-5ab4-8249-4ef641c9d673",
+            "related_entity_category": "malware",
+            "relationship_description": "serves malware url"
+          },
+          {
+            "relationship_type": "serves",
+            "relationship_ts": "2025-11-10T19:50:24Z",
+            "sha256_hash": "7126b9932dc0cdfe751340edfa7c4a14b69262eb1afd0530e6d1fdb2e25986dd",
+            "related_entity_category": "malware",
+            "relationship_description": "serves malware file"
+          },
+          {
+            "relationship_type": "serves",
+            "relationship_ts": "2025-11-10T19:50:33Z",
+            "url_id": "3855f7f2-7756-5f0e-89cd-36017a68393f",
+            "related_entity_category": "malware",
+            "relationship_description": "serves malware url"
+          },
+          {
+            "relationship_type": "serves",
+            "relationship_ts": "2025-11-10T19:50:33Z",
+            "url_id": "cf40f471-e97f-565e-987a-56ccdbc25d01",
+            "related_entity_category": "malware",
+            "relationship_description": "serves malware url"
+          }
+        ],
+        "detection_methods": [
+          "Malware detection"
+        ]
+      },
+      "offset": 5974,
+      "timestamp": "2025-11-10T19:54:53.34Z"
+    },
+    {
+      "payload": {
+        "action": "+",
+        "type": "ip",
+        "identifier": "147.45.114.9",
+        "first_seen": "2025-10-22T17:04:46Z",
+        "last_seen": "2025-11-10T19:57:03.907Z",
+        "detection": {
+          "category": [
+            "malware"
+          ],
+          "detection_ts": "2025-10-22T17:04:46Z",
+          "risk": 50
+        },
+        "meta": {
+          "object_type": "ipv4",
+          "port": 80,
+          "protocol": "http"
+        },
+        "relationships": [
+          {
+            "relationship_type": "serves",
+            "relationship_ts": "2025-11-10T19:55:22Z",
+            "url_id": "fa3939f7-79bd-5fab-b492-4d178d9afff7",
+            "related_entity_category": "malware",
+            "relationship_description": "serves malware url"
+          },
+          {
+            "relationship_type": "serves",
+            "relationship_ts": "2025-11-10T19:55:22Z",
+            "sha256_hash": "fc467ef4293de4a24a8db91a593eb875113ab400ee0f20657308eb210db0022a",
+            "related_entity_category": "malware",
+            "relationship_description": "serves malware file"
+          }
+        ],
+        "detection_methods": [
+          "Malware detection"
+        ]
+      },
+      "offset": 5975,
+      "timestamp": "2025-11-10T19:58:53.341Z"
+    }
+  ],
+  "count": 10
+}

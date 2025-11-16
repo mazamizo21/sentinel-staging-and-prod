@@ -1,0 +1,145 @@
+{
+  "next": "http://app.tacitred.com/api/v1/findings?from=2025-10-17T19%3A07%3A04Z&page=2&page_size=5&types%5B%5D=compromised_credentials&until=2025-11-16T19%3A07%3A04Z",
+  "results": [
+    {
+      "activity_id": 1,
+      "category_uid": 2,
+      "class_id": 2001,
+      "finding": {
+        "supporting_data": {
+          "domain": "apple.com",
+          "subtype": "customer",
+          "compromised_url": "https://iforgot.apple.com/password/reset/options",
+          "credential": "naterreed@gmail.com",
+          "date_compromised": "2025-10-18T00:00:00Z",
+          "machine_id": "68f8b426f4a4511c7d0bc8c7",
+          "machine_name": "ARCATECH (megap)",
+          "os": "Windows 11 24H2 build 26100 (64 Bit)",
+          "site_domain": "apple.com",
+          "stealer": "Generic Stealer"
+        },
+        "title": "naterreed@gmail.com login for apple.com found in Generic Stealer malware logs",
+        "types": [
+          "compromised_credential"
+        ],
+        "uid": "subgraph://b4e2b283-5445-5224-8cfb-9d31ca728ac5"
+      },
+      "severity": "0.27",
+      "severity_id": 99,
+      "state_id": 200101,
+      "time": "2025-10-26T19:03:10.908441042Z"
+    },
+    {
+      "activity_id": 1,
+      "category_uid": 2,
+      "class_id": 2001,
+      "finding": {
+        "supporting_data": {
+          "domain": "apple.com",
+          "subtype": "customer",
+          "compromised_url": "https://appleid.apple.com/auth/authorize",
+          "credential": "lolgetbetter00@gmail.com",
+          "date_compromised": "2025-10-14T21:10:00Z",
+          "machine_id": "68f8b40e1b907ad7579976d3",
+          "machine_name": "DESKTOP-3P3HJBR (D)",
+          "os": "Windows 10 22H2 build 19045 (64 Bit)",
+          "site_domain": "apple.com",
+          "stealer": "Generic Stealer"
+        },
+        "title": "lolgetbetter00@gmail.com login for apple.com found in Generic Stealer malware logs",
+        "types": [
+          "compromised_credential"
+        ],
+        "uid": "subgraph://2bb61abb-c434-590d-a7e7-25ea24012fd4"
+      },
+      "severity": "0.27",
+      "severity_id": 99,
+      "state_id": 200101,
+      "time": "2025-10-26T19:03:10.908777868Z"
+    },
+    {
+      "activity_id": 1,
+      "category_uid": 2,
+      "class_id": 2001,
+      "finding": {
+        "supporting_data": {
+          "domain": "apple.com",
+          "subtype": "customer",
+          "compromised_url": "https://appleid.apple.com/account",
+          "credential": "pedrovilar80@gmail.com",
+          "date_compromised": "2025-10-16T00:00:00Z",
+          "machine_id": "68f8b426f4a4511c7d0bc8df",
+          "machine_name": "LAPTOP-ABMKNSLO (Utilizador)",
+          "os": "Windows 11",
+          "site_domain": "apple.com",
+          "stealer": "Generic Stealer"
+        },
+        "title": "pedrovilar80@gmail.com login for apple.com found in Generic Stealer malware logs",
+        "types": [
+          "compromised_credential"
+        ],
+        "uid": "subgraph://bb25fe3f-c287-51dc-9e57-29dde9b50091"
+      },
+      "severity": "0.27",
+      "severity_id": 99,
+      "state_id": 200101,
+      "time": "2025-10-26T19:03:10.751894457Z"
+    },
+    {
+      "activity_id": 1,
+      "category_uid": 2,
+      "class_id": 2001,
+      "finding": {
+        "supporting_data": {
+          "domain": "apple.com",
+          "subtype": "customer",
+          "compromised_url": "https://idmsa.apple.com/appleauth/auth/authorize/signin",
+          "credential": "benjai10vignesh@gmail.com",
+          "date_compromised": "2025-10-14T00:00:00Z",
+          "machine_id": "68f8b41716892944c504e689",
+          "machine_name": "WIN-3OEQ3PFA335 (Hero Ben)",
+          "os": "Windows 10 22H2 build 19045 (64 Bit)",
+          "site_domain": "apple.com",
+          "stealer": "Generic Stealer"
+        },
+        "title": "benjai10vignesh@gmail.com login for apple.com found in Generic Stealer malware logs",
+        "types": [
+          "compromised_credential"
+        ],
+        "uid": "subgraph://ba18815a-c634-58dd-a7e8-2dd00348f336"
+      },
+      "severity": "0.27",
+      "severity_id": 99,
+      "state_id": 200101,
+      "time": "2025-10-26T19:03:10.608073133Z"
+    },
+    {
+      "activity_id": 1,
+      "category_uid": 2,
+      "class_id": 2001,
+      "finding": {
+        "supporting_data": {
+          "domain": "apple.com",
+          "subtype": "customer",
+          "compromised_url": "https://idmsa.apple.com/appleauth/auth/authorize/signin",
+          "credential": "aurelianpopoviciu1@gmail.com",
+          "date_compromised": "2025-09-29T04:02:00Z",
+          "machine_id": "68f8b426f4a4511c7d0bc8d2",
+          "machine_name": "UTULIKES (utulikes)",
+          "os": "Windows 11 23H2 build 22631 (64 Bit)",
+          "site_domain": "apple.com",
+          "stealer": "Generic Stealer"
+        },
+        "title": "aurelianpopoviciu1@gmail.com login for apple.com found in Generic Stealer malware logs",
+        "types": [
+          "compromised_credential"
+        ],
+        "uid": "subgraph://5333f968-8efa-56f9-92cd-8859296adaed"
+      },
+      "severity": "0.27",
+      "severity_id": 99,
+      "state_id": 200101,
+      "time": "2025-10-26T19:03:10.407731113Z"
+    }
+  ]
+}
