@@ -1,0 +1,89 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "workspace": {
+      "type": "string",
+      "metadata": {
+        "description": "Workspace name"
+      }
+    },
+    "tacitRedApiKey": {
+      "type": "securestring",
+      "metadata": {
+        "description": "TacitRed API Key"
+      }
+    },
+    "dceEndpoint": {
+      "type": "string",
+      "metadata": {
+        "description": "DCE logs ingestion endpoint"
+      }
+    },
+    "dcrImmutableId": {
+      "type": "string",
+      "metadata": {
+        "description": "DCR immutable ID"
+      }
+    },
+    "queryWindowInMin": {
+      "type": "int",
+      "defaultValue": 5,
+      "metadata": {
+        "description": "Polling interval in minutes (minimum 5)"
+      }
+    }
+  },
+  "resources": [
+    {
+      "type": "Microsoft.OperationalInsights/workspaces/providers/dataConnectors",
+      "apiVersion": "2023-02-01-preview",
+      "name": "[concat(parameters('workspace'), '/Microsoft.SecurityInsights/', 'TacitRedFindings')]",
+      "kind": "RestApiPoller",
+      "properties": {
+        "connectorDefinitionName": "TacitRedThreatIntel",
+        "dataType": "TacitRed_Findings_CL",
+        "dcrConfig": {
+          "streamName": "Custom-TacitRed_Findings_CL",
+          "dataCollectionEndpoint": "[parameters('dceEndpoint')]",
+          "dataCollectionRuleImmutableId": "[parameters('dcrImmutableId')]"
+        },
+        "auth": {
+          "type": "APIKey",
+          "ApiKeyName": "Authorization",
+          "ApiKey": "[parameters('tacitRedApiKey')]"
+        },
+        "request": {
+          "apiEndpoint": "https://app.tacitred.com/api/v1/findings",
+          "httpMethod": "GET",
+          "queryParameters": {
+            "page_size": 100
+          },
+          "queryWindowInMin": "[parameters('queryWindowInMin')]",
+          "queryTimeFormat": "yyyy-MM-ddTHH:mm:ssZ",
+          "startTimeAttributeName": "from",
+          "endTimeAttributeName": "until",
+          "rateLimitQps": 10,
+          "retryCount": 3,
+          "timeoutInSeconds": 60,
+          "headers": {
+            "Accept": "application/json",
+            "User-Agent": "Microsoft-Sentinel-TacitRed/1.0"
+          }
+        },
+        "paging": {
+          "pagingType": "LinkHeader",
+          "linkHeaderRelLinkName": "rel=next",
+          "pageSize": 0
+        },
+        "response": {
+          "eventsJsonPaths": [
+            "$.results"
+          ],
+          "format": "json"
+        },
+        "shouldJoinNestedData": false
+      }
+    }
+  ]
+}

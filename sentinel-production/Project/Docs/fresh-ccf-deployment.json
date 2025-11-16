@@ -1,0 +1,10 @@
+{
+  "nextPollExpected": "2025-11-14 16:32:56",
+  "resourceGroup": "TacitRedCCFTest",
+  "apiKey": "a2be534e...",
+  "timestamp": "2025-11-14 16:27:56",
+  "dcrImmutableId": "dcr-d804ae1845bb419485d2b3dd98860ad2",
+  "dceEndpoint": "https://dce-tacitred-ccf-test-bptw.eastus-1.ingest.monitor.azure.com",
+  "workspace": "TacitRedCCFWorkspace",
+  "pollingInterval": 5
+}

@@ -1,0 +1,191 @@
+// ============================================================================
+// SENTINEL THREAT INTELLIGENCE - TABLE STATUS VERIFICATION
+// ============================================================================
+// Purpose: Check record counts and data flow for all threat intelligence tables
+// Usage: Run in Log Analytics workspace to verify data ingestion status
+// ============================================================================
+
+// Section 1: Overall Table Status Summary
+// ========================================
+print 
+    Timestamp=now(),
+    AnalysisType="Table Status Verification",
+    Note="Checking all threat intelligence tables for data ingestion status";
+
+// Section 2: TacitRed Tables
+// ============================
+// Main TacitRed Findings Table
+TacitRed_Findings_CL
+| where TimeGenerated > ago(24h)
+| summarize 
+    RecordCount=count(),
+    LatestIngestion=max(TimeGenerated),
+    EarliestIngestion=min(TimeGenerated),
+    UniqueEmails=dcount(email_s),
+    UniqueDomains=dcount(domain_s),
+    AvgConfidence=avg(todouble(confidence_d)),
+    HighRiskRecords=countif(todouble(confidence_d) >= 80)
+| extend 
+    TableName="TacitRed_Findings_CL",
+    DataSource="TacitRed",
+    Status=iff(RecordCount > 0, "Has Data", "Empty"),
+    DataFreshness=iff(datetime_diff('hour', now(), LatestIngestion) <= 6, "Fresh", "Stale")
+| project 
+    TableName, DataSource, Status, RecordCount, DataFreshness,
+    LatestIngestion, EarliestIngestion, UniqueEmails, UniqueDomains,
+    AvgConfidence, HighRiskRecords;
+
+// Test TacitRed Table (if exists)
+// Note: This will fail if table doesn't exist - that's expected behavior
+union withsource=TableName *
+| where TableName == "TacitRed_Findings_Test_CL"
+| where TimeGenerated > ago(24h)
+| summarize 
+    RecordCount=count(),
+    LatestIngestion=max(TimeGenerated),
+    EarliestIngestion=min(TimeGenerated)
+| extend 
+    TableName="TacitRed_Findings_Test_CL",
+    DataSource="TacitRed",
+    Status=iff(RecordCount > 0, "Has Data", "Empty"),
+    DataFreshness=iff(datetime_diff('hour', now(), LatestIngestion) <= 6, "Fresh", "Stale")
+| project 
+    TableName, DataSource, Status, RecordCount, DataFreshness,
+    LatestIngestion, EarliestIngestion;
+
+// Section 3: Cyren Tables
+// =========================
+
+// Cyren IP Reputation Table
+Cyren_IpReputation_CL
+| where TimeGenerated > ago(24h)
+| summarize 
+    RecordCount=count(),
+    LatestIngestion=max(TimeGenerated),
+    EarliestIngestion=min(TimeGenerated),
+    UniqueIPs=dcount(ip_s),
+    AvgRisk=avg(todouble(risk_d)),
+    HighRiskRecords=countif(todouble(risk_d) >= 70)
+| extend 
+    TableName="Cyren_IpReputation_CL",
+    DataSource="Cyren",
+    Status=iff(RecordCount > 0, "Has Data", "Empty"),
+    DataFreshness=iff(datetime_diff('hour', now(), LatestIngestion) <= 6, "Fresh", "Stale")
+| project 
+    TableName, DataSource, Status, RecordCount, DataFreshness,
+    LatestIngestion, EarliestIngestion, UniqueIPs, AvgRisk, HighRiskRecords;
+
+// Cyren Malware URLs Table
+Cyren_MalwareUrls_CL
+| where TimeGenerated > ago(24h)
+| summarize 
+    RecordCount=count(),
+    LatestIngestion=max(TimeGenerated),
+    EarliestIngestion=min(TimeGenerated),
+    UniqueURLs=dcount(url_s),
+    AvgRisk=avg(todouble(risk_d)),
+    HighRiskRecords=countif(todouble(risk_d) >= 70)
+| extend 
+    TableName="Cyren_MalwareUrls_CL",
+    DataSource="Cyren",
+    Status=iff(RecordCount > 0, "Has Data", "Empty"),
+    DataFreshness=iff(datetime_diff('hour', now(), LatestIngestion) <= 6, "Fresh", "Stale")
+| project 
+    TableName, DataSource, Status, RecordCount, DataFreshness,
+    LatestIngestion, EarliestIngestion, UniqueURLs, AvgRisk, HighRiskRecords;
+
+// Test Cyren Table (if exists)
+union withsource=TableName *
+| where TableName == "Cyren_Indicators_Test_CL"
+| where TimeGenerated > ago(24h)
+| summarize 
+    RecordCount=count(),
+    LatestIngestion=max(TimeGenerated),
+    EarliestIngestion=min(TimeGenerated)
+| extend 
+    TableName="Cyren_Indicators_Test_CL",
+    DataSource="Cyren",
+    Status=iff(RecordCount > 0, "Has Data", "Empty"),
+    DataFreshness=iff(datetime_diff('hour', now(), LatestIngestion) <= 6, "Fresh", "Stale")
+| project 
+    TableName, DataSource, Status, RecordCount, DataFreshness,
+    LatestIngestion, EarliestIngestion;
+
+// Section 4: Legacy/Alternative Table Names
+// ==========================================
+// Check for any tables that might exist with different naming
+
+// Check for any Cyren_Indicators_CL (original naming pattern)
+union withsource=TableName *
+| where TableName == "Cyren_Indicators_CL"
+| where TimeGenerated > ago(24h)
+| summarize 
+    RecordCount=count(),
+    LatestIngestion=max(TimeGenerated),
+    EarliestIngestion=min(TimeGenerated),
+    UniqueIPs=dcountif(isnotempty(ip_s), ip_s),
+    UniqueURLs=dcountif(isnotempty(url_s), url_s)
+| extend 
+    TableName="Cyren_Indicators_CL",
+    DataSource="Cyren",
+    Status=iff(RecordCount > 0, "Has Data", "Empty"),
+    DataFreshness=iff(datetime_diff('hour', now(), LatestIngestion) <= 6, "Fresh", "Stale")
+| project 
+    TableName, DataSource, Status, RecordCount, DataFreshness,
+    LatestIngestion, EarliestIngestion, UniqueIPs, UniqueURLs;
+
+// Section 5: Data Flow Analysis
+// ===========================
+
+// Check for any ingestion patterns or issues
+let AllTables = union 
+    (TacitRed_Findings_CL | extend TableName="TacitRed_Findings_CL", DataSource="TacitRed"),
+    (Cyren_IpReputation_CL | extend TableName="Cyren_IpReputation_CL", DataSource="Cyren"),
+    (Cyren_MalwareUrls_CL | extend TableName="Cyren_MalwareUrls_CL", DataSource="Cyren");
+    
+AllTables
+| where TimeGenerated > ago(24h)
+| summarize 
+    TotalRecords=count(),
+    IngestionBatches=dcount(bin(TimeGenerated, 5min)),
+    LatestIngestion=max(TimeGenerated),
+    DataSources=dcount(DataSource)
+| extend 
+    OverallStatus=iff(TotalRecords > 0, "Data Flowing", "No Data"),
+    HealthScore=iff(TotalRecords > 0 and DataSources >= 2, 100, 
+                   iff(TotalRecords > 0 and DataSources >= 1, 75,
+                   iff(DataSources >= 2, 50, 25)))
+| project 
+    OverallStatus, TotalRecords, IngestionBatches, DataSources, 
+    LatestIngestion, HealthScore;
+
+// Section 6: Quick Health Check
+// ============================
+
+// Last 1 hour check for immediate activity
+let RecentActivity = union 
+    (TacitRed_Findings_CL | where TimeGenerated > ago(1h) | extend TableName="TacitRed_Findings_CL", DataSource="TacitRed"),
+    (Cyren_IpReputation_CL | where TimeGenerated > ago(1h) | extend TableName="Cyren_IpReputation_CL", DataSource="Cyren"),
+    (Cyren_MalwareUrls_CL | where TimeGenerated > ago(1h) | extend TableName="Cyren_MalwareUrls_CL", DataSource="Cyren");
+    
+RecentActivity
+| summarize 
+    RecentRecords=count(),
+    ActiveSources=dcount(DataSource),
+    LatestActivity=max(TimeGenerated)
+| extend 
+    RecentStatus=iff(RecentRecords > 0, "Active", "Inactive"),
+    MinutesSinceLastIngestion=datetime_diff('minute', now(), LatestActivity)
+| project 
+    RecentStatus, RecentRecords, ActiveSources, 
+    LatestActivity, MinutesSinceLastIngestion;
+
+// ============================================================================
+// END OF QUERY
+// ============================================================================
+// Expected Results:
+// 1. Table-by-table status with record counts
+// 2. Data freshness indicators
+// 3. Overall data flow health assessment
+// 4. Recent activity analysis
+// ============================================================================

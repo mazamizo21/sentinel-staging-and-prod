@@ -1,0 +1,116 @@
+{
+  "OverallStatus": "Unknown",
+  "Timestamp": "2025-11-14 14:57:22",
+  "LogicAppStatus": {},
+  "Recommendations": [
+    "Run enhanced diagnostic with -RunAPIs flag for detailed analysis",
+    "Check specific table status in Log Analytics",
+    "Verify deployment was successful and complete"
+  ],
+  "GeneratedFixes": [],
+  "APIConnectivity": {
+    "Cyren_Malware_URLs": {
+      "HasData": true,
+      "RecordCount": 1,
+      "Status": "Success"
+    },
+    "Cyren_IP_Reputation": {
+      "HasData": true,
+      "RecordCount": 1,
+      "Status": "Success"
+    },
+    "TacitRed": {
+      "Status": "Error",
+      "Error": "Response status code does not indicate success: 401 (Unauthorized)."
+    }
+  },
+  "FocusArea": "All",
+  "RootCauseAnalysis": {
+    "Overall": "Healthy",
+    "Cyren": "NoIssue",
+    "TacitRed": "NoIssue"
+  },
+  "CCFConfiguration": {
+    "CyrenIPReputation": {
+      "Status": "NotFound"
+    },
+    "TacitRedFindings": {
+      "DataType": "TacitRed_Findings_CL",
+      "DcrConfig": {
+        "dataCollectionEndpoint": "https://dce-threatintel-feeds-jfcg.eastus-1.ingest.monitor.azure.com",
+        "dataCollectionRuleImmutableId": "dcr-17ccb13049654e90b45840c887fb069b",
+        "streamName": "Custom-TacitRed_Findings_CL"
+      },
+      "Issues": [
+        "DataType/StreamName mismatch"
+      ],
+      "Status": "ExistsWithIssues"
+    },
+    "CyrenMalwareURLs": {
+      "Status": "NotFound"
+    }
+  },
+  "TableAnalysis": {
+    "TacitRed_Findings_CL": {
+      "Type": "TacitRed",
+      "Status": "NotFound",
+      "Expected": true,
+      "Count": 0,
+      "DataFreshnessHours": null,
+      "Earliest": null,
+      "UniqueFields": 0,
+      "Latest": null
+    },
+    "TacitRed_Findings_Test_CL": {
+      "Type": "TacitRed",
+      "Status": "NotFound",
+      "Expected": false,
+      "Count": 0,
+      "DataFreshnessHours": null,
+      "Earliest": null,
+      "UniqueFields": 0,
+      "Latest": null
+    },
+    "Cyren_MalwareUrls_CL": {
+      "Type": "Cyren",
+      "Status": "NotFound",
+      "Expected": true,
+      "Count": 0,
+      "DataFreshnessHours": null,
+      "Earliest": null,
+      "UniqueFields": 0,
+      "Latest": null
+    },
+    "Cyren_Indicators_CL": {
+      "Type": "Cyren",
+      "Status": "NotFound",
+      "Expected": false,
+      "Count": 0,
+      "DataFreshnessHours": null,
+      "Earliest": null,
+      "UniqueFields": 0,
+      "Latest": null
+    },
+    "Cyren_IpReputation_CL": {
+      "Type": "Cyren",
+      "Status": "NotFound",
+      "Expected": true,
+      "Count": 0,
+      "DataFreshnessHours": null,
+      "Earliest": null,
+      "UniqueFields": 0,
+      "Latest": null
+    },
+    "Cyren_Indicators_Test_CL": {
+      "Type": "Cyren",
+      "Status": "NotFound",
+      "Expected": false,
+      "Count": 0,
+      "DataFreshnessHours": null,
+      "Earliest": null,
+      "UniqueFields": 0,
+      "Latest": null
+    }
+  },
+  "DCRConfiguration": {}
+}

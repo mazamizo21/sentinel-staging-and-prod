@@ -1,0 +1,110 @@
+{
+  "dataCollectionEndpointId": "/subscriptions/774bee0e-b281-4f70-8e40-199e35b65117/resourceGroups/TacitRedCCFTest/providers/Microsoft.Insights/dataCollectionEndpoints/dce-threatintel-feeds",
+  "dataFlows": [
+    {
+      "destinations": [
+        "clv2ws1"
+      ],
+      "outputStream": "Custom-TacitRed_Findings_CL",
+      "streams": [
+        "Custom-TacitRed_Findings_CL"
+      ],
+      "transformKql": "source | extend TimeGenerated = now() | project-rename email_s = email, domain_s = domain, findingType_s = findingType, confidence_d = confidence, firstSeen_t = firstSeen, lastSeen_t = lastSeen, notes_s = notes, source_s = source, severity_s = severity, status_s = status, campaign_id_s = campaign_id, user_id_s = user_id, username_s = username, detection_ts_t = detection_ts, metadata_s = metadata"
+    }
+  ],
+  "destinations": {
+    "logAnalytics": [
+      {
+        "name": "clv2ws1",
+        "workspaceId": "07ccb90a-2962-4028-8ede-61fb87c6d850",
+        "workspaceResourceId": "/subscriptions/774bee0e-b281-4f70-8e40-199e35b65117/resourceGroups/TacitRedCCFTest/providers/Microsoft.OperationalInsights/Workspaces/TacitRedCCFWorkspace"
+      }
+    ]
+  },
+  "etag": "\"9b027f9b-0000-0100-0000-6919a3fd0000\"",
+  "id": "/subscriptions/774bee0e-b281-4f70-8e40-199e35b65117/resourceGroups/TacitRedCCFTest/providers/Microsoft.Insights/dataCollectionRules/dcr-tacitred-findings",
+  "immutableId": "dcr-351b65c926314deb9f3ae6e7fd8f0397",
+  "location": "eastus",
+  "name": "dcr-tacitred-findings",
+  "provisioningState": "Succeeded",
+  "resourceGroup": "TacitRedCCFTest",
+  "streamDeclarations": {
+    "Custom-TacitRed_Findings_CL": {
+      "columns": [
+        {
+          "name": "TimeGenerated",
+          "type": "datetime"
+        },
+        {
+          "name": "email",
+          "type": "string"
+        },
+        {
+          "name": "domain",
+          "type": "string"
+        },
+        {
+          "name": "findingType",
+          "type": "string"
+        },
+        {
+          "name": "confidence",
+          "type": "int"
+        },
+        {
+          "name": "firstSeen",
+          "type": "datetime"
+        },
+        {
+          "name": "lastSeen",
+          "type": "datetime"
+        },
+        {
+          "name": "notes",
+          "type": "string"
+        },
+        {
+          "name": "source",
+          "type": "string"
+        },
+        {
+          "name": "severity",
+          "type": "string"
+        },
+        {
+          "name": "status",
+          "type": "string"
+        },
+        {
+          "name": "campaign_id",
+          "type": "string"
+        },
+        {
+          "name": "user_id",
+          "type": "string"
+        },
+        {
+          "name": "username",
+          "type": "string"
+        },
+        {
+          "name": "detection_ts",
+          "type": "datetime"
+        },
+        {
+          "name": "metadata",
+          "type": "string"
+        }
+      ]
+    }
+  },
+  "systemData": {
+    "createdAt": "2025-11-16T09:07:25.3617765Z",
+    "createdBy": "37303195-5dc3-4ce7-b046-7615a20b8585",
+    "createdByType": "Application",
+    "lastModifiedAt": "2025-11-16T10:14:19.5055621Z",
+    "lastModifiedBy": "37303195-5dc3-4ce7-b046-7615a20b8585",
+    "lastModifiedByType": "Application"
+  },
+  "type": "Microsoft.Insights/dataCollectionRules"
+}

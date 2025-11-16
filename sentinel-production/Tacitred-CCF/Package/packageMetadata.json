@@ -1,5 +1,5 @@
 {
-  "version": "1.0.0",
+  "version": "1.0.1",
   "kind": "Solution",
   "contentSchemaVersion": "3.0.0",
   "contentId": "TacitRedCompromisedCredentials",
@@ -10,10 +10,20 @@
   "contentProductId": "tacitred-compromised-credentials-solution",
   "id": "tacitred-compromised-credentials-solution",
   "icon": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"64\" height=\"64\" viewBox=\"0 0 64 64\"><rect width=\"64\" height=\"64\" fill=\"#0078D4\"/><path d=\"M32 16 L48 32 L32 48 L16 32 Z\" fill=\"#FFFFFF\"/><circle cx=\"32\" cy=\"32\" r=\"8\" fill=\"#0078D4\"/></svg>",
-  "threatAnalysisTactics": ["CredentialAccess", "InitialAccess"],
-  "threatAnalysisTechniques": ["T1110", "T1078", "T1589"],
+  "threatAnalysisTactics": [
+    "CredentialAccess",
+    "InitialAccess"
+  ],
+  "threatAnalysisTechniques": [
+    "T1110",
+    "T1078",
+    "T1589"
+  ],
   "categories": {
-    "domains": ["Identity", "Security - Threat Protection"]
+    "domains": [
+      "Identity",
+      "Security - Threat Protection"
+    ]
   },
   "support": {
     "tier": "Partner",
@@ -24,9 +34,11 @@
   "author": {
     "name": "TacitRed"
   },
-  "providers": ["TacitRed"],
+  "providers": [
+    "TacitRed"
+  ],
   "firstPublishDate": "2025-01-01",
-  "lastPublishDate": "2025-01-01",
+  "lastPublishDate": "2025-11-16",
   "customVersion": "1.0.0",
   "dependencies": {
     "operator": "AND",

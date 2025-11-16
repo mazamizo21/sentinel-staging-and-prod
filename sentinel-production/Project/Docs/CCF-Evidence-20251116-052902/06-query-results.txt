@@ -1,0 +1,20 @@
+=== QUERY RESULTS (Proving Zero Activity) ===
+Timestamp: 2025-11-16 05:30:15
+
+1. TacitRed_Findings_CL record count:
+0	PrimaryResult
+
+2. DCR diagnostic logs (all time):
+0	PrimaryResult
+
+3. Any AzureDiagnostics in last hour:
+0	PrimaryResult
+
+4. CCF Connector isActive status:
+true
+
+=== INTERPRETATION ===
+- Table has 0 records after 60+ minutes
+- DCR has 0 diagnostic logs (no poll attempts visible)
+- Connector is marked active=true
+- No observable polling activity despite correct configuration

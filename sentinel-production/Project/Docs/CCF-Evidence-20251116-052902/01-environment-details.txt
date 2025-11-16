@@ -1,0 +1,22 @@
+=== ENVIRONMENT DETAILS ===
+Timestamp: 2025-11-16 05:29:54 UTC
+Subscription: 774bee0e-b281-4f70-8e40-199e35b65117
+Resource Group: TacitRedCCFTest
+Workspace: TacitRedCCFWorkspace
+Workspace ID: 07ccb90a-2962-4028-8ede-61fb87c6d850
+Location: eastus
+
+=== DEPLOYED RESOURCES ===
+Name                                    ResourceGroup    Location    Type                                              Status
+--------------------------------------  ---------------  ----------  ------------------------------------------------  --------
+TacitRedCCFWorkspace                    TacitRedCCFTest  eastus      Microsoft.OperationalInsights/workspaces
+36a39d56-e31e-52cb-9a26-661fbf8da0cc    TacitRedCCFTest  eastus      Microsoft.Insights/workbooks
+f081daea-a99e-545d-b439-c4ca06698a6c    TacitRedCCFTest  eastus      Microsoft.Insights/workbooks
+dce-threatintel-feeds                   TacitRedCCFTest  eastus      Microsoft.Insights/dataCollectionEndpoints
+a4e79b0f-316b-5688-b752-fb5d50ce6606    TacitRedCCFTest  eastus      Microsoft.Insights/workbooks
+uami-ccf-deployment                     TacitRedCCFTest  eastus      Microsoft.ManagedIdentity/userAssignedIdentities
+8c517268-ca7c-51f8-8f9a-4afb488c6f3c    TacitRedCCFTest  eastus      Microsoft.Insights/workbooks
+f3d63cee-8238-505f-9146-6ca405965afa    TacitRedCCFTest  eastus      Microsoft.Insights/workbooks
+14eb2931-5bde-54eb-aebf-32a6a1351333    TacitRedCCFTest  eastus      Microsoft.Insights/workbooks
+dcr-tacitred-findings                   TacitRedCCFTest  eastus      Microsoft.Insights/dataCollectionRules
+SecurityInsights(TacitRedCCFWorkspace)  TacitRedCCFTest  eastus      Microsoft.OperationsManagement/solutions

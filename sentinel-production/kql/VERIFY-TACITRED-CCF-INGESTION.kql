@@ -1,0 +1,91 @@
+// VERIFY-TACITRED-CCF-INGESTION.kql
+// Run these queries in the TacitRedCCFWorkspace to verify CCF is ingesting data
+
+// ============================================================================
+// 1. OVERALL STATUS - Has any data ever arrived?
+// ============================================================================
+TacitRed_Findings_CL
+| summarize 
+    TotalRecords     = count(),
+    EarliestRecord   = min(TimeGenerated),
+    LatestRecord     = max(TimeGenerated)
+| extend 
+    TimeSpan         = LatestRecord - EarliestRecord,
+    Status           = iff(TotalRecords > 0, "✅ DATA FOUND", "❌ NO DATA")
+
+// ============================================================================
+// 2. RECENT DATA - Last 1 hour
+// ============================================================================
+TacitRed_Findings_CL
+| where TimeGenerated > ago(1h)
+| summarize 
+    RecentRecords    = count(),
+    LatestRecord     = max(TimeGenerated)
+| extend 
+    MinutesSinceLastRecord = datetime_diff('minute', now(), LatestRecord),
+    Status           = iff(RecentRecords > 0, "✅ RECENT DATA", "⚠️ NO RECENT DATA")
+
+// ============================================================================
+// 3. SAMPLE RECORDS - See actual data
+// ============================================================================
+TacitRed_Findings_CL
+| where TimeGenerated > ago(24h)
+| project 
+    TimeGenerated,
+    email_s,
+    domain_s,
+    findingType_s,
+    confidence_d,
+    source_s,
+    severity_s,
+    status_s,
+    campaign_id_s,
+    username_s
+| order by TimeGenerated desc
+| take 20
+
+// ============================================================================
+// 4. INGESTION TIMELINE - Hourly breakdown
+// ============================================================================
+TacitRed_Findings_CL
+| where TimeGenerated > ago(24h)
+| summarize RecordCount = count() by bin(TimeGenerated, 1h)
+| order by TimeGenerated asc
+| render timechart
+
+// ============================================================================
+// 5. DATA BY FINDING TYPE - See distribution
+// ============================================================================
+TacitRed_Findings_CL
+| where TimeGenerated > ago(24h)
+| summarize 
+    RecordCount = count(),
+    UniqueEmails = dcount(email_s)
+    by findingType_s
+| order by RecordCount desc
+
+// ============================================================================
+// 6. SCHEMA VALIDATION - Ensure all columns present
+// ============================================================================
+TacitRed_Findings_CL
+| take 1
+| project 
+    Has_TimeGenerated   = isnotnull(TimeGenerated),
+    Has_email_s         = isnotnull(email_s),
+    Has_domain_s        = isnotnull(domain_s),
+    Has_findingType_s   = isnotnull(findingType_s),
+    Has_confidence_d    = isnotnull(confidence_d),
+    Has_firstSeen_t     = isnotnull(firstSeen_t),
+    Has_lastSeen_t      = isnotnull(lastSeen_t),
+    Has_source_s        = isnotnull(source_s),
+    Has_severity_s      = isnotnull(severity_s),
+    Has_status_s        = isnotnull(status_s)
+
+// ============================================================================
+// 7. QUICK STATUS CHECK (run this first)
+// ============================================================================
+union
+(TacitRed_Findings_CL | summarize Count = count() | extend Table = "TacitRed_Findings_CL"),
+(TacitRed_Findings_CL | where TimeGenerated > ago(1h) | summarize Count = count() | extend Table = "Last 1 Hour"),
+(TacitRed_Findings_CL | where TimeGenerated > ago(24h) | summarize Count = count() | extend Table = "Last 24 Hours")
+| project Table, Count, Status = iff(Count > 0, "✅", "❌")

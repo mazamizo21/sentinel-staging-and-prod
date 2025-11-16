@@ -1,0 +1,167 @@
+{
+  "Recommendations": [
+    "Create missing table: TacitRed_Findings_CL",
+    "Create missing table: Cyren_IpReputation_CL",
+    "Create missing table: Cyren_MalwareUrls_CL",
+    "Create missing table: TacitRed_Findings_Test_CL",
+    "Create missing table: Cyren_Indicators_Test_CL",
+    "Fix Logic App logic-tacitred-findings - check run history for errors",
+    "Fix Logic App logicapp-cyren-ip-reputation - check run history for errors",
+    "Fix Logic App logicapp-cyren-malware-urls - check run history for errors",
+    "Trigger Logic App logic-tacitred-findings manually or check trigger configuration",
+    "Trigger Logic App logicapp-cyren-ip-reputation manually or check trigger configuration",
+    "Trigger Logic App logicapp-cyren-malware-urls manually or check trigger configuration",
+    "Fix TacitRed API connectivity: Response status code does not indicate success: 401 (Unauthorized)."
+  ],
+  "DCRs": [
+    {
+      "StreamCount": null,
+      "DestinationCount": null,
+      "DataSourceCount": null,
+      "ImmutableId": null,
+      "Type": "TacitRed",
+      "Status": "Exists",
+      "Name": "dcr-tacitred-findings"
+    },
+    {
+      "StreamCount": null,
+      "DestinationCount": null,
+      "DataSourceCount": null,
+      "ImmutableId": null,
+      "Type": "Cyren",
+      "Status": "Exists",
+      "Name": "dcr-cyren-ip-reputation"
+    },
+    {
+      "StreamCount": null,
+      "DestinationCount": null,
+      "DataSourceCount": null,
+      "ImmutableId": null,
+      "Type": "Cyren",
+      "Status": "Exists",
+      "Name": "dcr-cyren-malware-urls"
+    }
+  ],
+  "Timestamp": "2025-11-14 15:12:07",
+  "APIConnectivity": [
+    {
+      "Error": "Response status code does not indicate success: 401 (Unauthorized).",
+      "Service": "TacitRed",
+      "Status": "Error"
+    },
+    {
+      "HTTPStatus": 200,
+      "HasData": true,
+      "Service": "Cyren-IP",
+      "Status": "Success",
+      "ResultCount": 1
+    },
+    {
+      "HTTPStatus": 200,
+      "HasData": true,
+      "Service": "Cyren-Malware",
+      "Status": "Success",
+      "ResultCount": 1
+    }
+  ],
+  "Tables": [
+    {
+      "Count": 0,
+      "Earliest": null,
+      "Type": "TacitRed",
+      "Status": "NotFound",
+      "Description": "Main TacitRed findings table",
+      "Name": "TacitRed_Findings_CL",
+      "Latest": null
+    },
+    {
+      "Count": 0,
+      "Earliest": null,
+      "Type": "Cyren",
+      "Status": "NotFound",
+      "Description": "Cyren IP reputation indicators",
+      "Name": "Cyren_IpReputation_CL",
+      "Latest": null
+    },
+    {
+      "Count": 0,
+      "Earliest": null,
+      "Type": "Cyren",
+      "Status": "NotFound",
+      "Description": "Cyren malware URLs indicators",
+      "Name": "Cyren_MalwareUrls_CL",
+      "Latest": null
+    },
+    {
+      "Count": 0,
+      "Earliest": null,
+      "Type": "TacitRed",
+      "Status": "NotFound",
+      "Description": "Test TacitRed findings table",
+      "Name": "TacitRed_Findings_Test_CL",
+      "Latest": null
+    },
+    {
+      "Count": 0,
+      "Earliest": null,
+      "Type": "Cyren",
+      "Status": "NotFound",
+      "Description": "Test Cyren indicators table",
+      "Name": "Cyren_Indicators_Test_CL",
+      "Latest": null
+    }
+  ],
+  "CCFConnectors": [
+    {
+      "Name": "TacitRedFindings",
+      "Status": "Exists",
+      "DcrConfig": {
+        "dataCollectionEndpoint": "https://dce-threatintel-feeds-jfcg.eastus-1.ingest.monitor.azure.com",
+        "dataCollectionRuleImmutableId": "dcr-17ccb13049654e90b45840c887fb069b",
+        "streamName": "Custom-TacitRed_Findings_CL"
+      },
+      "HasDcrConfig": true,
+      "Type": "TacitRed"
+    },
+    {
+      "Name": "CyrenIPReputation",
+      "Status": "NotFound",
+      "Type": "Cyren"
+    },
+    {
+      "Name": "CyrenMalwareURLs",
+      "Status": "NotFound",
+      "Type": "Cyren"
+    }
+  ],
+  "OverallStatus": "IssuesFound",
+  "LogicApps": [
+    {
+      "LastRunStatus": "NotFound",
+      "State": null,
+      "LastRunTime": null,
+      "Type": "TacitRed",
+      "Status": "NotFound",
+      "Name": "logic-tacitred-findings",
+      "RecentRuns": 0
+    },
+    {
+      "LastRunStatus": "NotFound",
+      "State": null,
+      "LastRunTime": null,
+      "Type": "Cyren",
+      "Status": "NotFound",
+      "Name": "logicapp-cyren-ip-reputation",
+      "RecentRuns": 0
+    },
+    {
+      "LastRunStatus": "NotFound",
+      "State": null,
+      "LastRunTime": null,
+      "Type": "Cyren",
+      "Status": "NotFound",
+      "Name": "logicapp-cyren-malware-urls",
+      "RecentRuns": 0
+    }
+  ]
+}

@@ -1,0 +1,24 @@
+=== API VALIDATION TESTS ===
+Timestamp: 2025-11-16 05:30:39
+
+Test 1: Direct HTTP call from local machine
+URL: https://app.tacitred.com/api/v1/findings?from=2025-10-01&until=2025-11-16&page_size=10
+Header: Authorization: a2be534e-6231-4fb0-b8b8-15dbc96e83b7
+Result: HTTP 200 OK (tested via PowerShell Invoke-WebRequest)
+
+Test 2: With types[] parameter
+URL: https://app.tacitred.com/api/v1/findings?types[]=compromised_credentials&from=2025-10-01&until=2025-11-16&page_size=10
+Header: Authorization: a2be534e-6231-4fb0-b8b8-15dbc96e83b7
+Result: HTTP 200 OK
+
+Test 3: Logic App ingestion (separate workspace)
+Logic App: logic-tacitred-ingestion
+Workspace: SentinelThreatIntelWorkspace
+Same API key, same endpoint
+Result: 2300+ records successfully ingested
+Status: Proven working
+
+=== CONCLUSION ===
+API key is valid and endpoint is reachable.
+The issue is NOT with TacitRed API or authentication.
+The issue is with CCF RestApiPoller not executing polls.

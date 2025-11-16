@@ -1,0 +1,24 @@
+{
+  "id": "/subscriptions/774bee0e-b281-4f70-8e40-199e35b65117/resourceGroups/SentinelTestStixImport/providers/Microsoft.Logic/workflows/logic-tacitred-ingestion/runs/08584384539776568505109185706CU66/actions/Send_to_DCE",
+  "name": "Send_to_DCE",
+  "properties": {
+    "canResubmit": true,
+    "code": "NoContent",
+    "correlation": {
+      "actionTrackingId": "7d2ec027-7720-406c-bc1a-3a9db2b3869f",
+      "clientTrackingId": "08584384539776568505109185706CU66"
+    },
+    "endTime": "2025-11-14T20:41:49.0126635Z",
+    "inputsLink": {
+      "contentSize": 71826,
+      "uri": "https://prod-95.eastus.logic.azure.com:443/workflows/3e8951dab0f943f5a99b0991a940fce1/runs/08584384539776568505109185706CU66/actions/Send_to_DCE/contents/ActionInputs?api-version=2019-05-01&se=2025-11-15T00%3A00%3A00.0000000Z&sp=%2Fruns%2F08584384539776568505109185706CU66%2Factions%2FSend_to_DCE%2Fcontents%2FActionInputs%2Fread&sv=1.0&sig=M0XhPUYwE3VNpbWAeNJ3Oz83zG7PvpmfUh40flPD4R4"
+    },
+    "outputsLink": {
+      "contentSize": 354,
+      "uri": "https://prod-95.eastus.logic.azure.com:443/workflows/3e8951dab0f943f5a99b0991a940fce1/runs/08584384539776568505109185706CU66/actions/Send_to_DCE/contents/ActionOutputs?api-version=2019-05-01&se=2025-11-15T00%3A00%3A00.0000000Z&sp=%2Fruns%2F08584384539776568505109185706CU66%2Factions%2FSend_to_DCE%2Fcontents%2FActionOutputs%2Fread&sv=1.0&sig=d8mmNnD5FXVBVBlsNK8lvMZkDQxbFMehbL3VD2qxfkI"
+    },
+    "startTime": "2025-11-14T20:41:48.7611792Z",
+    "status": "Succeeded"
+  },
+  "type": "Microsoft.Logic/workflows/runs/actions"
+}

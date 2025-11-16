@@ -1,0 +1,23 @@
+{
+  "Timestamp": "2025-11-14 15:21:51",
+  "Issues": [],
+  "TablesCreated": [
+    {
+      "Name": "Cyren_IpReputation_CL",
+      "Columns": 11,
+      "Status": "Created"
+    },
+    {
+      "Name": "Cyren_MalwareUrls_CL",
+      "Columns": 11,
+      "Status": "Created"
+    },
+    {
+      "Name": "TacitRed_Findings_CL",
+      "Columns": 16,
+      "Status": "Created"
+    }
+  ],
+  "Success": true,
+  "APITests": []
+}
