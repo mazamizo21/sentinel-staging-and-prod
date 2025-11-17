@@ -248,75 +248,83 @@
                 "type": "datetime"
               },
               {
-                "name": "url",
+                "name": "payload",
+                "type": "dynamic"
+              },
+              {
+                "name": "timestamp",
+                "type": "datetime"
+              },
+              {
+                "name": "url_s",
                 "type": "string"
               },
               {
-                "name": "ip",
+                "name": "ip_s",
                 "type": "string"
               },
               {
-                "name": "fileHash",
+                "name": "fileHash_s",
                 "type": "string"
               },
               {
-                "name": "domain",
+                "name": "domain_s",
                 "type": "string"
               },
               {
-                "name": "protocol",
+                "name": "protocol_s",
                 "type": "string"
               },
               {
-                "name": "port",
+                "name": "port_d",
                 "type": "int"
               },
               {
-                "name": "category",
+                "name": "category_s",
                 "type": "string"
               },
               {
-                "name": "risk",
+                "name": "risk_d",
                 "type": "int"
               },
               {
-                "name": "firstSeen",
+                "name": "firstSeen_t",
                 "type": "datetime"
               },
               {
-                "name": "lastSeen",
+                "name": "lastSeen_t",
                 "type": "datetime"
               },
               {
-                "name": "source",
+                "name": "source_s",
                 "type": "string"
               },
               {
-                "name": "relationships",
+                "name": "relationships_s",
                 "type": "string"
               },
               {
-                "name": "detection_methods",
+                "name": "detection_methods_s",
                 "type": "string"
               },
               {
-                "name": "action",
+                "name": "action_s",
                 "type": "string"
               },
               {
-                "name": "type",
+                "name": "type_s",
                 "type": "string"
               },
               {
-                "name": "identifier",
+                "name": "identifier_s",
                 "type": "string"
               },
               {
-                "name": "detection_ts",
+                "name": "detection_ts_t",
                 "type": "datetime"
               },
               {
-                "name": "object_type",
+                "name": "object_type_s",
                 "type": "string"
               }
             ]
@@ -338,7 +346,7 @@
             "destinations": [
               "clv2ws1"
             ],
-            "transformKql": "source | extend TimeGenerated = now()",
+            "transformKql": "source | extend p=todynamic(payload) | extend d=todynamic(p.detection), m=todynamic(p.meta) | extend TimeGenerated=todatetime(timestamp), url_s=tostring(p.url), ip_s=tostring(p.identifier), fileHash_s='', domain_s=tostring(p.domain), protocol_s=tostring(m.protocol), port_d=toint(m.port), category_s=tostring(d.category), risk_d=toint(d.risk), firstSeen_t=todatetime(p.first_seen), lastSeen_t=todatetime(p.last_seen), source_s='Cyren IP Reputation', relationships_s=tostring(p.relationships), detection_methods_s=tostring(p.detection_methods), action_s=tostring(p.action), type_s=tostring(p.type), identifier_s=tostring(p.identifier), detection_ts_t=todatetime(d.detection_ts), object_type_s=tostring(m.object_type) | project TimeGenerated, url_s, ip_s, fileHash_s, domain_s, protocol_s, port_d, category_s, risk_d, firstSeen_t, lastSeen_t, source_s, relationships_s, detection_methods_s, action_s, type_s, identifier_s, detection_ts_t, object_type_s",
             "outputStream": "Custom-Cyren_Indicators_CL"
           }
         ]
@@ -363,75 +371,83 @@
                 "type": "datetime"
               },
               {
-                "name": "url",
+                "name": "payload",
+                "type": "dynamic"
+              },
+              {
+                "name": "timestamp",
+                "type": "datetime"
+              },
+              {
+                "name": "url_s",
                 "type": "string"
               },
               {
-                "name": "ip",
+                "name": "ip_s",
                 "type": "string"
               },
               {
-                "name": "fileHash",
+                "name": "fileHash_s",
                 "type": "string"
               },
               {
-                "name": "domain",
+                "name": "domain_s",
                 "type": "string"
               },
               {
-                "name": "protocol",
+                "name": "protocol_s",
                 "type": "string"
               },
               {
-                "name": "port",
+                "name": "port_d",
                 "type": "int"
               },
               {
-                "name": "category",
+                "name": "category_s",
                 "type": "string"
               },
               {
-                "name": "risk",
+                "name": "risk_d",
                 "type": "int"
               },
               {
-                "name": "firstSeen",
+                "name": "firstSeen_t",
                 "type": "datetime"
               },
               {
-                "name": "lastSeen",
+                "name": "lastSeen_t",
                 "type": "datetime"
               },
               {
-                "name": "source",
+                "name": "source_s",
                 "type": "string"
               },
               {
-                "name": "relationships",
+                "name": "relationships_s",
                 "type": "string"
               },
               {
-                "name": "detection_methods",
+                "name": "detection_methods_s",
                 "type": "string"
               },
               {
-                "name": "action",
+                "name": "action_s",
                 "type": "string"
               },
               {
-                "name": "type",
+                "name": "type_s",
                 "type": "string"
               },
               {
-                "name": "identifier",
+                "name": "identifier_s",
                 "type": "string"
               },
               {
-                "name": "detection_ts",
+                "name": "detection_ts_t",
                 "type": "datetime"
               },
               {
-                "name": "object_type",
+                "name": "object_type_s",
                 "type": "string"
               }
             ]
@@ -453,7 +469,7 @@
             "destinations": [
               "clv2ws1"
             ],
-            "transformKql": "source | extend TimeGenerated = now()",
+            "transformKql": "source | extend p=todynamic(payload) | extend d=todynamic(p.detection), m=todynamic(p.meta) | extend TimeGenerated=todatetime(timestamp), url_s=tostring(p.url), ip_s='', fileHash_s='', domain_s=tostring(p.domain), protocol_s=tostring(m.protocol), port_d=toint(m.port), category_s=tostring(d.category), risk_d=toint(d.risk), firstSeen_t=todatetime(p.first_seen), lastSeen_t=todatetime(p.last_seen), source_s='Cyren Malware URLs', relationships_s=tostring(p.relationships), detection_methods_s=tostring(p.detection_methods), action_s=tostring(p.action), type_s=tostring(p.type), identifier_s=tostring(p.identifier), detection_ts_t=todatetime(d.detection_ts), object_type_s=tostring(m.object_type) | project TimeGenerated, url_s, ip_s, fileHash_s, domain_s, protocol_s, port_d, category_s, risk_d, firstSeen_t, lastSeen_t, source_s, relationships_s, detection_methods_s, action_s, type_s, identifier_s, detection_ts_t, object_type_s",
             "outputStream": "Custom-Cyren_Indicators_CL"
           }
         ]
@@ -775,7 +791,7 @@
           "apiEndpoint": "https://api-feeds.cyren.com/v1/feed/data",
           "httpMethod": "GET",
           "queryParameters": { "feedId": "ip_reputation", "count": 100, "offset": 0, "format": "jsonl" },
-          "queryWindowInMin": 60,
+          "queryWindowInMin": 5,
           "rateLimitQps": 10,
           "retryCount": 3,
           "timeoutInSeconds": 60,
@@ -813,7 +829,7 @@
           "apiEndpoint": "https://api-feeds.cyren.com/v1/feed/data",
           "httpMethod": "GET",
           "queryParameters": { "feedId": "malware_urls", "count": 100, "offset": 0, "format": "jsonl" },
-          "queryWindowInMin": 60,
+          "queryWindowInMin": 5,
           "rateLimitQps": 10,
           "retryCount": 3,
           "timeoutInSeconds": 60,
