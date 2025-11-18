@@ -1,7 +1,8 @@
-# Automated deployment of Cyren CCF solution (production) using client-config-COMPLETE.json
+# Automated deployment of Cyren CCF solution (Production-Test) using client-config-COMPLETE.json
 [CmdletBinding()]
 param(
     [string]$ConfigFile = "..\client-config-COMPLETE.json",
+    [string]$EnvironmentPrefix = "Cyren-Production-Test",
     [string]$ResourceGroupName,
     [string]$WorkspaceName,
     [string]$Location
@@ -22,9 +23,10 @@ if (-not (Test-Path $ConfigFile)) {
 $config = (Get-Content $ConfigFile | ConvertFrom-Json).parameters
 $sub  = $config.azure.value.subscriptionId
 
-# Default to Cyren CCF test environment, allow overrides
-$defaultRg = "CyrenCCFTest"
-$defaultWs = "CyrenCCFWorkspace"
+# Default to new Production-Test environment, allow overrides
+$defaultPrefix = if ($PSBoundParameters.ContainsKey('EnvironmentPrefix') -and $EnvironmentPrefix) { $EnvironmentPrefix } else { "Cyren-Production-Test" }
+$defaultRg = "$defaultPrefix-RG"
+$defaultWs = "$defaultPrefix-Workspace"
 
 $rg   = if ($PSBoundParameters.ContainsKey('ResourceGroupName') -and $ResourceGroupName) { $ResourceGroupName } else { $defaultRg }
 $ws   = if ($PSBoundParameters.ContainsKey('WorkspaceName') -and $WorkspaceName) { $WorkspaceName } else { $defaultWs }
@@ -35,9 +37,33 @@ $cyrenMalwareJwt = $config.cyren.value.malwareUrls.jwtToken
 
 Write-Host "Config: $sub | $rg | $ws | $loc" -ForegroundColor Gray
 
+# Ensure resource group and workspace exist
+Write-Host "Ensuring resource group '$rg' exists..." -ForegroundColor Cyan
+az group create --name $rg --location $loc -o none
+
+Write-Host "Ensuring Log Analytics workspace '$ws' exists..." -ForegroundColor Cyan
+$wsObj = $null
+try {
+    $wsObj = az monitor log-analytics workspace show -g $rg -n $ws -o json | ConvertFrom-Json
+} catch {
+    $wsObj = $null
+}
+
+if (-not $wsObj) {
+    az monitor log-analytics workspace create -g $rg -n $ws -l $loc -o none | Out-Null
+    $wsObj = az monitor log-analytics workspace show -g $rg -n $ws -o json | ConvertFrom-Json
+}
+
+$workspaceResourceId = $wsObj.id
+
+# Onboard workspace to Microsoft Sentinel
+Write-Host "Onboarding workspace to Microsoft Sentinel..." -ForegroundColor Cyan
+$onboardUri = "https://management.azure.com$workspaceResourceId/providers/Microsoft.SecurityInsights/onboardingStates/default?api-version=2024-03-01"
+az rest --method PUT --uri $onboardUri --body '{}' -o none
+
 # Prepare logging under Project/Docs
 $ts = Get-Date -Format "yyyyMMddHHmmss"
-$logDir = "..\Project\Docs\Validation\Cyren\cyren-ccf-clean-$ts"
+$logDir = "..\Project\Docs\Validation\Cyren\cyren-ccf-clean-$defaultPrefix-$ts"
 New-Item -ItemType Directory -Path $logDir -Force | Out-Null
 Start-Transcript "$logDir\deploy-cyren-ccf-clean.log" | Out-Null
 

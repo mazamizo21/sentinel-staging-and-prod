@@ -158,21 +158,20 @@ union Cyren_Indicators_CL, Cyren_Indicators_CL
           content: {
             version: 'KqlItem/1.0'
             query: '''
-union Cyren_Indicators_CL, Cyren_Indicators_CL
-
+Cyren_Indicators_CL
+| where TimeGenerated > ago(24h)
 | extend Risk = iif(isnull(risk_d), 50, toint(risk_d))
 | extend RiskBucket = case(
-    Risk >= 80, "Critical (80-100)",
-    Risk >= 60, "High (60-79)",
-    Risk >= 40, "Medium (40-59)",
-    Risk >= 20, "Low (20-39)",
-    "Minimal (<20)"
+    Risk >= 80, 'Critical',
+    Risk >= 60, 'High',
+    Risk >= 40, 'Medium',
+    'Low'
 )
 | summarize Count = count() by RiskBucket, bin(TimeGenerated, 1h)
 | order by TimeGenerated asc
 '''
             size: 0
-            title: '📊 Risk Distribution Over Time'
+            title: '📦 Risk Distribution Over Time (Last 24h)'
             queryType: 0
             timeContextFromParameter: 'TimeRange'
             resourceType: 'microsoft.operationalinsights/workspaces'
@@ -440,13 +439,13 @@ union Cyren_Indicators_CL, Cyren_Indicators_CL
           content: {
             version: 'KqlItem/1.0'
             query: '''
-union Cyren_Indicators_CL, Cyren_Indicators_CL
-
+Cyren_Indicators_CL
+| where TimeGenerated >= ago(7d)
 | summarize Count = count() by bin(TimeGenerated, 1h)
 | order by TimeGenerated asc
 '''
             size: 0
-            title: '📊 Ingestion Volume (Last 7 Days)'
+            title: '📦 Ingestion Volume (Last 7 Days)'
             queryType: 0
             timeContextFromParameter: 'TimeRange'
             resourceType: 'microsoft.operationalinsights/workspaces'
