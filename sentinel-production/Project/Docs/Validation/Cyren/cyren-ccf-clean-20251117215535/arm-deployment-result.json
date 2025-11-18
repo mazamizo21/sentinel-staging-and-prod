@@ -1,0 +1,603 @@
+{
+  "id": "/subscriptions/774bee0e-b281-4f70-8e40-199e35b65117/resourceGroups/CyrenCCFTest/providers/Microsoft.Resources/deployments/cyren-ccf-clean-20251117215535",
+  "location": null,
+  "name": "cyren-ccf-clean-20251117215535",
+  "properties": {
+    "correlationId": "8290c577-860e-483f-b8a5-d95c808b921d",
+    "debugSetting": null,
+    "dependencies": [
+      {
+        "dependsOn": [
+          {
+            "id": "/subscriptions/774bee0e-b281-4f70-8e40-199e35b65117/resourceGroups/CyrenCCFTest/providers/Microsoft.Insights/dataCollectionEndpoints/dce-threatintel-feeds",
+            "resourceGroup": "CyrenCCFTest",
+            "resourceName": "dce-threatintel-feeds",
+            "resourceType": "Microsoft.Insights/dataCollectionEndpoints"
+          },
+          {
+            "id": "/subscriptions/774bee0e-b281-4f70-8e40-199e35b65117/resourceGroups/CyrenCCFTest/providers/Microsoft.OperationalInsights/workspaces/CyrenCCFWorkspace/tables/Cyren_Indicators_CL",
+            "resourceGroup": "CyrenCCFTest",
+            "resourceName": "CyrenCCFWorkspace/Cyren_Indicators_CL",
+            "resourceType": "Microsoft.OperationalInsights/workspaces/tables"
+          }
+        ],
+        "id": "/subscriptions/774bee0e-b281-4f70-8e40-199e35b65117/resourceGroups/CyrenCCFTest/providers/Microsoft.Insights/dataCollectionRules/dcr-cyren-ip-reputation",
+        "resourceGroup": "CyrenCCFTest",
+        "resourceName": "dcr-cyren-ip-reputation",
+        "resourceType": "Microsoft.Insights/dataCollectionRules"
+      },
+      {
+        "dependsOn": [
+          {
+            "id": "/subscriptions/774bee0e-b281-4f70-8e40-199e35b65117/resourceGroups/CyrenCCFTest/providers/Microsoft.Insights/dataCollectionEndpoints/dce-threatintel-feeds",
+            "resourceGroup": "CyrenCCFTest",
+            "resourceName": "dce-threatintel-feeds",
+            "resourceType": "Microsoft.Insights/dataCollectionEndpoints"
+          },
+          {
+            "id": "/subscriptions/774bee0e-b281-4f70-8e40-199e35b65117/resourceGroups/CyrenCCFTest/providers/Microsoft.OperationalInsights/workspaces/CyrenCCFWorkspace/tables/Cyren_Indicators_CL",
+            "resourceGroup": "CyrenCCFTest",
+            "resourceName": "CyrenCCFWorkspace/Cyren_Indicators_CL",
+            "resourceType": "Microsoft.OperationalInsights/workspaces/tables"
+          }
+        ],
+        "id": "/subscriptions/774bee0e-b281-4f70-8e40-199e35b65117/resourceGroups/CyrenCCFTest/providers/Microsoft.Insights/dataCollectionRules/dcr-cyren-malware-urls",
+        "resourceGroup": "CyrenCCFTest",
+        "resourceName": "dcr-cyren-malware-urls",
+        "resourceType": "Microsoft.Insights/dataCollectionRules"
+      },
+      {
+        "dependsOn": [
+          {
+            "id": "/subscriptions/774bee0e-b281-4f70-8e40-199e35b65117/resourceGroups/CyrenCCFTest/providers/Microsoft.ManagedIdentity/userAssignedIdentities/uami-ccf-deployment",
+            "resourceGroup": "CyrenCCFTest",
+            "resourceName": "uami-ccf-deployment",
+            "resourceType": "Microsoft.ManagedIdentity/userAssignedIdentities"
+          },
+          {
+            "apiVersion": "2023-01-31",
+            "id": "/subscriptions/774bee0e-b281-4f70-8e40-199e35b65117/resourceGroups/CyrenCCFTest/providers/Microsoft.ManagedIdentity/userAssignedIdentities/uami-ccf-deployment",
+            "resourceGroup": "CyrenCCFTest",
+            "resourceName": "uami-ccf-deployment",
+            "resourceType": "Microsoft.ManagedIdentity/userAssignedIdentities"
+          }
+        ],
+        "id": "/subscriptions/774bee0e-b281-4f70-8e40-199e35b65117/resourceGroups/CyrenCCFTest/providers/Microsoft.OperationalInsights/Workspaces/CyrenCCFWorkspace/providers/Microsoft.Authorization/roleAssignments/dd6411c6-babd-5e19-b904-c60243286834",
+        "resourceGroup": "CyrenCCFTest",
+        "resourceName": "dd6411c6-babd-5e19-b904-c60243286834",
+        "resourceType": "Microsoft.Authorization/roleAssignments"
+      },
+      {
+        "dependsOn": [
+          {
+            "id": "/subscriptions/774bee0e-b281-4f70-8e40-199e35b65117/resourceGroups/CyrenCCFTest/providers/Microsoft.ManagedIdentity/userAssignedIdentities/uami-ccf-deployment",
+            "resourceGroup": "CyrenCCFTest",
+            "resourceName": "uami-ccf-deployment",
+            "resourceType": "Microsoft.ManagedIdentity/userAssignedIdentities"
+          },
+          {
+            "apiVersion": "2023-01-31",
+            "id": "/subscriptions/774bee0e-b281-4f70-8e40-199e35b65117/resourceGroups/CyrenCCFTest/providers/Microsoft.ManagedIdentity/userAssignedIdentities/uami-ccf-deployment",
+            "resourceGroup": "CyrenCCFTest",
+            "resourceName": "uami-ccf-deployment",
+            "resourceType": "Microsoft.ManagedIdentity/userAssignedIdentities"
+          }
+        ],
+        "id": "/subscriptions/774bee0e-b281-4f70-8e40-199e35b65117/resourceGroups/CyrenCCFTest/providers/Microsoft.Authorization/roleAssignments/fc9b0b94-ef5b-5c02-89f3-65e9ceaf8897",
+        "resourceGroup": "CyrenCCFTest",
+        "resourceName": "fc9b0b94-ef5b-5c02-89f3-65e9ceaf8897",
+        "resourceType": "Microsoft.Authorization/roleAssignments"
+      },
+      {
+        "dependsOn": [
+          {
+            "id": "/subscriptions/774bee0e-b281-4f70-8e40-199e35b65117/resourceGroups/CyrenCCFTest/providers/Microsoft.Insights/dataCollectionEndpoints/dce-threatintel-feeds",
+            "resourceGroup": "CyrenCCFTest",
+            "resourceName": "dce-threatintel-feeds",
+            "resourceType": "Microsoft.Insights/dataCollectionEndpoints"
+          },
+          {
+            "id": "/subscriptions/774bee0e-b281-4f70-8e40-199e35b65117/resourceGroups/CyrenCCFTest/providers/Microsoft.Insights/dataCollectionRules/dcr-cyren-ip-reputation",
+            "resourceGroup": "CyrenCCFTest",
+            "resourceName": "dcr-cyren-ip-reputation",
+            "resourceType": "Microsoft.Insights/dataCollectionRules"
+          },
+          {
+            "id": "/subscriptions/774bee0e-b281-4f70-8e40-199e35b65117/resourceGroups/CyrenCCFTest/providers/Microsoft.Insights/dataCollectionRules/dcr-cyren-malware-urls",
+            "resourceGroup": "CyrenCCFTest",
+            "resourceName": "dcr-cyren-malware-urls",
+            "resourceType": "Microsoft.Insights/dataCollectionRules"
+          }
+        ],
+        "id": "/subscriptions/774bee0e-b281-4f70-8e40-199e35b65117/resourceGroups/CyrenCCFTest/providers/Microsoft.OperationalInsights/workspaces/CyrenCCFWorkspace/providers/Microsoft.SecurityInsights/dataConnectorDefinitions/CyrenThreatIntel",
+        "resourceGroup": "CyrenCCFTest",
+        "resourceName": "CyrenCCFWorkspace/Microsoft.SecurityInsights/CyrenThreatIntel",
+        "resourceType": "Microsoft.OperationalInsights/workspaces/providers/dataConnectorDefinitions"
+      },
+      {
+        "dependsOn": [
+          {
+            "id": "/subscriptions/774bee0e-b281-4f70-8e40-199e35b65117/resourceGroups/CyrenCCFTest/providers/Microsoft.Insights/dataCollectionEndpoints/dce-threatintel-feeds",
+            "resourceGroup": "CyrenCCFTest",
+            "resourceName": "dce-threatintel-feeds",
+            "resourceType": "Microsoft.Insights/dataCollectionEndpoints"
+          },
+          {
+            "id": "/subscriptions/774bee0e-b281-4f70-8e40-199e35b65117/resourceGroups/CyrenCCFTest/providers/Microsoft.Insights/dataCollectionRules/dcr-cyren-ip-reputation",
+            "resourceGroup": "CyrenCCFTest",
+            "resourceName": "dcr-cyren-ip-reputation",
+            "resourceType": "Microsoft.Insights/dataCollectionRules"
+          },
+          {
+            "id": "/subscriptions/774bee0e-b281-4f70-8e40-199e35b65117/resourceGroups/CyrenCCFTest/providers/Microsoft.OperationalInsights/workspaces/CyrenCCFWorkspace/providers/Microsoft.SecurityInsights/dataConnectorDefinitions/CyrenThreatIntel",
+            "resourceGroup": "CyrenCCFTest",
+            "resourceName": "CyrenThreatIntel",
+            "resourceType": "Microsoft.SecurityInsights/dataConnectorDefinitions"
+          },
+          {
+            "apiVersion": "2022-06-01",
+            "id": "/subscriptions/774bee0e-b281-4f70-8e40-199e35b65117/resourceGroups/CyrenCCFTest/providers/Microsoft.Insights/dataCollectionEndpoints/dce-threatintel-feeds",
+            "resourceGroup": "CyrenCCFTest",
+            "resourceName": "dce-threatintel-feeds",
+            "resourceType": "Microsoft.Insights/dataCollectionEndpoints"
+          },
+          {
+            "apiVersion": "2022-06-01",
+            "id": "/subscriptions/774bee0e-b281-4f70-8e40-199e35b65117/resourceGroups/CyrenCCFTest/providers/Microsoft.Insights/dataCollectionRules/dcr-cyren-ip-reputation",
+            "resourceGroup": "CyrenCCFTest",
+            "resourceName": "dcr-cyren-ip-reputation",
+            "resourceType": "Microsoft.Insights/dataCollectionRules"
+          }
+        ],
+        "id": "/subscriptions/774bee0e-b281-4f70-8e40-199e35b65117/resourceGroups/CyrenCCFTest/providers/Microsoft.OperationalInsights/workspaces/CyrenCCFWorkspace/providers/Microsoft.SecurityInsights/dataConnectors/CyrenIPReputation",
+        "resourceGroup": "CyrenCCFTest",
+        "resourceName": "CyrenCCFWorkspace/Microsoft.SecurityInsights/CyrenIPReputation",
+        "resourceType": "Microsoft.OperationalInsights/workspaces/providers/dataConnectors"
+      },
+      {
+        "dependsOn": [
+          {
+            "id": "/subscriptions/774bee0e-b281-4f70-8e40-199e35b65117/resourceGroups/CyrenCCFTest/providers/Microsoft.Insights/dataCollectionEndpoints/dce-threatintel-feeds",
+            "resourceGroup": "CyrenCCFTest",
+            "resourceName": "dce-threatintel-feeds",
+            "resourceType": "Microsoft.Insights/dataCollectionEndpoints"
+          },
+          {
+            "id": "/subscriptions/774bee0e-b281-4f70-8e40-199e35b65117/resourceGroups/CyrenCCFTest/providers/Microsoft.Insights/dataCollectionRules/dcr-cyren-malware-urls",
+            "resourceGroup": "CyrenCCFTest",
+            "resourceName": "dcr-cyren-malware-urls",
+            "resourceType": "Microsoft.Insights/dataCollectionRules"
+          },
+          {
+            "id": "/subscriptions/774bee0e-b281-4f70-8e40-199e35b65117/resourceGroups/CyrenCCFTest/providers/Microsoft.OperationalInsights/workspaces/CyrenCCFWorkspace/providers/Microsoft.SecurityInsights/dataConnectorDefinitions/CyrenThreatIntel",
+            "resourceGroup": "CyrenCCFTest",
+            "resourceName": "CyrenThreatIntel",
+            "resourceType": "Microsoft.SecurityInsights/dataConnectorDefinitions"
+          },
+          {
+            "apiVersion": "2022-06-01",
+            "id": "/subscriptions/774bee0e-b281-4f70-8e40-199e35b65117/resourceGroups/CyrenCCFTest/providers/Microsoft.Insights/dataCollectionEndpoints/dce-threatintel-feeds",
+            "resourceGroup": "CyrenCCFTest",
+            "resourceName": "dce-threatintel-feeds",
+            "resourceType": "Microsoft.Insights/dataCollectionEndpoints"
+          },
+          {
+            "apiVersion": "2022-06-01",
+            "id": "/subscriptions/774bee0e-b281-4f70-8e40-199e35b65117/resourceGroups/CyrenCCFTest/providers/Microsoft.Insights/dataCollectionRules/dcr-cyren-malware-urls",
+            "resourceGroup": "CyrenCCFTest",
+            "resourceName": "dcr-cyren-malware-urls",
+            "resourceType": "Microsoft.Insights/dataCollectionRules"
+          }
+        ],
+        "id": "/subscriptions/774bee0e-b281-4f70-8e40-199e35b65117/resourceGroups/CyrenCCFTest/providers/Microsoft.OperationalInsights/workspaces/CyrenCCFWorkspace/providers/Microsoft.SecurityInsights/dataConnectors/CyrenMalwareURLs",
+        "resourceGroup": "CyrenCCFTest",
+        "resourceName": "CyrenCCFWorkspace/Microsoft.SecurityInsights/CyrenMalwareURLs",
+        "resourceType": "Microsoft.OperationalInsights/workspaces/providers/dataConnectors"
+      },
+      {
+        "dependsOn": [
+          {
+            "id": "/subscriptions/774bee0e-b281-4f70-8e40-199e35b65117/resourceGroups/CyrenCCFTest/providers/Microsoft.OperationalInsights/workspaces/CyrenCCFWorkspace/tables/Cyren_Indicators_CL",
+            "resourceGroup": "CyrenCCFTest",
+            "resourceName": "CyrenCCFWorkspace/Cyren_Indicators_CL",
+            "resourceType": "Microsoft.OperationalInsights/workspaces/tables"
+          },
+          {
+            "id": "/subscriptions/774bee0e-b281-4f70-8e40-199e35b65117/resourceGroups/CyrenCCFTest/providers/Microsoft.OperationalInsights/Workspaces/CyrenCCFWorkspace/providers/Microsoft.SecurityInsights/onboardingStates/default",
+            "resourceGroup": "CyrenCCFTest",
+            "resourceName": "default",
+            "resourceType": "Microsoft.SecurityInsights/onboardingStates"
+          }
+        ],
+        "id": "/subscriptions/774bee0e-b281-4f70-8e40-199e35b65117/resourceGroups/CyrenCCFTest/providers/Microsoft.OperationalInsights/workspaces/CyrenCCFWorkspace/providers/Microsoft.SecurityInsights/alertRules/CyrenHighRiskIPIndicators",
+        "resourceGroup": "CyrenCCFTest",
+        "resourceName": "CyrenCCFWorkspace/Microsoft.SecurityInsights/CyrenHighRiskIPIndicators",
+        "resourceType": "Microsoft.OperationalInsights/workspaces/providers/alertRules"
+      },
+      {
+        "dependsOn": [
+          {
+            "id": "/subscriptions/774bee0e-b281-4f70-8e40-199e35b65117/resourceGroups/CyrenCCFTest/providers/Microsoft.OperationalInsights/workspaces/CyrenCCFWorkspace/tables/Cyren_Indicators_CL",
+            "resourceGroup": "CyrenCCFTest",
+            "resourceName": "CyrenCCFWorkspace/Cyren_Indicators_CL",
+            "resourceType": "Microsoft.OperationalInsights/workspaces/tables"
+          },
+          {
+            "id": "/subscriptions/774bee0e-b281-4f70-8e40-199e35b65117/resourceGroups/CyrenCCFTest/providers/Microsoft.OperationalInsights/Workspaces/CyrenCCFWorkspace/providers/Microsoft.SecurityInsights/onboardingStates/default",
+            "resourceGroup": "CyrenCCFTest",
+            "resourceName": "default",
+            "resourceType": "Microsoft.SecurityInsights/onboardingStates"
+          }
+        ],
+        "id": "/subscriptions/774bee0e-b281-4f70-8e40-199e35b65117/resourceGroups/CyrenCCFTest/providers/Microsoft.OperationalInsights/workspaces/CyrenCCFWorkspace/providers/Microsoft.SecurityInsights/alertRules/CyrenHighRiskURLIndicators",
+        "resourceGroup": "CyrenCCFTest",
+        "resourceName": "CyrenCCFWorkspace/Microsoft.SecurityInsights/CyrenHighRiskURLIndicators",
+        "resourceType": "Microsoft.OperationalInsights/workspaces/providers/alertRules"
+      },
+      {
+        "dependsOn": [
+          {
+            "id": "/subscriptions/774bee0e-b281-4f70-8e40-199e35b65117/resourceGroups/CyrenCCFTest/providers/Microsoft.OperationalInsights/workspaces/CyrenCCFWorkspace/tables/Cyren_Indicators_CL",
+            "resourceGroup": "CyrenCCFTest",
+            "resourceName": "CyrenCCFWorkspace/Cyren_Indicators_CL",
+            "resourceType": "Microsoft.OperationalInsights/workspaces/tables"
+          },
+          {
+            "id": "/subscriptions/774bee0e-b281-4f70-8e40-199e35b65117/resourceGroups/CyrenCCFTest/providers/Microsoft.OperationalInsights/Workspaces/CyrenCCFWorkspace/providers/Microsoft.SecurityInsights/onboardingStates/default",
+            "resourceGroup": "CyrenCCFTest",
+            "resourceName": "default",
+            "resourceType": "Microsoft.SecurityInsights/onboardingStates"
+          }
+        ],
+        "id": "/subscriptions/774bee0e-b281-4f70-8e40-199e35b65117/resourceGroups/CyrenCCFTest/providers/Microsoft.OperationalInsights/workspaces/CyrenCCFWorkspace/providers/Microsoft.SecurityInsights/alertRules/CyrenFeedOutage6h",
+        "resourceGroup": "CyrenCCFTest",
+        "resourceName": "CyrenCCFWorkspace/Microsoft.SecurityInsights/CyrenFeedOutage6h",
+        "resourceType": "Microsoft.OperationalInsights/workspaces/providers/alertRules"
+      }
+    ],
+    "duration": "PT7.7911137S",
+    "error": null,
+    "mode": "Incremental",
+    "onErrorDeployment": null,
+    "outputResources": [
+      {
+        "id": "/subscriptions/774bee0e-b281-4f70-8e40-199e35b65117/resourceGroups/CyrenCCFTest/providers/Microsoft.Authorization/roleAssignments/fc9b0b94-ef5b-5c02-89f3-65e9ceaf8897",
+        "resourceGroup": "CyrenCCFTest"
+      },
+      {
+        "id": "/subscriptions/774bee0e-b281-4f70-8e40-199e35b65117/resourceGroups/CyrenCCFTest/providers/Microsoft.Insights/dataCollectionEndpoints/dce-threatintel-feeds",
+        "resourceGroup": "CyrenCCFTest"
+      },
+      {
+        "id": "/subscriptions/774bee0e-b281-4f70-8e40-199e35b65117/resourceGroups/CyrenCCFTest/providers/Microsoft.Insights/dataCollectionRules/dcr-cyren-ip-reputation",
+        "resourceGroup": "CyrenCCFTest"
+      },
+      {
+        "id": "/subscriptions/774bee0e-b281-4f70-8e40-199e35b65117/resourceGroups/CyrenCCFTest/providers/Microsoft.Insights/dataCollectionRules/dcr-cyren-malware-urls",
+        "resourceGroup": "CyrenCCFTest"
+      },
+      {
+        "id": "/subscriptions/774bee0e-b281-4f70-8e40-199e35b65117/resourceGroups/CyrenCCFTest/providers/Microsoft.Insights/workbooks/6d444a27-d1c8-5fb9-83db-084656d1f7cf",
+        "resourceGroup": "CyrenCCFTest"
+      },
+      {
+        "id": "/subscriptions/774bee0e-b281-4f70-8e40-199e35b65117/resourceGroups/CyrenCCFTest/providers/Microsoft.ManagedIdentity/userAssignedIdentities/uami-ccf-deployment",
+        "resourceGroup": "CyrenCCFTest"
+      },
+      {
+        "id": "/subscriptions/774bee0e-b281-4f70-8e40-199e35b65117/resourceGroups/CyrenCCFTest/providers/Microsoft.OperationalInsights/Workspaces/CyrenCCFWorkspace/providers/Microsoft.Authorization/roleAssignments/dd6411c6-babd-5e19-b904-c60243286834",
+        "resourceGroup": "CyrenCCFTest"
+      },
+      {
+        "id": "/subscriptions/774bee0e-b281-4f70-8e40-199e35b65117/resourceGroups/CyrenCCFTest/providers/Microsoft.OperationalInsights/workspaces/CyrenCCFWorkspace/providers/Microsoft.SecurityInsights/alertRules/CyrenFeedOutage6h",
+        "resourceGroup": "CyrenCCFTest"
+      },
+      {
+        "id": "/subscriptions/774bee0e-b281-4f70-8e40-199e35b65117/resourceGroups/CyrenCCFTest/providers/Microsoft.OperationalInsights/workspaces/CyrenCCFWorkspace/providers/Microsoft.SecurityInsights/alertRules/CyrenHighRiskIPIndicators",
+        "resourceGroup": "CyrenCCFTest"
+      },
+      {
+        "id": "/subscriptions/774bee0e-b281-4f70-8e40-199e35b65117/resourceGroups/CyrenCCFTest/providers/Microsoft.OperationalInsights/workspaces/CyrenCCFWorkspace/providers/Microsoft.SecurityInsights/alertRules/CyrenHighRiskURLIndicators",
+        "resourceGroup": "CyrenCCFTest"
+      },
+      {
+        "id": "/subscriptions/774bee0e-b281-4f70-8e40-199e35b65117/resourceGroups/CyrenCCFTest/providers/Microsoft.OperationalInsights/workspaces/CyrenCCFWorkspace/providers/Microsoft.SecurityInsights/dataConnectorDefinitions/CyrenThreatIntel",
+        "resourceGroup": "CyrenCCFTest"
+      },
+      {
+        "id": "/subscriptions/774bee0e-b281-4f70-8e40-199e35b65117/resourceGroups/CyrenCCFTest/providers/Microsoft.OperationalInsights/workspaces/CyrenCCFWorkspace/providers/Microsoft.SecurityInsights/dataConnectors/CyrenIPReputation",
+        "resourceGroup": "CyrenCCFTest"
+      },
+      {
+        "id": "/subscriptions/774bee0e-b281-4f70-8e40-199e35b65117/resourceGroups/CyrenCCFTest/providers/Microsoft.OperationalInsights/workspaces/CyrenCCFWorkspace/providers/Microsoft.SecurityInsights/dataConnectors/CyrenMalwareURLs",
+        "resourceGroup": "CyrenCCFTest"
+      },
+      {
+        "id": "/subscriptions/774bee0e-b281-4f70-8e40-199e35b65117/resourceGroups/CyrenCCFTest/providers/Microsoft.OperationalInsights/Workspaces/CyrenCCFWorkspace/providers/Microsoft.SecurityInsights/onboardingStates/default",
+        "resourceGroup": "CyrenCCFTest"
+      },
+      {
+        "id": "/subscriptions/774bee0e-b281-4f70-8e40-199e35b65117/resourceGroups/CyrenCCFTest/providers/Microsoft.OperationalInsights/workspaces/CyrenCCFWorkspace/tables/Cyren_Indicators_CL",
+        "resourceGroup": "CyrenCCFTest"
+      }
+    ],
+    "outputs": {
+      "cyrenIPDcrImmutableId": {
+        "type": "String",
+        "value": "dcr-d617c437d8d24f70bbfe69cb510bb990"
+      },
+      "cyrenMalwareDcrImmutableId": {
+        "type": "String",
+        "value": "dcr-9d58511160fc4315b1723e5c43979bd5"
+      },
+      "dceEndpoint": {
+        "type": "String",
+        "value": "https://dce-threatintel-feeds-gx44.eastus-1.ingest.monitor.azure.com"
+      },
+      "deploymentMessage": {
+        "type": "String",
+        "value": "Cyren threat intelligence infrastructure, CCF connectors, and workbooks deployed successfully."
+      }
+    },
+    "parameters": {
+      "cyrenIPDcrImmutableId": {
+        "type": "String",
+        "value": ""
+      },
+      "cyrenIPJwtToken": {
+        "type": "SecureString"
+      },
+      "cyrenMalwareDcrImmutableId": {
+        "type": "String",
+        "value": ""
+      },
+      "cyrenMalwareJwtToken": {
+        "type": "SecureString"
+      },
+      "deployAnalytics": {
+        "type": "Bool",
+        "value": true
+      },
+      "deployConnectors": {
+        "type": "Bool",
+        "value": true
+      },
+      "deployWorkbooks": {
+        "type": "Bool",
+        "value": true
+      },
+      "enableKeyVault": {
+        "type": "Bool",
+        "value": false
+      },
+      "enablePrivateEndpoint": {
+        "type": "Bool",
+        "value": false
+      },
+      "forceUpdateTag": {
+        "type": "String",
+        "value": "2025-11-18 02:55:44Z"
+      },
+      "keyVaultName": {
+        "type": "String",
+        "value": "kv-cyren-ckeub3otzugd4"
+      },
+      "keyVaultOption": {
+        "type": "String",
+        "value": "new"
+      },
+      "keyVaultResourceGroup": {
+        "type": "String",
+        "value": "CyrenCCFTest"
+      },
+      "subnetId": {
+        "type": "String",
+        "value": ""
+      },
+      "workspace": {
+        "type": "String",
+        "value": "CyrenCCFWorkspace"
+      },
+      "workspace-location": {
+        "type": "String",
+        "value": "eastus"
+      }
+    },
+    "parametersLink": null,
+    "providers": [
+      {
+        "id": null,
+        "namespace": "Microsoft.Insights",
+        "providerAuthorizationConsentState": null,
+        "registrationPolicy": null,
+        "registrationState": null,
+        "resourceTypes": [
+          {
+            "aliases": null,
+            "apiProfiles": null,
+            "apiVersions": null,
+            "capabilities": null,
+            "defaultApiVersion": null,
+            "locationMappings": null,
+            "locations": [
+              "eastus"
+            ],
+            "properties": null,
+            "resourceType": "dataCollectionEndpoints",
+            "zoneMappings": null
+          },
+          {
+            "aliases": null,
+            "apiProfiles": null,
+            "apiVersions": null,
+            "capabilities": null,
+            "defaultApiVersion": null,
+            "locationMappings": null,
+            "locations": [
+              "eastus"
+            ],
+            "properties": null,
+            "resourceType": "dataCollectionRules",
+            "zoneMappings": null
+          },
+          {
+            "aliases": null,
+            "apiProfiles": null,
+            "apiVersions": null,
+            "capabilities": null,
+            "defaultApiVersion": null,
+            "locationMappings": null,
+            "locations": [
+              "eastus"
+            ],
+            "properties": null,
+            "resourceType": "workbooks",
+            "zoneMappings": null
+          }
+        ]
+      },
+      {
+        "id": null,
+        "namespace": "Microsoft.OperationalInsights",
+        "providerAuthorizationConsentState": null,
+        "registrationPolicy": null,
+        "registrationState": null,
+        "resourceTypes": [
+          {
+            "aliases": null,
+            "apiProfiles": null,
+            "apiVersions": null,
+            "capabilities": null,
+            "defaultApiVersion": null,
+            "locationMappings": null,
+            "locations": [
+              null
+            ],
+            "properties": null,
+            "resourceType": "workspaces/tables",
+            "zoneMappings": null
+          },
+          {
+            "aliases": null,
+            "apiProfiles": null,
+            "apiVersions": null,
+            "capabilities": null,
+            "defaultApiVersion": null,
+            "locationMappings": null,
+            "locations": [
+              null
+            ],
+            "properties": null,
+            "resourceType": "workspaces/providers/dataConnectorDefinitions",
+            "zoneMappings": null
+          },
+          {
+            "aliases": null,
+            "apiProfiles": null,
+            "apiVersions": null,
+            "capabilities": null,
+            "defaultApiVersion": null,
+            "locationMappings": null,
+            "locations": [
+              null
+            ],
+            "properties": null,
+            "resourceType": "workspaces/providers/dataConnectors",
+            "zoneMappings": null
+          },
+          {
+            "aliases": null,
+            "apiProfiles": null,
+            "apiVersions": null,
+            "capabilities": null,
+            "defaultApiVersion": null,
+            "locationMappings": null,
+            "locations": [
+              null
+            ],
+            "properties": null,
+            "resourceType": "workspaces/providers/alertRules",
+            "zoneMappings": null
+          }
+        ]
+      },
+      {
+        "id": null,
+        "namespace": "Microsoft.SecurityInsights",
+        "providerAuthorizationConsentState": null,
+        "registrationPolicy": null,
+        "registrationState": null,
+        "resourceTypes": [
+          {
+            "aliases": null,
+            "apiProfiles": null,
+            "apiVersions": null,
+            "capabilities": null,
+            "defaultApiVersion": null,
+            "locationMappings": null,
+            "locations": [
+              null
+            ],
+            "properties": null,
+            "resourceType": "onboardingStates",
+            "zoneMappings": null
+          }
+        ]
+      },
+      {
+        "id": null,
+        "namespace": "Microsoft.ManagedIdentity",
+        "providerAuthorizationConsentState": null,
+        "registrationPolicy": null,
+        "registrationState": null,
+        "resourceTypes": [
+          {
+            "aliases": null,
+            "apiProfiles": null,
+            "apiVersions": null,
+            "capabilities": null,
+            "defaultApiVersion": null,
+            "locationMappings": null,
+            "locations": [
+              "eastus"
+            ],
+            "properties": null,
+            "resourceType": "userAssignedIdentities",
+            "zoneMappings": null
+          }
+        ]
+      },
+      {
+        "id": null,
+        "namespace": "Microsoft.Authorization",
+        "providerAuthorizationConsentState": null,
+        "registrationPolicy": null,
+        "registrationState": null,
+        "resourceTypes": [
+          {
+            "aliases": null,
+            "apiProfiles": null,
+            "apiVersions": null,
+            "capabilities": null,
+            "defaultApiVersion": null,
+            "locationMappings": null,
+            "locations": [
+              null
+            ],
+            "properties": null,
+            "resourceType": "roleAssignments",
+            "zoneMappings": null
+          }
+        ]
+      }
+    ],
+    "provisioningState": "Succeeded",
+    "templateHash": "1444279517967927301",
+    "templateLink": null,
+    "timestamp": "2025-11-18T02:55:52.348059+00:00",
+    "validatedResources": null
+  },
+  "resourceGroup": "CyrenCCFTest",
+  "tags": null,
+  "type": "Microsoft.Resources/deployments"
+}

@@ -1,0 +1,175 @@
+{
+  "id": "/subscriptions/774bee0e-b281-4f70-8e40-199e35b65117/resourceGroups/CyrenCCFTest/providers/Microsoft.Resources/deployments/taz-cyren-analytics-20251117211558",
+  "location": null,
+  "name": "taz-cyren-analytics-20251117211558",
+  "properties": {
+    "correlationId": "d0dde6b4-f59f-4fa3-bf41-a2d43a49e863",
+    "debugSetting": null,
+    "dependencies": [
+      {
+        "dependsOn": [
+          {
+            "id": "/subscriptions/774bee0e-b281-4f70-8e40-199e35b65117/resourceGroups/CyrenCCFTest/providers/Microsoft.OperationalInsights/workspaces/CyrenCCFWorkspace/tables/Cyren_Indicators_CL",
+            "resourceGroup": "CyrenCCFTest",
+            "resourceName": "CyrenCCFWorkspace/Cyren_Indicators_CL",
+            "resourceType": "Microsoft.OperationalInsights/workspaces/tables"
+          },
+          {
+            "id": "/subscriptions/774bee0e-b281-4f70-8e40-199e35b65117/resourceGroups/CyrenCCFTest/providers/Microsoft.OperationalInsights/workspaces/CyrenCCFWorkspace/providers/Microsoft.SecurityInsights/onboardingStates/default",
+            "resourceGroup": "CyrenCCFTest",
+            "resourceName": "default",
+            "resourceType": "Microsoft.SecurityInsights/onboardingStates"
+          }
+        ],
+        "id": "/subscriptions/774bee0e-b281-4f70-8e40-199e35b65117/resourceGroups/CyrenCCFTest/providers/Microsoft.OperationalInsights/workspaces/CyrenCCFWorkspace/providers/Microsoft.SecurityInsights/alertRules/taz-CyrenHighRiskIPIndicators",
+        "resourceGroup": "CyrenCCFTest",
+        "resourceName": "CyrenCCFWorkspace/Microsoft.SecurityInsights/taz-CyrenHighRiskIPIndicators",
+        "resourceType": "Microsoft.OperationalInsights/workspaces/providers/alertRules"
+      },
+      {
+        "dependsOn": [
+          {
+            "id": "/subscriptions/774bee0e-b281-4f70-8e40-199e35b65117/resourceGroups/CyrenCCFTest/providers/Microsoft.OperationalInsights/workspaces/CyrenCCFWorkspace/tables/Cyren_Indicators_CL",
+            "resourceGroup": "CyrenCCFTest",
+            "resourceName": "CyrenCCFWorkspace/Cyren_Indicators_CL",
+            "resourceType": "Microsoft.OperationalInsights/workspaces/tables"
+          },
+          {
+            "id": "/subscriptions/774bee0e-b281-4f70-8e40-199e35b65117/resourceGroups/CyrenCCFTest/providers/Microsoft.OperationalInsights/workspaces/CyrenCCFWorkspace/providers/Microsoft.SecurityInsights/onboardingStates/default",
+            "resourceGroup": "CyrenCCFTest",
+            "resourceName": "default",
+            "resourceType": "Microsoft.SecurityInsights/onboardingStates"
+          }
+        ],
+        "id": "/subscriptions/774bee0e-b281-4f70-8e40-199e35b65117/resourceGroups/CyrenCCFTest/providers/Microsoft.OperationalInsights/workspaces/CyrenCCFWorkspace/providers/Microsoft.SecurityInsights/alertRules/taz-CyrenHighRiskURLIndicators",
+        "resourceGroup": "CyrenCCFTest",
+        "resourceName": "CyrenCCFWorkspace/Microsoft.SecurityInsights/taz-CyrenHighRiskURLIndicators",
+        "resourceType": "Microsoft.OperationalInsights/workspaces/providers/alertRules"
+      },
+      {
+        "dependsOn": [
+          {
+            "id": "/subscriptions/774bee0e-b281-4f70-8e40-199e35b65117/resourceGroups/CyrenCCFTest/providers/Microsoft.OperationalInsights/workspaces/CyrenCCFWorkspace/tables/Cyren_Indicators_CL",
+            "resourceGroup": "CyrenCCFTest",
+            "resourceName": "CyrenCCFWorkspace/Cyren_Indicators_CL",
+            "resourceType": "Microsoft.OperationalInsights/workspaces/tables"
+          },
+          {
+            "id": "/subscriptions/774bee0e-b281-4f70-8e40-199e35b65117/resourceGroups/CyrenCCFTest/providers/Microsoft.OperationalInsights/workspaces/CyrenCCFWorkspace/providers/Microsoft.SecurityInsights/onboardingStates/default",
+            "resourceGroup": "CyrenCCFTest",
+            "resourceName": "default",
+            "resourceType": "Microsoft.SecurityInsights/onboardingStates"
+          }
+        ],
+        "id": "/subscriptions/774bee0e-b281-4f70-8e40-199e35b65117/resourceGroups/CyrenCCFTest/providers/Microsoft.OperationalInsights/workspaces/CyrenCCFWorkspace/providers/Microsoft.SecurityInsights/alertRules/taz-CyrenFeedOutage6h",
+        "resourceGroup": "CyrenCCFTest",
+        "resourceName": "CyrenCCFWorkspace/Microsoft.SecurityInsights/taz-CyrenFeedOutage6h",
+        "resourceType": "Microsoft.OperationalInsights/workspaces/providers/alertRules"
+      }
+    ],
+    "duration": "PT12.2552888S",
+    "error": null,
+    "mode": "Incremental",
+    "onErrorDeployment": null,
+    "outputResources": [
+      {
+        "id": "/subscriptions/774bee0e-b281-4f70-8e40-199e35b65117/resourceGroups/CyrenCCFTest/providers/Microsoft.OperationalInsights/workspaces/CyrenCCFWorkspace/providers/Microsoft.SecurityInsights/alertRules/taz-CyrenFeedOutage6h",
+        "resourceGroup": "CyrenCCFTest"
+      },
+      {
+        "id": "/subscriptions/774bee0e-b281-4f70-8e40-199e35b65117/resourceGroups/CyrenCCFTest/providers/Microsoft.OperationalInsights/workspaces/CyrenCCFWorkspace/providers/Microsoft.SecurityInsights/alertRules/taz-CyrenHighRiskIPIndicators",
+        "resourceGroup": "CyrenCCFTest"
+      },
+      {
+        "id": "/subscriptions/774bee0e-b281-4f70-8e40-199e35b65117/resourceGroups/CyrenCCFTest/providers/Microsoft.OperationalInsights/workspaces/CyrenCCFWorkspace/providers/Microsoft.SecurityInsights/alertRules/taz-CyrenHighRiskURLIndicators",
+        "resourceGroup": "CyrenCCFTest"
+      },
+      {
+        "id": "/subscriptions/774bee0e-b281-4f70-8e40-199e35b65117/resourceGroups/CyrenCCFTest/providers/Microsoft.OperationalInsights/workspaces/CyrenCCFWorkspace/providers/Microsoft.SecurityInsights/onboardingStates/default",
+        "resourceGroup": "CyrenCCFTest"
+      },
+      {
+        "id": "/subscriptions/774bee0e-b281-4f70-8e40-199e35b65117/resourceGroups/CyrenCCFTest/providers/Microsoft.OperationalInsights/workspaces/CyrenCCFWorkspace/tables/Cyren_Indicators_CL",
+        "resourceGroup": "CyrenCCFTest"
+      }
+    ],
+    "outputs": {},
+    "parameters": {
+      "workspace": {
+        "type": "String",
+        "value": "CyrenCCFWorkspace"
+      }
+    },
+    "parametersLink": null,
+    "providers": [
+      {
+        "id": null,
+        "namespace": "Microsoft.OperationalInsights",
+        "providerAuthorizationConsentState": null,
+        "registrationPolicy": null,
+        "registrationState": null,
+        "resourceTypes": [
+          {
+            "aliases": null,
+            "apiProfiles": null,
+            "apiVersions": null,
+            "capabilities": null,
+            "defaultApiVersion": null,
+            "locationMappings": null,
+            "locations": [
+              null
+            ],
+            "properties": null,
+            "resourceType": "workspaces/tables",
+            "zoneMappings": null
+          },
+          {
+            "aliases": null,
+            "apiProfiles": null,
+            "apiVersions": null,
+            "capabilities": null,
+            "defaultApiVersion": null,
+            "locationMappings": null,
+            "locations": [
+              null
+            ],
+            "properties": null,
+            "resourceType": "workspaces/providers/alertRules",
+            "zoneMappings": null
+          }
+        ]
+      },
+      {
+        "id": null,
+        "namespace": "Microsoft.SecurityInsights",
+        "providerAuthorizationConsentState": null,
+        "registrationPolicy": null,
+        "registrationState": null,
+        "resourceTypes": [
+          {
+            "aliases": null,
+            "apiProfiles": null,
+            "apiVersions": null,
+            "capabilities": null,
+            "defaultApiVersion": null,
+            "locationMappings": null,
+            "locations": [
+              null
+            ],
+            "properties": null,
+            "resourceType": "onboardingStates",
+            "zoneMappings": null
+          }
+        ]
+      }
+    ],
+    "provisioningState": "Succeeded",
+    "templateHash": "6615003392126549341",
+    "templateLink": null,
+    "timestamp": "2025-11-18T02:16:25.584307+00:00",
+    "validatedResources": null
+  },
+  "resourceGroup": "CyrenCCFTest",
+  "tags": null,
+  "type": "Microsoft.Resources/deployments"
+}

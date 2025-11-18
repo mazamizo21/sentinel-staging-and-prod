@@ -1,0 +1,40 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "workbooks_bb0aa8b9_ddbb_5d91_8e51_285f7ba74f17_serializedData": {
+            "type": "SecureString"
+        },
+        "workbooks_bb0aa8b9_ddbb_5d91_8e51_285f7ba74f17_name": {
+            "defaultValue": "bb0aa8b9-ddbb-5d91-8e51-285f7ba74f17",
+            "type": "String"
+        },
+        "workspaces_cyrenccfworkspace_externalid": {
+            "defaultValue": "/subscriptions/774bee0e-b281-4f70-8e40-199e35b65117/resourceGroups/cyrenccftest/providers/microsoft.operationalinsights/workspaces/cyrenccfworkspace",
+            "type": "String"
+        }
+    },
+    "variables": {},
+    "resources": [
+        {
+            "type": "microsoft.insights/workbooks",
+            "apiVersion": "2023-06-01",
+            "name": "[parameters('workbooks_bb0aa8b9_ddbb_5d91_8e51_285f7ba74f17_name')]",
+            "location": "eastus",
+            "tags": {
+                "hidden-title": "Cyren Threat Intelligence"
+            },
+            "kind": "shared",
+            "identity": {
+                "type": "None"
+            },
+            "properties": {
+                "displayName": "Cyren Threat Intelligence",
+                "version": "Notebook/1.0",
+                "category": "sentinel",
+                "sourceId": "[parameters('workspaces_cyrenccfworkspace_externalid')]",
+                "serializedData": "[parameters('workbooks_bb0aa8b9_ddbb_5d91_8e51_285f7ba74f17_serializedData')]"
+            }
+        }
+    ]
+}

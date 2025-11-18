@@ -1,0 +1,27 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "workbooks_6d444a27_d1c8_5fb9_83db_084656d1f7cf_serializedData": {
+            "value": null
+        },
+        "workbooks_9f0bdbe1_1874_567b_ba33_936e394d839b_serializedData": {
+            "value": null
+        },
+        "workbooks_bb0aa8b9_ddbb_5d91_8e51_285f7ba74f17_serializedData": {
+            "value": null
+        },
+        "workbooks_6d444a27_d1c8_5fb9_83db_084656d1f7cf_name": {
+            "value": null
+        },
+        "workbooks_9f0bdbe1_1874_567b_ba33_936e394d839b_name": {
+            "value": null
+        },
+        "workbooks_bb0aa8b9_ddbb_5d91_8e51_285f7ba74f17_name": {
+            "value": null
+        },
+        "workspaces_cyrenccfworkspace_externalid": {
+            "value": null
+        }
+    }
+}

@@ -1,0 +1,216 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "workspace": {
+      "type": "string",
+      "metadata": {
+        "description": "Log Analytics workspace name for Microsoft Sentinel"
+      }
+    }
+  },
+  "variables": {
+    "workspaceResourceId": "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('workspace'))]"
+  },
+  "resources": [
+    {
+      "type": "Microsoft.OperationalInsights/workspaces/tables",
+      "apiVersion": "2023-09-01",
+      "name": "[concat(parameters('workspace'), '/Cyren_Indicators_CL')]",
+      "properties": {
+        "schema": {
+          "name": "Cyren_Indicators_CL",
+          "columns": [
+            { "name": "TimeGenerated", "type": "datetime" },
+            { "name": "url_s", "type": "string" },
+            { "name": "ip_s", "type": "string" },
+            { "name": "fileHash_s", "type": "string" },
+            { "name": "domain_s", "type": "string" },
+            { "name": "protocol_s", "type": "string" },
+            { "name": "port_d", "type": "int" },
+            { "name": "category_s", "type": "string" },
+            { "name": "risk_d", "type": "int" },
+            { "name": "firstSeen_t", "type": "datetime" },
+            { "name": "lastSeen_t", "type": "datetime" },
+            { "name": "source_s", "type": "string" },
+            { "name": "relationships_s", "type": "string" },
+            { "name": "detection_methods_s", "type": "string" },
+            { "name": "action_s", "type": "string" },
+            { "name": "type_s", "type": "string" },
+            { "name": "identifier_s", "type": "string" },
+            { "name": "detection_ts_t", "type": "datetime" },
+            { "name": "object_type_s", "type": "string" }
+          ]
+        }
+      }
+    },
+    {
+      "type": "Microsoft.SecurityInsights/onboardingStates",
+      "apiVersion": "2024-03-01",
+      "name": "default",
+      "scope": "[variables('workspaceResourceId')]",
+      "properties": {
+        "customerManagedKey": false
+      }
+    },
+    {
+      "type": "Microsoft.OperationalInsights/workspaces/providers/alertRules",
+      "apiVersion": "2023-02-01",
+      "name": "[concat(parameters('workspace'), '/Microsoft.SecurityInsights/', 'taz-CyrenHighRiskIPIndicators')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.OperationalInsights/workspaces/tables', parameters('workspace'), 'Cyren_Indicators_CL')]",
+        "[extensionResourceId(variables('workspaceResourceId'), 'Microsoft.SecurityInsights/onboardingStates', 'default')]"
+      ],
+      "kind": "Scheduled",
+      "properties": {
+        "displayName": "taz-Cyren High-Risk IP Indicators (24h)",
+        "description": "Test rule: alerts when Cyren identifies high-risk IP indicators (risk >= 80) in the last 24 hours.",
+        "severity": "High",
+        "enabled": true,
+        "query": "Cyren_Indicators_CL | where TimeGenerated > ago(1d) | where isnotempty(ip_s) | extend Risk = toint(risk_d) | where Risk >= 80 | summarize DetectionCount = count(), MaxRisk = max(Risk), Categories = make_set(category_s) by IP = ip_s, Source = source_s | where DetectionCount >= 1",
+        "queryFrequency": "PT1H",
+        "queryPeriod": "P1D",
+        "triggerOperator": "GreaterThan",
+        "triggerThreshold": 0,
+        "suppressionDuration": "PT1H",
+        "suppressionEnabled": false,
+        "incidentConfiguration": {
+          "createIncident": true,
+          "groupingConfiguration": {
+            "enabled": true,
+            "reopenClosedIncident": false,
+            "lookbackDuration": "P1D",
+            "matchingMethod": "Selected",
+            "groupByEntities": [
+              "IP"
+            ],
+            "groupByAlertDetails": [],
+            "groupByCustomDetails": []
+          }
+        },
+        "eventGroupingSettings": {
+          "aggregationKind": "AlertPerResult"
+        },
+        "customDetails": {
+          "RiskScore": "MaxRisk",
+          "DetectionCount": "DetectionCount",
+          "Categories": "Categories",
+          "Source": "Source"
+        },
+        "entityMappings": [
+          {
+            "entityType": "IP",
+            "fieldMappings": [
+              {
+                "identifier": "Address",
+                "columnName": "IP"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "type": "Microsoft.OperationalInsights/workspaces/providers/alertRules",
+      "apiVersion": "2023-02-01",
+      "name": "[concat(parameters('workspace'), '/Microsoft.SecurityInsights/', 'taz-CyrenHighRiskURLIndicators')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.OperationalInsights/workspaces/tables', parameters('workspace'), 'Cyren_Indicators_CL')]",
+        "[extensionResourceId(variables('workspaceResourceId'), 'Microsoft.SecurityInsights/onboardingStates', 'default')]"
+      ],
+      "kind": "Scheduled",
+      "properties": {
+        "displayName": "taz-Cyren High-Risk URL Indicators (24h)",
+        "description": "Test rule: alerts when Cyren identifies high-risk URL indicators (risk >= 80) in the last 24 hours.",
+        "severity": "High",
+        "enabled": true,
+        "query": "Cyren_Indicators_CL | where TimeGenerated > ago(1d) | where isnotempty(url_s) | extend Risk = toint(risk_d) | where Risk >= 80 | summarize DetectionCount = count(), MaxRisk = max(Risk), Categories = make_set(category_s) by URL = url_s, Domain = domain_s, Source = source_s | where DetectionCount >= 1",
+        "queryFrequency": "PT1H",
+        "queryPeriod": "P1D",
+        "triggerOperator": "GreaterThan",
+        "triggerThreshold": 0,
+        "suppressionDuration": "PT1H",
+        "suppressionEnabled": false,
+        "incidentConfiguration": {
+          "createIncident": true,
+          "groupingConfiguration": {
+            "enabled": true,
+            "reopenClosedIncident": false,
+            "lookbackDuration": "P1D",
+            "matchingMethod": "Selected",
+            "groupByEntities": [
+              "URL"
+            ],
+            "groupByAlertDetails": [],
+            "groupByCustomDetails": []
+          }
+        },
+        "eventGroupingSettings": {
+          "aggregationKind": "AlertPerResult"
+        },
+        "customDetails": {
+          "RiskScore": "MaxRisk",
+          "DetectionCount": "DetectionCount",
+          "Categories": "Categories",
+          "Domain": "Domain",
+          "Source": "Source"
+        },
+        "entityMappings": [
+          {
+            "entityType": "URL",
+            "fieldMappings": [
+              {
+                "identifier": "Url",
+                "columnName": "URL"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "type": "Microsoft.OperationalInsights/workspaces/providers/alertRules",
+      "apiVersion": "2023-02-01",
+      "name": "[concat(parameters('workspace'), '/Microsoft.SecurityInsights/', 'taz-CyrenFeedOutage6h')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.OperationalInsights/workspaces/tables', parameters('workspace'), 'Cyren_Indicators_CL')]",
+        "[extensionResourceId(variables('workspaceResourceId'), 'Microsoft.SecurityInsights/onboardingStates', 'default')]"
+      ],
+      "kind": "Scheduled",
+      "properties": {
+        "displayName": "taz-Cyren Feed Outage (6h+)",
+        "description": "Test rule: alerts when no Cyren indicators have been ingested for at least 6 hours.",
+        "severity": "Medium",
+        "enabled": true,
+        "query": "Cyren_Indicators_CL | where TimeGenerated >= ago(24h) | summarize Total = count(), Latest = max(TimeGenerated) | extend HoursAgo = datetime_diff('hour', now(), Latest) | where isnotempty(Latest) and HoursAgo >= 6 | project Latest, HoursAgo, Total",
+        "queryFrequency": "PT1H",
+        "queryPeriod": "P1D",
+        "triggerOperator": "GreaterThan",
+        "triggerThreshold": 0,
+        "suppressionDuration": "PT1H",
+        "suppressionEnabled": false,
+        "incidentConfiguration": {
+          "createIncident": true,
+          "groupingConfiguration": {
+            "enabled": false,
+            "reopenClosedIncident": false,
+            "lookbackDuration": "P1D",
+            "matchingMethod": "Selected",
+            "groupByEntities": [],
+            "groupByAlertDetails": [],
+            "groupByCustomDetails": []
+          }
+        },
+        "eventGroupingSettings": {
+          "aggregationKind": "SingleAlert"
+        },
+        "customDetails": {
+          "LatestEventTime": "Latest",
+          "HoursSinceLastEvent": "HoursAgo",
+          "TotalEventsLast24h": "Total"
+        }
+      }
+    }
+  ],
+  "outputs": {}
+}

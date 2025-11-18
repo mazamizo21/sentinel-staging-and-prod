@@ -1,0 +1,15 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "workbooks_bb0aa8b9_ddbb_5d91_8e51_285f7ba74f17_serializedData": {
+            "value": null
+        },
+        "workbooks_bb0aa8b9_ddbb_5d91_8e51_285f7ba74f17_name": {
+            "value": null
+        },
+        "workspaces_cyrenccfworkspace_externalid": {
+            "value": null
+        }
+    }
+}
