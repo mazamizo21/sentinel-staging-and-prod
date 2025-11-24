@@ -107,6 +107,7 @@
   "variables": {
     "workspaceResourceId": "[resourceId('Microsoft.OperationalInsights/Workspaces', parameters('workspace'))]",
     "dceName": "dce-threatintel-feeds",
+    "dceResourceId": "[resourceId('Microsoft.Insights/dataCollectionEndpoints', variables('dceName'))]",
     "tacitRedDcrName": "dcr-tacitred-findings",
     "tacitRedDcrResourceId": "[resourceId('Microsoft.Insights/dataCollectionRules', variables('tacitRedDcrName'))]",
     "_solutionName": "ThreatIntelligenceFeeds",
@@ -443,6 +444,54 @@
       }
     },
     {
+      "type": "Microsoft.Insights/diagnosticSettings",
+      "apiVersion": "2021-05-01-preview",
+      "scope": "[variables('dceResourceId')]",
+      "name": "dceDiagnostics",
+      "dependsOn": [
+        "[resourceId('Microsoft.Insights/dataCollectionEndpoints', variables('dceName'))]"
+      ],
+      "properties": {
+        "workspaceId": "[variables('workspaceResourceId')]",
+        "logs": [
+          {
+            "category": "DataCollectionEndpointLogs",
+            "enabled": true
+          }
+        ],
+        "metrics": [
+          {
+            "category": "AllMetrics",
+            "enabled": true
+          }
+        ]
+      }
+    },
+    {
+      "type": "Microsoft.Insights/diagnosticSettings",
+      "apiVersion": "2021-05-01-preview",
+      "scope": "[variables('tacitRedDcrResourceId')]",
+      "name": "tacitRedDcrDiagnostics",
+      "dependsOn": [
+        "[resourceId('Microsoft.Insights/dataCollectionRules', variables('tacitRedDcrName'))]"
+      ],
+      "properties": {
+        "workspaceId": "[variables('workspaceResourceId')]",
+        "logs": [
+          {
+            "category": "DataCollectionRuleLogs",
+            "enabled": true
+          }
+        ],
+        "metrics": [
+          {
+            "category": "AllMetrics",
+            "enabled": true
+          }
+        ]
+      }
+    },
+    {
       "condition": "[parameters('deployConnectors')]",
       "type": "Microsoft.OperationalInsights/workspaces/providers/dataConnectorDefinitions",
       "apiVersion": "2024-09-01",
@@ -547,9 +596,10 @@
           "apiEndpoint": "https://app.tacitred.com/api/v1/findings",
           "httpMethod": "GET",
           "queryParameters": {
-            "page_size": 100
+            "page_size": 100,
+            "types[]": "compromised_credentials"
           },
-          "queryWindowInMin": 10080,
+          "queryWindowInMin": 60,
           "queryTimeFormat": "yyyy-MM-ddTHH:mm:ssZ",
           "startTimeAttributeName": "from",
           "endTimeAttributeName": "until",
@@ -571,7 +621,7 @@
           ],
           "format": "json"
         },
-        "shouldJoinNestedData": true
+        "shouldJoinNestedData": false
       }
     },
     {
