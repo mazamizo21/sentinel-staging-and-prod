@@ -1,0 +1,12 @@
+{
+  "properties": {
+    "dataFlows": [
+      {
+        "streams": ["Custom-TacitRed_Findings_Raw"],
+        "destinations": ["ws1"],
+        "transformKql": "source | extend finding_obj = parse_json(tostring(finding)) | extend supporting_data = finding_obj.supporting_data | extend tg = todatetime(time) | extend TimeGenerated = iif(isnull(tg), now(), tg) | project TimeGenerated, email_s=tostring(supporting_data.credential), domain_s=tostring(supporting_data.domain), findingType_s=tostring(finding_obj.types[0]), confidence_d=toint(toreal(severity) * 100), firstSeen_t=todatetime(supporting_data.date_compromised), lastSeen_t=todatetime(supporting_data.date_compromised), notes_s=tostring(finding_obj.title), source_s=tostring(supporting_data.stealer), severity_s=tostring(severity), status_s='active', campaign_id_s='', user_id_s='', username_s='', detection_ts_t=todatetime(supporting_data.date_compromised), metadata_s=tostring(finding)",
+        "outputStream": "Custom-TacitRed_Findings_CL"
+      }
+    ]
+  }
+}

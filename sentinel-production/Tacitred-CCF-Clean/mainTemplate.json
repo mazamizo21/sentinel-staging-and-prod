@@ -219,7 +219,11 @@
           "Custom-TacitRed_Findings_Raw": {
             "columns": [
               {
-                "name": "RawData",
+                "name": "finding",
+                "type": "dynamic"
+              },
+              {
+                "name": "severity",
                 "type": "string"
               }
             ]
@@ -309,7 +313,7 @@
             "destinations": [
               "clv2ws1"
             ],
-            "transformKql": "source | extend parsed = parse_json(RawData) | extend supporting_data = parsed['finding']['supporting_data'] | extend tg = todatetime(parsed['time']) | extend TimeGenerated = iif(isnull(tg), now(), tg) | project TimeGenerated, email_s=tostring(supporting_data['credential']), domain_s=tostring(supporting_data['domain']), findingType_s=tostring(parsed['finding']['types'][0]), confidence_d=toint(toreal(parsed['severity']) * 100), firstSeen_t=todatetime(supporting_data['date_compromised']), lastSeen_t=todatetime(supporting_data['date_compromised']), notes_s=tostring(parsed['finding']['title']), source_s=tostring(supporting_data['stealer']), severity_s=tostring(parsed['severity']), status_s='active', campaign_id_s='', user_id_s='', username_s='', detection_ts_t=todatetime(supporting_data['date_compromised']), metadata_s=tostring(RawData)",
+            "transformKql": "source | extend p = parse_json(finding) | extend s = p.supporting_data | extend TimeGenerated = datetime(null) | project TimeGenerated, email_s=tostring(s.credential), domain_s=tostring(s.domain), findingType_s='credential', confidence_d=int(75), firstSeen_t=TimeGenerated, lastSeen_t=TimeGenerated, notes_s='test', source_s='test', severity_s=tostring(severity), status_s='test', campaign_id_s='test', user_id_s='test', username_s='test', detection_ts_t=TimeGenerated, metadata_s=tostring(finding)",
             "outputStream": "Custom-TacitRed_Findings_CL"
           }
         ]
@@ -545,7 +549,7 @@
           "queryParameters": {
             "page_size": 100
           },
-          "queryWindowInMin": 302,
+          "queryWindowInMin": 10080,
           "queryTimeFormat": "yyyy-MM-ddTHH:mm:ssZ",
           "startTimeAttributeName": "from",
           "endTimeAttributeName": "until",

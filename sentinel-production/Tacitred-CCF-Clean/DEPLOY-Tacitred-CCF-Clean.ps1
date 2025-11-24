@@ -79,20 +79,29 @@ try {
 
     $deploymentName = "tacitred-ccf-clean-$ts"
 
+    Write-Host "Starting async deployment (Sentinel connectors can take 10-15 minutes)..." -ForegroundColor Yellow
+    
     $deploymentResult = az deployment group create `
         -g $rg `
         -n $deploymentName `
         --template-file $templateFile `
         --parameters workspace=$ws workspace-location=$loc tacitRedApiKey="$tacitRedApiKey" `
+        --no-wait `
         -o json `
         2>&1
 
     $deploymentResult | Out-File -FilePath "$logDir\arm-deployment-result.json" -Encoding utf8
 
     if ($LASTEXITCODE -eq 0) {
-        Write-Host " TacitRed CCF solution deployment succeeded" -ForegroundColor Green
+        Write-Host " Deployment started successfully" -ForegroundColor Green
+        Write-Host " Deployment name: $deploymentName" -ForegroundColor Cyan
+        Write-Host "`nTo monitor deployment status, run:" -ForegroundColor Yellow
+        Write-Host "  az deployment group show -g $rg -n $deploymentName --query properties.provisioningState" -ForegroundColor White
+        Write-Host "`nTo check connector status after deployment completes (~15 min), run:" -ForegroundColor Yellow
+        Write-Host "  .\QUICK-CHECK.ps1" -ForegroundColor White
     } else {
-        Write-Host " TacitRed CCF solution deployment failed (exit code: $LASTEXITCODE)" -ForegroundColor Red
+        Write-Host " Deployment failed to start (exit code: $LASTEXITCODE)" -ForegroundColor Red
+        $deploymentResult
     }
 }
 finally {

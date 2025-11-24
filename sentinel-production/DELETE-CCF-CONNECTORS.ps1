@@ -25,11 +25,31 @@ param(
     [string]$ResourceGroupName = "SentinelTestStixImport",
     
     [Parameter(Mandatory=$false)]
-    [string]$WorkspaceName = "SentinelThreatIntelWorkspace"
+    [string]$WorkspaceName = "SentinelThreatIntelWorkspace",
+
+    [Parameter(Mandatory=$false)]
+    [switch]$ConnectorsOnly = $false
 )
 
 $ErrorActionPreference = 'Stop'
 $ProgressPreference = 'SilentlyContinue'
+
+function Remove-ResourceLocks {
+    param(
+        [Parameter(Mandatory=$true)]
+        [string]$ResourceId
+    )
+
+    try {
+        $locks = Get-AzResourceLock -Scope $ResourceId -ErrorAction SilentlyContinue
+        if ($locks) {
+            foreach ($lock in $locks) {
+                Remove-AzResourceLock -LockId $lock.LockId -Force -ErrorAction SilentlyContinue
+            }
+        }
+    } catch {
+    }
+}
 
 # Create log directory
 $timestamp = Get-Date -Format "yyyyMMdd-HHmmss"
@@ -112,6 +132,8 @@ foreach ($connectorName in $dataConnectorNames) {
         $connectorId = "/subscriptions/$SubscriptionId/resourceGroups/$ResourceGroupName/providers/Microsoft.OperationalInsights/workspaces/$WorkspaceName/providers/Microsoft.SecurityInsights/dataConnectors/$connectorName"
         
         Write-Host "  Resource ID: $connectorId" -ForegroundColor Gray
+
+        Remove-ResourceLocks -ResourceId $connectorId
         
         # Check if connector exists
         $checkUrl = "https://management.azure.com$connectorId`?api-version=2022-10-01-preview"
@@ -177,6 +199,8 @@ foreach ($connectorName in $dataConnectorNames) {
         }
     }
 }
+
+if (-not $ConnectorsOnly) {
 
 Write-Host "`n═══ PHASE 2: DELETE CONNECTOR DEFINITION ═══" -ForegroundColor Cyan
 
@@ -399,6 +423,8 @@ foreach ($tableName in $customTables) {
             Timestamp = (Get-Date).ToString("yyyy-MM-dd HH:mm:ss")
         }
     }
+}
+
 }
 
 Write-Host "`n═══ DELETION SUMMARY ═══" -ForegroundColor Cyan

@@ -116,6 +116,11 @@
             "enabled": true
           },
           {
+            "name": "TacitRed SecOps - Compromised Credentials",
+            "bicepFile": "workbook-tacitred-secops.bicep",
+            "enabled": true
+          },
+          {
             "name": "Cyren Threat Intelligence",
             "bicepFile": "workbook-cyren-threat-intelligence.bicep",
             "enabled": true

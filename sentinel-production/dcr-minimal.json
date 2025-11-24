@@ -1,0 +1,51 @@
+{
+  "location": "eastus",
+  "properties": {
+    "dataCollectionEndpointId": "/subscriptions/774bee0e-b281-4f70-8e40-199e35b65117/resourceGroups/SentinelTestStixImport/providers/Microsoft.Insights/dataCollectionEndpoints/dce-sentinel-ti",
+    "streamDeclarations": {
+      "Custom-TacitRed_Findings_Raw": {
+        "columns": [
+          {"name": "finding", "type": "dynamic"},
+          {"name": "severity", "type": "string"}
+        ]
+      },
+      "Custom-TacitRed_Findings_CL": {
+        "columns": [
+          {"name": "TimeGenerated", "type": "datetime"},
+          {"name": "email_s", "type": "string"},
+          {"name": "domain_s", "type": "string"},
+          {"name": "findingType_s", "type": "string"},
+          {"name": "confidence_d", "type": "int"},
+          {"name": "firstSeen_t", "type": "datetime"},
+          {"name": "lastSeen_t", "type": "datetime"},
+          {"name": "notes_s", "type": "string"},
+          {"name": "source_s", "type": "string"},
+          {"name": "severity_s", "type": "string"},
+          {"name": "status_s", "type": "string"},
+          {"name": "campaign_id_s", "type": "string"},
+          {"name": "user_id_s", "type": "string"},
+          {"name": "username_s", "type": "string"},
+          {"name": "detection_ts_t", "type": "datetime"},
+          {"name": "metadata_s", "type": "string"}
+        ]
+      }
+    },
+    "destinations": {
+      "logAnalytics": [
+        {
+          "name": "ws1",
+          "workspaceId": "524ca34b-b412-4189-a236-7fc453c9a88b",
+          "workspaceResourceId": "/subscriptions/774bee0e-b281-4f70-8e40-199e35b65117/resourceGroups/SentinelTestStixImport/providers/Microsoft.OperationalInsights/workspaces/SentinelThreatIntelWorkspace"
+        }
+      ]
+    },
+    "dataFlows": [
+      {
+        "streams": ["Custom-TacitRed_Findings_Raw"],
+        "destinations": ["ws1"],
+        "transformKql": "source | extend parsed_finding = parse_json(finding) | extend supporting_data = parsed_finding.supporting_data | extend TimeGenerated = now() | project TimeGenerated, email_s=tostring(supporting_data.credential), domain_s=tostring(supporting_data.domain), findingType_s='test', confidence_d=int(18), firstSeen_t=now(), lastSeen_t=now(), notes_s='test', source_s='test', severity_s=tostring(severity), status_s='test', campaign_id_s='test', user_id_s='test', username_s='test', detection_ts_t=now(), metadata_s=tostring(finding)",
+        "outputStream": "Custom-TacitRed_Findings_CL"
+      }
+    ]
+  }
+}

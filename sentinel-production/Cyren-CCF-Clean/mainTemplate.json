@@ -830,7 +830,7 @@
             "offset": 0,
             "format": "jsonl"
           },
-          "queryWindowInMin": 60,
+          "queryWindowInMin": 240,
           "rateLimitQps": 10,
           "retryCount": 3,
           "timeoutInSeconds": 60,
@@ -885,7 +885,7 @@
             "offset": 0,
             "format": "jsonl"
           },
-          "queryWindowInMin": 60,
+          "queryWindowInMin": 240,
           "rateLimitQps": 10,
           "retryCount": 3,
           "timeoutInSeconds": 60,

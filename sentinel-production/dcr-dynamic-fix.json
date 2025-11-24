@@ -1,0 +1,57 @@
+{
+  "location": "eastus",
+  "properties": {
+    "dataCollectionEndpointId": "/subscriptions/774bee0e-b281-4f70-8e40-199e35b65117/resourceGroups/SentinelTestStixImport/providers/Microsoft.Insights/dataCollectionEndpoints/dce-sentinel-ti",
+    "streamDeclarations": {
+      "Custom-TacitRed_Findings_Raw": {
+        "columns": [
+          {"name": "finding", "type": "dynamic"},
+          {"name": "severity", "type": "string"},
+          {"name": "time", "type": "string"},
+          {"name": "activity_id", "type": "int"},
+          {"name": "category_uid", "type": "int"},
+          {"name": "class_id", "type": "int"},
+          {"name": "severity_id", "type": "int"},
+          {"name": "state_id", "type": "int"}
+        ]
+      },
+      "Custom-TacitRed_Findings_CL": {
+        "columns": [
+          {"name": "TimeGenerated", "type": "datetime"},
+          {"name": "email_s", "type": "string"},
+          {"name": "domain_s", "type": "string"},
+          {"name": "findingType_s", "type": "string"},
+          {"name": "confidence_d", "type": "int"},
+          {"name": "firstSeen_t", "type": "datetime"},
+          {"name": "lastSeen_t", "type": "datetime"},
+          {"name": "notes_s", "type": "string"},
+          {"name": "source_s", "type": "string"},
+          {"name": "severity_s", "type": "string"},
+          {"name": "status_s", "type": "string"},
+          {"name": "campaign_id_s", "type": "string"},
+          {"name": "user_id_s", "type": "string"},
+          {"name": "username_s", "type": "string"},
+          {"name": "detection_ts_t", "type": "datetime"},
+          {"name": "metadata_s", "type": "string"}
+        ]
+      }
+    },
+    "destinations": {
+      "logAnalytics": [
+        {
+          "name": "ws1",
+          "workspaceId": "524ca34b-b412-4189-a236-7fc453c9a88b",
+          "workspaceResourceId": "/subscriptions/774bee0e-b281-4f70-8e40-199e35b65117/resourceGroups/SentinelTestStixImport/providers/Microsoft.OperationalInsights/workspaces/SentinelThreatIntelWorkspace"
+        }
+      ]
+    },
+    "dataFlows": [
+      {
+        "streams": ["Custom-TacitRed_Findings_Raw"],
+        "destinations": ["ws1"],
+        "transformKql": "source | extend parsed_finding = parse_json(finding) | extend supporting_data = parsed_finding.supporting_data | extend types_array = parsed_finding.types | extend time_dt = todatetime(column_ifexists('time','')) | extend TimeGenerated = iif(isnull(time_dt), now(), time_dt) | project TimeGenerated, email_s=tostring(supporting_data.credential), domain_s=tostring(supporting_data.domain), findingType_s=tostring(types_array[0]), confidence_d=toint(toreal(severity)*100), firstSeen_t=todatetime(supporting_data.date_compromised), lastSeen_t=todatetime(supporting_data.date_compromised), notes_s=tostring(parsed_finding.title), source_s=tostring(supporting_data.stealer), severity_s=tostring(severity), status_s=dynamic(null), campaign_id_s=dynamic(null), user_id_s=dynamic(null), username_s=dynamic(null), detection_ts_t=todatetime(supporting_data.date_compromised), metadata_s=tostring(finding)",
+        "outputStream": "Custom-TacitRed_Findings_CL"
+      }
+    ]
+  }
+}

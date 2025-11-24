@@ -76,6 +76,66 @@ az deployment group create \
                deployWorkbooks=true
 ```
 
+### Option 3: Automated PowerShell Script (DEPLOY-Cyren-CCF-Clean.ps1)
+
+Use this option if you prefer a **one-command deployment** that creates (or reuses) the resource group and workspace, onboards Microsoft Sentinel, and deploys the full Cyren CCF solution while automatically archiving detailed logs.
+
+#### Prerequisites
+
+- **Azure CLI** installed and logged in (`az login`).
+- **PowerShell 7+** (recommended).
+- A **Cyren configuration file** named `client-config-COMPLETE.json` located **one folder above** `Cyren-CCF-Clean`.
+  - Must include:
+    - `azure.value.subscriptionId`
+    - `azure.value.location`
+    - `cyren.value.ipReputation.jwtToken`
+    - `cyren.value.malwareUrls.jwtToken`
+
+#### What the script does
+
+- Reads `client-config-COMPLETE.json` to get:
+  - Subscription ID and location.
+  - Cyren JWT tokens (IP Reputation and Malware URLs).
+- Ensures the target **resource group** and **Log Analytics workspace** exist (creates them if needed).
+- Onboards the workspace to **Microsoft Sentinel**.
+- Deploys `mainTemplate.json` with the workspace and Cyren JWT tokens.
+- Creates a timestamped log folder under:
+  - `Project/Docs/Validation/Cyren/`
+  and stores:
+  - `deploy-cyren-ccf-clean.log`
+  - `arm-deployment-result.json`.
+
+#### How to run the script
+
+1. Open a PowerShell session and change directory to the `Cyren-CCF-Clean` folder.
+2. Ensure you are logged in and the subscription in `client-config-COMPLETE.json` is available:
+   ```powershell
+   az login
+   az account set --subscription "<subscription-id-from-config>"
+   ```
+3. Run the deployment script with default names:
+   ```powershell
+   .\DEPLOY-Cyren-CCF-Clean.ps1
+   ```
+   This will use:
+   - Resource group: `Cyren-Production-Test-RG`
+   - Workspace: `Cyren-Production-Test-Workspace`
+
+4. (Optional) Override names or location:
+   ```powershell
+   .\DEPLOY-Cyren-CCF-Clean.ps1 \
+     -EnvironmentPrefix "Cyren-Prod" \
+     -ResourceGroupName "Cyren-Prod-RG" \
+     -WorkspaceName "Cyren-Prod-Workspace" \
+     -Location "eastus"
+   ```
+
+#### After the script completes
+
+- The console output will show whether the ARM deployment **succeeded** or **failed** and the path to the log folder.
+- Review the log files in `Project/Docs/Validation/Cyren/` if you need detailed diagnostics.
+- Then follow the **Post-Deployment Configuration** and **Data Ingestion** checks described below.
+
 ## Post-Deployment Configuration
 
 ### 1. Verify Connector Status

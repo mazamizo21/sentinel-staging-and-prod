@@ -1,0 +1,22 @@
+[
+  {
+    "name": "tacitred-connector-20251119141442",
+    "state": "Running",
+    "timestamp": "2025-11-19T19:14:47.444560+00:00"
+  },
+  {
+    "name": "tacitred-connector-20251119135153",
+    "state": "Running",
+    "timestamp": "2025-11-19T18:51:57.833813+00:00"
+  },
+  {
+    "name": "tacitred-connector-20251119133140",
+    "state": "Succeeded",
+    "timestamp": "2025-11-19T18:31:52.122866+00:00"
+  },
+  {
+    "name": "tacitred-connector-20251119131231",
+    "state": "Failed",
+    "timestamp": "2025-11-19T19:12:43.057652+00:00"
+  }
+]
