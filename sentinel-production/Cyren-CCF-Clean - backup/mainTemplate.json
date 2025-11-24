@@ -813,8 +813,8 @@
         "dataType": "Cyren_Indicators_CL",
         "dcrConfig": {
           "streamName": "Custom-Cyren_Indicators_CL",
-          "dataCollectionEndpoint": "[reference(resourceId('Microsoft.Insights/dataCollectionEndpoints', variables('dceName')), '2022-06-01').logsIngestion.endpoint]",
-          "dataCollectionRuleImmutableId": "[if(equals(parameters('cyrenIPDcrImmutableId'), ''), reference(resourceId('Microsoft.Insights/dataCollectionRules', variables('cyrenIPDcrName')), '2022-06-01').immutableId, parameters('cyrenIPDcrImmutableId'))]"
+          "dataCollectionEndpoint": "[reference(resourceId('Microsoft.Insights/dataCollectionEndpoints', variables('dceName')), '2022-06-01', 'full').properties.logsIngestion.endpoint]",
+          "dataCollectionRuleImmutableId": "[if(equals(parameters('cyrenIPDcrImmutableId'), ''), reference(resourceId('Microsoft.Insights/dataCollectionRules', variables('cyrenIPDcrName')), '2022-06-01', 'full').properties.immutableId, parameters('cyrenIPDcrImmutableId'))]"
         },
         "auth": {
           "type": "APIKey",
@@ -868,8 +868,8 @@
         "dataType": "Cyren_Indicators_CL",
         "dcrConfig": {
           "streamName": "Custom-Cyren_Indicators_CL",
-          "dataCollectionEndpoint": "[reference(resourceId('Microsoft.Insights/dataCollectionEndpoints', variables('dceName')), '2022-06-01').logsIngestion.endpoint]",
-          "dataCollectionRuleImmutableId": "[if(equals(parameters('cyrenMalwareDcrImmutableId'), ''), reference(resourceId('Microsoft.Insights/dataCollectionRules', variables('cyrenMalwareDcrName')), '2022-06-01').immutableId, parameters('cyrenMalwareDcrImmutableId'))]"
+          "dataCollectionEndpoint": "[reference(resourceId('Microsoft.Insights/dataCollectionEndpoints', variables('dceName')), '2022-06-01', 'full').properties.logsIngestion.endpoint]",
+          "dataCollectionRuleImmutableId": "[if(equals(parameters('cyrenMalwareDcrImmutableId'), ''), reference(resourceId('Microsoft.Insights/dataCollectionRules', variables('cyrenMalwareDcrName')), '2022-06-01', 'full').properties.immutableId, parameters('cyrenMalwareDcrImmutableId'))]"
         },
         "auth": {
           "type": "APIKey",
