@@ -1,0 +1,11 @@
+{
+  "id": "/subscriptions/774bee0e-b281-4f70-8e40-199e35b65117/resourceGroups/rg-tacitred-ccf-hub-01",
+  "location": "eastus",
+  "managedBy": null,
+  "name": "rg-tacitred-ccf-hub-01",
+  "properties": {
+    "provisioningState": "Succeeded"
+  },
+  "tags": null,
+  "type": "Microsoft.Resources/resourceGroups"
+}

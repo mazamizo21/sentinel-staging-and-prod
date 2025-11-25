@@ -1,0 +1,4 @@
+{
+  "Message": "Invalid URI: The hostname could not be parsed.",
+  "Url": "=2025-11-24T05:28:32Z&until=2025-11-25T05:28:32Z&page_size=10&types[]=compromised_credentials"
+}

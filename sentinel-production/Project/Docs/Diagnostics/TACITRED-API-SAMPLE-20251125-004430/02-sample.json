@@ -1,0 +1,27 @@
+{
+  "StatusCode": 200,
+  "ResultsCount": 5,
+  "Sample": {
+    "activity_id": 1,
+    "category_uid": 2,
+    "class_id": 2001,
+    "finding": {
+      "supporting_data": {
+        "domain": "fortinet.com",
+        "ip": "148.230.50.250",
+        "machine": "HRMANAGER (mary.brown)",
+        "malware": "Lumma",
+        "os": "Windows 10 Pro (10.0.18363) x64"
+      },
+      "title": "HRMANAGER (mary.brown) infected by Lumma seen at 148.230.50.250",
+      "types": [
+        "malware"
+      ],
+      "uid": "subgraph://fee0f675-d866-5791-9157-763d3d7f4223"
+    },
+    "severity": "0.23",
+    "severity_id": 99,
+    "state_id": 200101,
+    "time": "2025-11-25T00:01:55.219828644Z"
+  }
+}

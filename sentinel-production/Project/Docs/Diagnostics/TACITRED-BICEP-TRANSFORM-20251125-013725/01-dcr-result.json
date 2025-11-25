@@ -1,0 +1,1 @@
+ERROR: Bad Request({"error":{"code":"InvalidPayload","message":"Data collection rule is invalid","details":[{"code":"InvalidTransformQuery","message":"Error occurred while compiling query in query: SyntaxError:0x00000003 at 1:132 : mismatched input ',' expecting <EOF>","target":"properties.dataFlows[0]"}]}})

@@ -1,0 +1,5 @@
+{
+  "Message": "Invalid URI: The hostname could not be parsed.",
+  "Url": "=2025-11-24T05:26:54Z&until=2025-11-25T05:26:54Z&page_size=10&types[]=compromised_credentials",
+  "Stack": "   at System.Uri.CreateThis(String uri, Boolean dontEscape, UriKind uriKind, UriCreationOptions& creationOptions)\r\n   at System.Uri..ctor(String uriString)\r\n   at Microsoft.PowerShell.Commands.WebRequestPSCmdlet.CheckProtocol(Uri uri)\r\n   at Microsoft.PowerShell.Commands.WebRequestPSCmdlet.PrepareUri(Uri uri)\r\n   at Microsoft.PowerShell.Commands.WebRequestPSCmdlet.GetRequest(Uri uri)\r\n   at Microsoft.PowerShell.Commands.WebRequestPSCmdlet.ProcessRecord()\r\n   at System.Management.Automation.CommandProcessor.ProcessRecord()"
+}

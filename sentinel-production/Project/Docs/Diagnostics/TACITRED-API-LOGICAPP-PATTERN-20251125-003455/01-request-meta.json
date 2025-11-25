@@ -1,0 +1,3 @@
+{
+  "Url": "https://app.tacitred.com/api/v1/findings?types[]=compromised_credentials&domains[]=usbank.com&from=2025-01-12&until=2025-10-09&page=1&page_size=100"
+}

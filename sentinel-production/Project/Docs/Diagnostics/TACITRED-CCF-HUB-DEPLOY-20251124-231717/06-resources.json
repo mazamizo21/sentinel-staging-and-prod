@@ -1,0 +1,20 @@
+[
+  {
+    "changedTime": "2025-11-25T04:18:17.195929+00:00",
+    "createdTime": "2025-11-25T04:17:56.762905+00:00",
+    "extendedLocation": null,
+    "id": "/subscriptions/774bee0e-b281-4f70-8e40-199e35b65117/resourceGroups/rg-tacitred-ccf-hub-01/providers/Microsoft.OperationalInsights/workspaces/la-tacitred-ccf-hub-01",
+    "identity": null,
+    "kind": null,
+    "location": "eastus",
+    "managedBy": null,
+    "name": "la-tacitred-ccf-hub-01",
+    "plan": null,
+    "properties": null,
+    "provisioningState": "Succeeded",
+    "resourceGroup": "rg-tacitred-ccf-hub-01",
+    "sku": null,
+    "tags": null,
+    "type": "Microsoft.OperationalInsights/workspaces"
+  }
+]

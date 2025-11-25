@@ -1,0 +1,4 @@
+WARNING: This command is experimental and under development. Reference and support levels: https://aka.ms/CLI_refstatus
+ERROR: (BadRequest) A non-empty request body is required.
+Code: BadRequest
+Message: A non-empty request body is required.

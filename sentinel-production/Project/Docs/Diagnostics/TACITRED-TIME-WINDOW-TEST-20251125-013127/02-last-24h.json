@@ -1,0 +1,6 @@
+{
+  "URL": "https://app.tacitred.com/api/v1/findings?from=2025-11-24T06:31:29Z&until=2025-11-25T06:31:29Z&page_size=100&types[]=compromised_credentials",
+  "TimeWindow": "24 hours",
+  "StatusCode": 200,
+  "ResultsCount": 100
+}

@@ -1,0 +1,7 @@
+Name                               State
+---------------------------------  --------
+TacitRed-Full-CCF-20251125092923   Running
+TacitRed-Full-CCF-20251125071310   Running
+TacitRed-24h-20251125022956        Failed
+TacitRed-Connector-20251125021850  Canceled
+TacitRed-Minimal-20251125-015108   Canceled

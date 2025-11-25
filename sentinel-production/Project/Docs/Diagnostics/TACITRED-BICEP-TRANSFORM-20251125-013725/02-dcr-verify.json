@@ -1,0 +1,123 @@
+{
+  "etag": "\"be017d7f-0000-0100-0000-69253b4b0000\"",
+  "id": "/subscriptions/774bee0e-b281-4f70-8e40-199e35b65117/resourceGroups/rg-tacitred-ccf-hub-01/providers/Microsoft.Insights/dataCollectionRules/dcr-tacitred-findings",
+  "location": "eastus",
+  "name": "dcr-tacitred-findings",
+  "properties": {
+    "dataCollectionEndpointId": "/subscriptions/774bee0e-b281-4f70-8e40-199e35b65117/resourceGroups/rg-tacitred-ccf-hub-01/providers/Microsoft.Insights/dataCollectionEndpoints/dce-threatintel-feeds",
+    "dataFlows": [
+      {
+        "destinations": [
+          "clv2ws1"
+        ],
+        "outputStream": "Custom-TacitRed_Findings_CL",
+        "streams": [
+          "Custom-TacitRed_Findings_Raw"
+        ],
+        "transformKql": "source | extend p = parse_json(finding) | extend s = p.supporting_data | extend TimeGenerated = datetime(null) | project TimeGenerated, email_s=tostring(s.credential), domain_s=tostring(s.domain), findingType_s='credential', confidence_d=int(75), firstSeen_t=TimeGenerated, lastSeen_t=TimeGenerated, notes_s='test', source_s='test', severity_s=tostring(severity), status_s='test', campaign_id_s='test', user_id_s='test', username_s='test', detection_ts_t=TimeGenerated, metadata_s=tostring(finding)"
+      }
+    ],
+    "destinations": {
+      "logAnalytics": [
+        {
+          "name": "clv2ws1",
+          "workspaceId": "b5f420d1-00ac-4253-9e35-4acb97c4bc47",
+          "workspaceResourceId": "/subscriptions/774bee0e-b281-4f70-8e40-199e35b65117/resourceGroups/rg-tacitred-ccf-hub-01/providers/Microsoft.OperationalInsights/Workspaces/la-tacitred-ccf-hub-01"
+        }
+      ]
+    },
+    "immutableId": "dcr-dd5f4a41013440909b11f5560d24db04",
+    "provisioningState": "Succeeded",
+    "streamDeclarations": {
+      "Custom-TacitRed_Findings_CL": {
+        "columns": [
+          {
+            "name": "TimeGenerated",
+            "type": "datetime"
+          },
+          {
+            "name": "email_s",
+            "type": "string"
+          },
+          {
+            "name": "domain_s",
+            "type": "string"
+          },
+          {
+            "name": "findingType_s",
+            "type": "string"
+          },
+          {
+            "name": "confidence_d",
+            "type": "int"
+          },
+          {
+            "name": "firstSeen_t",
+            "type": "datetime"
+          },
+          {
+            "name": "lastSeen_t",
+            "type": "datetime"
+          },
+          {
+            "name": "notes_s",
+            "type": "string"
+          },
+          {
+            "name": "source_s",
+            "type": "string"
+          },
+          {
+            "name": "severity_s",
+            "type": "string"
+          },
+          {
+            "name": "status_s",
+            "type": "string"
+          },
+          {
+            "name": "campaign_id_s",
+            "type": "string"
+          },
+          {
+            "name": "user_id_s",
+            "type": "string"
+          },
+          {
+            "name": "username_s",
+            "type": "string"
+          },
+          {
+            "name": "detection_ts_t",
+            "type": "datetime"
+          },
+          {
+            "name": "metadata_s",
+            "type": "string"
+          }
+        ]
+      },
+      "Custom-TacitRed_Findings_Raw": {
+        "columns": [
+          {
+            "name": "finding",
+            "type": "dynamic"
+          },
+          {
+            "name": "severity",
+            "type": "string"
+          }
+        ]
+      }
+    }
+  },
+  "systemData": {
+    "createdAt": "2025-11-25T04:32:59.5327932Z",
+    "createdBy": "37303195-5dc3-4ce7-b046-7615a20b8585",
+    "createdByType": "Application",
+    "lastModifiedAt": "2025-11-25T05:14:49.9982731Z",
+    "lastModifiedBy": "37303195-5dc3-4ce7-b046-7615a20b8585",
+    "lastModifiedByType": "Application"
+  },
+  "type": "Microsoft.Insights/dataCollectionRules"
+}

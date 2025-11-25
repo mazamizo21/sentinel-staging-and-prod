@@ -1,0 +1,81 @@
+{
+  "etag": "\"f503757d-0000-0100-0000-69253b4c0000\"",
+  "extendedLocation": null,
+  "id": "/subscriptions/774bee0e-b281-4f70-8e40-199e35b65117/resourceGroups/rg-tacitred-ccf-hub-01/providers/Microsoft.OperationalInsights/workspaces/la-tacitred-ccf-hub-01/providers/Microsoft.SecurityInsights/dataConnectorDefinitions/TacitRedThreatIntel",
+  "identity": null,
+  "kind": "Customizable",
+  "location": null,
+  "managedBy": null,
+  "name": "TacitRedThreatIntel",
+  "plan": null,
+  "properties": {
+    "connectorUiConfig": {
+      "availability": {
+        "isPreview": false,
+        "status": 1
+      },
+      "connectivityCriteria": [
+        {
+          "type": "HasDataConnectors",
+          "value": []
+        }
+      ],
+      "dataTypes": [
+        {
+          "lastDataReceivedQuery": "TacitRed_Findings_CL | summarize Time = max(TimeGenerated) | where isnotempty(Time)",
+          "name": "TacitRed_Findings_CL"
+        }
+      ],
+      "descriptionMarkdown": "Ingest compromised credential findings from TacitRed using the Common Connector Framework (CCF).",
+      "graphQueries": [
+        {
+          "baseQuery": "TacitRed_Findings_CL",
+          "legend": "TacitRed Findings",
+          "metricName": "Total TacitRed findings received"
+        }
+      ],
+      "id": "TacitRedThreatIntel",
+      "instructionSteps": [
+        {
+          "description": "For enhanced security, enable Key Vault integration to store and retrieve the API key.",
+          "innerSteps": null,
+          "instructions": null,
+          "title": "Provide API Key"
+        }
+      ],
+      "isConnectivityCriteriasMatchSome": false,
+      "permissions": {
+        "customs": [
+          {
+            "description": "API key stored in Azure Key Vault or provided at deployment time.",
+            "name": "TacitRed API Key"
+          }
+        ],
+        "licenses": null,
+        "resourceProvider": [
+          {
+            "permissionsDisplayText": "Read and write permissions required",
+            "provider": "Microsoft.OperationalInsights/workspaces",
+            "providerDisplayName": "Workspace",
+            "requiredPermissions": {
+              "action": false,
+              "delete": false,
+              "read": true,
+              "write": true
+            },
+            "scope": "Workspace"
+          }
+        ],
+        "tenant": null
+      },
+      "publisher": "TacitRed",
+      "title": "TacitRed Compromised Credentials"
+    },
+    "createdTimeUtc": "2025-11-25T05:01:35.3167036Z",
+    "lastModifiedUtc": "2025-11-25T05:14:52.1904307Z"
+  },
+  "resourceGroup": "rg-tacitred-ccf-hub-01",
+  "sku": null,
+  "tags": null,
+  "type": "Microsoft.SecurityInsights/dataConnectorDefinitions"
+}

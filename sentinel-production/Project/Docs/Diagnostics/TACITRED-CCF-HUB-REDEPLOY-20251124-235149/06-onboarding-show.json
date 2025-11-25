@@ -1,0 +1,3 @@
+ERROR: (NotFound) Microsoft Sentinel was not found on the workspace 'la-tacitred-ccf-hub-01'
+Code: NotFound
+Message: Microsoft Sentinel was not found on the workspace 'la-tacitred-ccf-hub-01'

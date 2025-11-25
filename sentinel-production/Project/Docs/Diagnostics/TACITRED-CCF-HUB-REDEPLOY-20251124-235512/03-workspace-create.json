@@ -1,0 +1,27 @@
+{
+  "createdDate": "2025-11-25T04:17:56.8137815Z",
+  "customerId": "b5f420d1-00ac-4253-9e35-4acb97c4bc47",
+  "etag": "\"5609c666-0000-0100-0000-692536bc0000\"",
+  "features": {
+    "enableLogAccessUsingOnlyResourcePermissions": true
+  },
+  "id": "/subscriptions/774bee0e-b281-4f70-8e40-199e35b65117/resourceGroups/rg-tacitred-ccf-hub-01/providers/Microsoft.OperationalInsights/workspaces/la-tacitred-ccf-hub-01",
+  "location": "eastus",
+  "modifiedDate": "2025-11-25T04:55:24.4458843Z",
+  "name": "la-tacitred-ccf-hub-01",
+  "provisioningState": "Succeeded",
+  "publicNetworkAccessForIngestion": "Enabled",
+  "publicNetworkAccessForQuery": "Enabled",
+  "resourceGroup": "rg-tacitred-ccf-hub-01",
+  "retentionInDays": 30,
+  "sku": {
+    "lastSkuUpdate": "2025-11-25T04:17:56.8137815Z",
+    "name": "PerGB2018"
+  },
+  "type": "Microsoft.OperationalInsights/workspaces",
+  "workspaceCapping": {
+    "dailyQuotaGb": -1.0,
+    "dataIngestionStatus": "RespectQuota",
+    "quotaNextResetTime": "2025-11-25T20:00:00Z"
+  }
+}

@@ -1,0 +1,369 @@
+{
+  "id": "/subscriptions/774bee0e-b281-4f70-8e40-199e35b65117/resourceGroups/rg-tacitred-ccf-hub-01/providers/Microsoft.Resources/deployments/TacitRed-CCF-Hub-Deploy",
+  "location": null,
+  "name": "TacitRed-CCF-Hub-Deploy",
+  "properties": {
+    "correlationId": "59915375-c7e1-435d-aabc-6406061d93eb",
+    "debugSetting": null,
+    "dependencies": [
+      {
+        "dependsOn": [
+          {
+            "id": "/subscriptions/774bee0e-b281-4f70-8e40-199e35b65117/resourceGroups/rg-tacitred-ccf-hub-01/providers/Microsoft.Insights/dataCollectionEndpoints/dce-threatintel-feeds",
+            "resourceGroup": "rg-tacitred-ccf-hub-01",
+            "resourceName": "dce-threatintel-feeds",
+            "resourceType": "Microsoft.Insights/dataCollectionEndpoints"
+          },
+          {
+            "id": "/subscriptions/774bee0e-b281-4f70-8e40-199e35b65117/resourceGroups/rg-tacitred-ccf-hub-01/providers/Microsoft.OperationalInsights/workspaces/la-tacitred-ccf-hub-01/tables/TacitRed_Findings_CL",
+            "resourceGroup": "rg-tacitred-ccf-hub-01",
+            "resourceName": "la-tacitred-ccf-hub-01/TacitRed_Findings_CL",
+            "resourceType": "Microsoft.OperationalInsights/workspaces/tables"
+          }
+        ],
+        "id": "/subscriptions/774bee0e-b281-4f70-8e40-199e35b65117/resourceGroups/rg-tacitred-ccf-hub-01/providers/Microsoft.Insights/dataCollectionRules/dcr-tacitred-findings",
+        "resourceGroup": "rg-tacitred-ccf-hub-01",
+        "resourceName": "dcr-tacitred-findings",
+        "resourceType": "Microsoft.Insights/dataCollectionRules"
+      },
+      {
+        "dependsOn": [
+          {
+            "id": "/subscriptions/774bee0e-b281-4f70-8e40-199e35b65117/resourceGroups/rg-tacitred-ccf-hub-01/providers/Microsoft.Insights/dataCollectionEndpoints/dce-threatintel-feeds",
+            "resourceGroup": "rg-tacitred-ccf-hub-01",
+            "resourceName": "dce-threatintel-feeds",
+            "resourceType": "Microsoft.Insights/dataCollectionEndpoints"
+          }
+        ],
+        "id": "/subscriptions/774bee0e-b281-4f70-8e40-199e35b65117/resourceGroups/rg-tacitred-ccf-hub-01/providers/Microsoft.Insights/dataCollectionEndpoints/dce-threatintel-feeds/providers/Microsoft.Insights/diagnosticSettings/dceDiagnostics",
+        "resourceGroup": "rg-tacitred-ccf-hub-01",
+        "resourceName": "dceDiagnostics",
+        "resourceType": "Microsoft.Insights/diagnosticSettings"
+      },
+      {
+        "dependsOn": [
+          {
+            "id": "/subscriptions/774bee0e-b281-4f70-8e40-199e35b65117/resourceGroups/rg-tacitred-ccf-hub-01/providers/Microsoft.Insights/dataCollectionRules/dcr-tacitred-findings",
+            "resourceGroup": "rg-tacitred-ccf-hub-01",
+            "resourceName": "dcr-tacitred-findings",
+            "resourceType": "Microsoft.Insights/dataCollectionRules"
+          }
+        ],
+        "id": "/subscriptions/774bee0e-b281-4f70-8e40-199e35b65117/resourceGroups/rg-tacitred-ccf-hub-01/providers/Microsoft.Insights/dataCollectionRules/dcr-tacitred-findings/providers/Microsoft.Insights/diagnosticSettings/tacitRedDcrDiagnostics",
+        "resourceGroup": "rg-tacitred-ccf-hub-01",
+        "resourceName": "tacitRedDcrDiagnostics",
+        "resourceType": "Microsoft.Insights/diagnosticSettings"
+      },
+      {
+        "dependsOn": [
+          {
+            "id": "/subscriptions/774bee0e-b281-4f70-8e40-199e35b65117/resourceGroups/rg-tacitred-ccf-hub-01/providers/Microsoft.Insights/dataCollectionEndpoints/dce-threatintel-feeds",
+            "resourceGroup": "rg-tacitred-ccf-hub-01",
+            "resourceName": "dce-threatintel-feeds",
+            "resourceType": "Microsoft.Insights/dataCollectionEndpoints"
+          },
+          {
+            "id": "/subscriptions/774bee0e-b281-4f70-8e40-199e35b65117/resourceGroups/rg-tacitred-ccf-hub-01/providers/Microsoft.Insights/dataCollectionRules/dcr-tacitred-findings",
+            "resourceGroup": "rg-tacitred-ccf-hub-01",
+            "resourceName": "dcr-tacitred-findings",
+            "resourceType": "Microsoft.Insights/dataCollectionRules"
+          }
+        ],
+        "id": "/subscriptions/774bee0e-b281-4f70-8e40-199e35b65117/resourceGroups/rg-tacitred-ccf-hub-01/providers/Microsoft.OperationalInsights/workspaces/la-tacitred-ccf-hub-01/providers/Microsoft.SecurityInsights/dataConnectorDefinitions/TacitRedThreatIntel",
+        "resourceGroup": "rg-tacitred-ccf-hub-01",
+        "resourceName": "la-tacitred-ccf-hub-01/Microsoft.SecurityInsights/TacitRedThreatIntel",
+        "resourceType": "Microsoft.OperationalInsights/workspaces/providers/dataConnectorDefinitions"
+      },
+      {
+        "dependsOn": [
+          {
+            "id": "/subscriptions/774bee0e-b281-4f70-8e40-199e35b65117/resourceGroups/rg-tacitred-ccf-hub-01/providers/Microsoft.Insights/dataCollectionEndpoints/dce-threatintel-feeds",
+            "resourceGroup": "rg-tacitred-ccf-hub-01",
+            "resourceName": "dce-threatintel-feeds",
+            "resourceType": "Microsoft.Insights/dataCollectionEndpoints"
+          },
+          {
+            "id": "/subscriptions/774bee0e-b281-4f70-8e40-199e35b65117/resourceGroups/rg-tacitred-ccf-hub-01/providers/Microsoft.Insights/dataCollectionRules/dcr-tacitred-findings",
+            "resourceGroup": "rg-tacitred-ccf-hub-01",
+            "resourceName": "dcr-tacitred-findings",
+            "resourceType": "Microsoft.Insights/dataCollectionRules"
+          },
+          {
+            "id": "/subscriptions/774bee0e-b281-4f70-8e40-199e35b65117/resourceGroups/rg-tacitred-ccf-hub-01/providers/Microsoft.OperationalInsights/workspaces/la-tacitred-ccf-hub-01/providers/Microsoft.SecurityInsights/dataConnectorDefinitions/TacitRedThreatIntel",
+            "resourceGroup": "rg-tacitred-ccf-hub-01",
+            "resourceName": "TacitRedThreatIntel",
+            "resourceType": "Microsoft.SecurityInsights/dataConnectorDefinitions"
+          },
+          {
+            "apiVersion": "2024-03-11",
+            "id": "/subscriptions/774bee0e-b281-4f70-8e40-199e35b65117/resourceGroups/rg-tacitred-ccf-hub-01/providers/Microsoft.Insights/dataCollectionEndpoints/dce-threatintel-feeds",
+            "resourceGroup": "rg-tacitred-ccf-hub-01",
+            "resourceName": "dce-threatintel-feeds",
+            "resourceType": "Microsoft.Insights/dataCollectionEndpoints"
+          },
+          {
+            "apiVersion": "2024-03-11",
+            "id": "/subscriptions/774bee0e-b281-4f70-8e40-199e35b65117/resourceGroups/rg-tacitred-ccf-hub-01/providers/Microsoft.Insights/dataCollectionRules/dcr-tacitred-findings",
+            "resourceGroup": "rg-tacitred-ccf-hub-01",
+            "resourceName": "dcr-tacitred-findings",
+            "resourceType": "Microsoft.Insights/dataCollectionRules"
+          }
+        ],
+        "id": "/subscriptions/774bee0e-b281-4f70-8e40-199e35b65117/resourceGroups/rg-tacitred-ccf-hub-01/providers/Microsoft.OperationalInsights/workspaces/la-tacitred-ccf-hub-01/providers/Microsoft.SecurityInsights/dataConnectors/TacitRedFindings",
+        "resourceGroup": "rg-tacitred-ccf-hub-01",
+        "resourceName": "la-tacitred-ccf-hub-01/Microsoft.SecurityInsights/TacitRedFindings",
+        "resourceType": "Microsoft.OperationalInsights/workspaces/providers/dataConnectors"
+      },
+      {
+        "dependsOn": [
+          {
+            "id": "/subscriptions/774bee0e-b281-4f70-8e40-199e35b65117/resourceGroups/rg-tacitred-ccf-hub-01/providers/Microsoft.OperationalInsights/workspaces/la-tacitred-ccf-hub-01/tables/TacitRed_Findings_CL",
+            "resourceGroup": "rg-tacitred-ccf-hub-01",
+            "resourceName": "la-tacitred-ccf-hub-01/TacitRed_Findings_CL",
+            "resourceType": "Microsoft.OperationalInsights/workspaces/tables"
+          }
+        ],
+        "id": "/subscriptions/774bee0e-b281-4f70-8e40-199e35b65117/resourceGroups/rg-tacitred-ccf-hub-01/providers/Microsoft.OperationalInsights/workspaces/la-tacitred-ccf-hub-01/providers/Microsoft.SecurityInsights/alertRules/709011de-39a3-5e4d-9a36-60f9b15519fe",
+        "resourceGroup": "rg-tacitred-ccf-hub-01",
+        "resourceName": "709011de-39a3-5e4d-9a36-60f9b15519fe",
+        "resourceType": "Microsoft.SecurityInsights/alertRules"
+      }
+    ],
+    "duration": "PT0.1748007S",
+    "error": null,
+    "mode": "Incremental",
+    "onErrorDeployment": null,
+    "outputResources": null,
+    "outputs": null,
+    "parameters": {
+      "deployAnalytics": {
+        "type": "Bool",
+        "value": true
+      },
+      "deployConnectors": {
+        "type": "Bool",
+        "value": true
+      },
+      "deployWorkbooks": {
+        "type": "Bool",
+        "value": true
+      },
+      "enableKeyVault": {
+        "type": "Bool",
+        "value": false
+      },
+      "enablePrivateEndpoint": {
+        "type": "Bool",
+        "value": false
+      },
+      "forceUpdateTag": {
+        "type": "String",
+        "value": "2025-11-25 04:32:56Z"
+      },
+      "keyVaultName": {
+        "type": "String",
+        "value": "kv-tacitred-oj34nd75cos3i"
+      },
+      "keyVaultOption": {
+        "type": "String",
+        "value": "new"
+      },
+      "keyVaultResourceGroup": {
+        "type": "String",
+        "value": "rg-tacitred-ccf-hub-01"
+      },
+      "subnetId": {
+        "type": "String",
+        "value": ""
+      },
+      "tacitRedApiKey": {
+        "type": "SecureString"
+      },
+      "tacitRedDcrImmutableId": {
+        "type": "String",
+        "value": ""
+      },
+      "workspace": {
+        "type": "String",
+        "value": "la-tacitred-ccf-hub-01"
+      },
+      "workspace-location": {
+        "type": "String",
+        "value": "eastus"
+      }
+    },
+    "parametersLink": null,
+    "providers": [
+      {
+        "id": null,
+        "namespace": "Microsoft.Insights",
+        "providerAuthorizationConsentState": null,
+        "registrationPolicy": null,
+        "registrationState": null,
+        "resourceTypes": [
+          {
+            "aliases": null,
+            "apiProfiles": null,
+            "apiVersions": null,
+            "capabilities": null,
+            "defaultApiVersion": null,
+            "locationMappings": null,
+            "locations": [
+              "eastus"
+            ],
+            "properties": null,
+            "resourceType": "dataCollectionEndpoints",
+            "zoneMappings": null
+          },
+          {
+            "aliases": null,
+            "apiProfiles": null,
+            "apiVersions": null,
+            "capabilities": null,
+            "defaultApiVersion": null,
+            "locationMappings": null,
+            "locations": [
+              "eastus"
+            ],
+            "properties": null,
+            "resourceType": "dataCollectionRules",
+            "zoneMappings": null
+          },
+          {
+            "aliases": null,
+            "apiProfiles": null,
+            "apiVersions": null,
+            "capabilities": null,
+            "defaultApiVersion": null,
+            "locationMappings": null,
+            "locations": [
+              null
+            ],
+            "properties": null,
+            "resourceType": "diagnosticSettings",
+            "zoneMappings": null
+          },
+          {
+            "aliases": null,
+            "apiProfiles": null,
+            "apiVersions": null,
+            "capabilities": null,
+            "defaultApiVersion": null,
+            "locationMappings": null,
+            "locations": [
+              "eastus"
+            ],
+            "properties": null,
+            "resourceType": "workbooks",
+            "zoneMappings": null
+          }
+        ]
+      },
+      {
+        "id": null,
+        "namespace": "Microsoft.OperationalInsights",
+        "providerAuthorizationConsentState": null,
+        "registrationPolicy": null,
+        "registrationState": null,
+        "resourceTypes": [
+          {
+            "aliases": null,
+            "apiProfiles": null,
+            "apiVersions": null,
+            "capabilities": null,
+            "defaultApiVersion": null,
+            "locationMappings": null,
+            "locations": [
+              null
+            ],
+            "properties": null,
+            "resourceType": "workspaces/tables",
+            "zoneMappings": null
+          },
+          {
+            "aliases": null,
+            "apiProfiles": null,
+            "apiVersions": null,
+            "capabilities": null,
+            "defaultApiVersion": null,
+            "locationMappings": null,
+            "locations": [
+              null
+            ],
+            "properties": null,
+            "resourceType": "workspaces/providers/dataConnectorDefinitions",
+            "zoneMappings": null
+          },
+          {
+            "aliases": null,
+            "apiProfiles": null,
+            "apiVersions": null,
+            "capabilities": null,
+            "defaultApiVersion": null,
+            "locationMappings": null,
+            "locations": [
+              null
+            ],
+            "properties": null,
+            "resourceType": "workspaces/providers/dataConnectors",
+            "zoneMappings": null
+          }
+        ]
+      },
+      {
+        "id": null,
+        "namespace": "Microsoft.ManagedIdentity",
+        "providerAuthorizationConsentState": null,
+        "registrationPolicy": null,
+        "registrationState": null,
+        "resourceTypes": [
+          {
+            "aliases": null,
+            "apiProfiles": null,
+            "apiVersions": null,
+            "capabilities": null,
+            "defaultApiVersion": null,
+            "locationMappings": null,
+            "locations": [
+              "eastus"
+            ],
+            "properties": null,
+            "resourceType": "userAssignedIdentities",
+            "zoneMappings": null
+          }
+        ]
+      },
+      {
+        "id": null,
+        "namespace": "Microsoft.SecurityInsights",
+        "providerAuthorizationConsentState": null,
+        "registrationPolicy": null,
+        "registrationState": null,
+        "resourceTypes": [
+          {
+            "aliases": null,
+            "apiProfiles": null,
+            "apiVersions": null,
+            "capabilities": null,
+            "defaultApiVersion": null,
+            "locationMappings": null,
+            "locations": [
+              null
+            ],
+            "properties": null,
+            "resourceType": "alertRules",
+            "zoneMappings": null
+          }
+        ]
+      }
+    ],
+    "provisioningState": "Running",
+    "templateHash": "17956176575640253961",
+    "templateLink": null,
+    "timestamp": "2025-11-25T04:32:56.831391+00:00",
+    "validatedResources": null
+  },
+  "resourceGroup": "rg-tacitred-ccf-hub-01",
+  "tags": null,
+  "type": "Microsoft.Resources/deployments"
+}

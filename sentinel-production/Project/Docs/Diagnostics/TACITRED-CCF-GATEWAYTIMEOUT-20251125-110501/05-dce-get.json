@@ -1,0 +1,31 @@
+{
+  "etag": "\"c30127f2-0000-0100-0000-6925bdf00000\"",
+  "id": "/subscriptions/774bee0e-b281-4f70-8e40-199e35b65117/resourceGroups/rg-tacitred-ccf-hub-01/providers/Microsoft.Insights/dataCollectionEndpoints/dce-threatintel-feeds",
+  "location": "eastus",
+  "name": "dce-threatintel-feeds",
+  "properties": {
+    "configurationAccess": {
+      "endpoint": "https://dce-threatintel-feeds-tqb4.eastus-1.handler.control.monitor.azure.com"
+    },
+    "immutableId": "dce-5ff43acf3b9a4a008f077bf5512f7ee8",
+    "logsIngestion": {
+      "endpoint": "https://dce-threatintel-feeds-tqb4.eastus-1.ingest.monitor.azure.com"
+    },
+    "metricsIngestion": {
+      "endpoint": "https://dce-threatintel-feeds-tqb4.eastus-1.metrics.ingest.monitor.azure.com"
+    },
+    "networkAcls": {
+      "publicNetworkAccess": "Enabled"
+    },
+    "provisioningState": "Succeeded"
+  },
+  "systemData": {
+    "createdAt": "2025-11-25T04:32:57.5484011Z",
+    "createdBy": "37303195-5dc3-4ce7-b046-7615a20b8585",
+    "createdByType": "Application",
+    "lastModifiedAt": "2025-11-25T14:32:16.7705566Z",
+    "lastModifiedBy": "37303195-5dc3-4ce7-b046-7615a20b8585",
+    "lastModifiedByType": "Application"
+  },
+  "type": "Microsoft.Insights/dataCollectionEndpoints"
+}

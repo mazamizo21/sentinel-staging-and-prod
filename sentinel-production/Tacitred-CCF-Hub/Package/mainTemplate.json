@@ -314,7 +314,7 @@
             "destinations": [
               "clv2ws1"
             ],
-            "transformKql": "source | extend p = parse_json(finding) | extend s = p.supporting_data | extend TimeGenerated = datetime(null) | project TimeGenerated, email_s=tostring(s.credential), domain_s=tostring(s.domain), findingType_s='credential', confidence_d=int(75), firstSeen_t=TimeGenerated, lastSeen_t=TimeGenerated, notes_s='test', source_s='test', severity_s=tostring(severity), status_s='test', campaign_id_s='test', user_id_s='test', username_s='test', detection_ts_t=TimeGenerated, metadata_s=tostring(finding)",
+            "transformKql": "source | project TimeGenerated=now(), email_s=tostring(finding.supporting_data.credential), domain_s=tostring(finding.supporting_data.domain), findingType_s=tostring(finding.uid), confidence_d=toint(75), firstSeen_t=now(), lastSeen_t=now(), notes_s=tostring(finding.uid), source_s=tostring(finding.uid), severity_s=tostring(severity), status_s=tostring(finding.uid), campaign_id_s=tostring(finding.uid), user_id_s=tostring(finding.uid), username_s=tostring(finding.supporting_data.machine), detection_ts_t=now(), metadata_s=tostring(finding)",
             "outputStream": "Custom-TacitRed_Findings_CL"
           }
         ]
@@ -444,54 +444,6 @@
       }
     },
     {
-      "type": "Microsoft.Insights/diagnosticSettings",
-      "apiVersion": "2021-05-01-preview",
-      "scope": "[variables('dceResourceId')]",
-      "name": "dceDiagnostics",
-      "dependsOn": [
-        "[resourceId('Microsoft.Insights/dataCollectionEndpoints', variables('dceName'))]"
-      ],
-      "properties": {
-        "workspaceId": "[variables('workspaceResourceId')]",
-        "logs": [
-          {
-            "category": "DataCollectionEndpointLogs",
-            "enabled": true
-          }
-        ],
-        "metrics": [
-          {
-            "category": "AllMetrics",
-            "enabled": true
-          }
-        ]
-      }
-    },
-    {
-      "type": "Microsoft.Insights/diagnosticSettings",
-      "apiVersion": "2021-05-01-preview",
-      "scope": "[variables('tacitRedDcrResourceId')]",
-      "name": "tacitRedDcrDiagnostics",
-      "dependsOn": [
-        "[resourceId('Microsoft.Insights/dataCollectionRules', variables('tacitRedDcrName'))]"
-      ],
-      "properties": {
-        "workspaceId": "[variables('workspaceResourceId')]",
-        "logs": [
-          {
-            "category": "DataCollectionRuleLogs",
-            "enabled": true
-          }
-        ],
-        "metrics": [
-          {
-            "category": "AllMetrics",
-            "enabled": true
-          }
-        ]
-      }
-    },
-    {
       "condition": "[parameters('deployConnectors')]",
       "type": "Microsoft.OperationalInsights/workspaces/providers/dataConnectorDefinitions",
       "apiVersion": "2024-09-01",
@@ -599,7 +551,7 @@
             "page_size": 100,
             "types[]": "compromised_credentials"
           },
-          "queryWindowInMin": 60,
+          "queryWindowInMin": 1440,
           "queryTimeFormat": "yyyy-MM-ddTHH:mm:ssZ",
           "startTimeAttributeName": "from",
           "endTimeAttributeName": "until",
@@ -625,7 +577,7 @@
       }
     },
     {
-      "condition": "[false]",
+      "condition": false,
       "type": "Microsoft.Insights/workbooks",
       "apiVersion": "2022-04-01",
       "name": "[guid(resourceGroup().id, 'workbook-ti-command-center')]",
@@ -640,7 +592,7 @@
       }
     },
     {
-      "condition": "[false]",
+      "condition": false,
       "type": "Microsoft.Insights/workbooks",
       "apiVersion": "2022-04-01",
       "name": "[guid(resourceGroup().id, 'workbook-ti-command-center-enhanced')]",
@@ -655,7 +607,7 @@
       }
     },
     {
-      "condition": "[false]",
+      "condition": false,
       "type": "Microsoft.Insights/workbooks",
       "apiVersion": "2022-04-01",
       "name": "[guid(resourceGroup().id, 'workbook-executive-risk-dashboard')]",
@@ -670,7 +622,7 @@
       }
     },
     {
-      "condition": "[false]",
+      "condition": false,
       "type": "Microsoft.Insights/workbooks",
       "apiVersion": "2022-04-01",
       "name": "[guid(resourceGroup().id, 'workbook-executive-risk-dashboard-enhanced')]",
@@ -685,7 +637,7 @@
       }
     },
     {
-      "condition": "[false]",
+      "condition": false,
       "type": "Microsoft.Insights/workbooks",
       "apiVersion": "2022-04-01",
       "name": "[guid(resourceGroup().id, 'workbook-threat-hunters-arsenal')]",
@@ -700,7 +652,7 @@
       }
     },
     {
-      "condition": "[false]",
+      "condition": false,
       "type": "Microsoft.Insights/workbooks",
       "apiVersion": "2022-04-01",
       "name": "[guid(resourceGroup().id, 'workbook-threat-hunters-arsenal-enhanced')]",
