@@ -57,13 +57,16 @@ New-Item -ItemType Directory -Path "$solutionPath\Package" -Force | Out-Null
 
 Write-Host "Copying Cyren solution files..." -ForegroundColor Cyan
 
-# Copy files from Cyren-CCF-Clean
+# Source folders
 $sourceFolder = "d:\REPO\Upwork-Clean\Sentinel-Full-deployment-production\sentinel-production\Cyren-CCF-Clean"
+$sourceHubPackageFolder = "d:\REPO\Upwork-Clean\Sentinel-Full-deployment-production\sentinel-production\Cyren-CCF-Hub\Package"
 
-Copy-Item "$sourceFolder\mainTemplate.json" "$solutionPath\mainTemplate.json"
-Copy-Item "$sourceFolder\createUiDefinition.json" "$solutionPath\createUiDefinition.json"
+# Use Hub package for ARM/UI/metadata, keep existing README from clean solution
+Copy-Item "$sourceHubPackageFolder\mainTemplate.json" "$solutionPath\mainTemplate.json"
+Copy-Item "$sourceHubPackageFolder\createUiDefinition.json" "$solutionPath\createUiDefinition.json"
 Copy-Item "$sourceFolder\README.md" "$solutionPath\README.md"
-Copy-Item "$sourceFolder\Package\packageMetadata.json" "$solutionPath\Package\packageMetadata.json"
+Copy-Item "$sourceHubPackageFolder\packageMetadata.json" "$solutionPath\Package\packageMetadata.json"
+Copy-Item "$sourceHubPackageFolder\testParameters.json" "$solutionPath\Package\testParameters.json"
 
 Write-Host "Files copied successfully." -ForegroundColor Green
 

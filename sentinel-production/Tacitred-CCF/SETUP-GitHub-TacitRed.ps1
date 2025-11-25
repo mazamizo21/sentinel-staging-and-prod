@@ -25,6 +25,7 @@ if ($GitHubUsername -eq "YOUR-GITHUB-USERNAME-HERE") {
 $RepoRoot = "d:\REPO"
 $AzureSentinelPath = "$RepoRoot\Azure-Sentinel"
 $SourcePath = "d:\REPO\Upwork-Clean\Sentinel-Full-deployment-production\sentinel-production\Tacitred-CCF-Clean"
+$SourcePackagePath = "d:\REPO\Upwork-Clean\Sentinel-Full-deployment-production\sentinel-production\Tacitred-CCF-Hub\Package"
 $TargetPath = "$AzureSentinelPath\Solutions\TacitRedCompromisedCredentials"
 
 # Step 1: Clone fork if not already present
@@ -51,10 +52,12 @@ New-Item -ItemType Directory -Path "$TargetPath\Package" -Force | Out-Null
 # Step 3: Copy TacitRed clean package files
 Write-Host "Copying TacitRed solution files..." -ForegroundColor Cyan
 
-Copy-Item "$SourcePath\mainTemplate.json"          "$TargetPath\mainTemplate.json" -Force
-Copy-Item "$SourcePath\createUiDefinition.json"    "$TargetPath\createUiDefinition.json" -Force
-Copy-Item "$SourcePath\README.md"                  "$TargetPath\README.md" -Force
-Copy-Item "$SourcePath\Package\packageMetadata.json" "$TargetPath\Package\packageMetadata.json" -Force
+# Use Hub package for ARM/UI/metadata, keep existing README from clean solution
+Copy-Item "$SourcePackagePath\mainTemplate.json"          "$TargetPath\mainTemplate.json" -Force
+Copy-Item "$SourcePackagePath\createUiDefinition.json"    "$TargetPath\createUiDefinition.json" -Force
+Copy-Item "$SourcePath\README.md"                         "$TargetPath\README.md" -Force
+Copy-Item "$SourcePackagePath\packageMetadata.json"       "$TargetPath\Package\packageMetadata.json" -Force
+Copy-Item "$SourcePackagePath\testParameters.json"        "$TargetPath\Package\testParameters.json" -Force
 
 Write-Host "Files copied successfully.`n" -ForegroundColor Green
 
