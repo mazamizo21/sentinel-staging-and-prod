@@ -1,0 +1,226 @@
+// =============================================================================
+// Logic App - TacitRed Data Ingestion to Sentinel
+// Polls TacitRed API and sends data to DCE using Logs Ingestion API
+// =============================================================================
+
+@description('Logic App name')
+param logicAppName string = 'logic-tacitred-ingestion'
+
+@description('Location for resources')
+param location string = resourceGroup().location
+
+@description('TacitRed API key')
+@secure()
+param tacitRedApiKey string
+
+@description('TacitRed API base URL')
+param tacitRedApiUrl string = 'https://app.tacitred.com/api/v1'
+
+@description('DCR Immutable ID')
+param dcrImmutableId string
+
+@description('DCE Ingestion Endpoint')
+param dceEndpoint string
+
+@description('DCR resource ID for RBAC assignment')
+param dcrResourceId string
+
+@description('DCE resource ID for RBAC assignment')
+param dceResourceId string
+
+ 
+
+@description('Stream name for ingestion')
+param streamName string = 'Custom-TacitRed_Findings_Raw'
+
+@description('Polling interval in minutes')
+param pollingIntervalMinutes int = 15
+
+@description('Tags for the resource')
+param tags object = {
+  Solution: 'TacitRed-Sentinel-Integration'
+  ManagedBy: 'Bicep'
+}
+
+// Logic App with managed identity (API version 2019-05-01 required for identity support)
+resource logicApp 'Microsoft.Logic/workflows@2019-05-01' = {
+  name: logicAppName
+  location: location
+  tags: tags
+  identity: {
+    type: 'SystemAssigned'
+  }
+  properties: {
+    state: 'Enabled'
+    definition: {
+      '$schema': 'https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#'
+      contentVersion: '1.0.0.0'
+      parameters: {
+        tacitRedApiKey: {
+          type: 'securestring'
+          defaultValue: tacitRedApiKey
+        }
+        tacitRedApiUrl: {
+          type: 'string'
+          defaultValue: tacitRedApiUrl
+        }
+        dcrImmutableId: {
+          type: 'string'
+          defaultValue: dcrImmutableId
+        }
+        dceEndpoint: {
+          type: 'string'
+          defaultValue: dceEndpoint
+        }
+        streamName: {
+          type: 'string'
+          defaultValue: streamName
+        }
+      }
+      triggers: {
+        Recurrence: {
+          type: 'Recurrence'
+          recurrence: {
+            frequency: 'Minute'
+            interval: pollingIntervalMinutes
+          }
+        }
+      }
+      actions: {
+        Initialize_Query_Window: {
+          type: 'InitializeVariable'
+          inputs: {
+            variables: [
+              {
+                name: 'queryWindowMinutes'
+                type: 'integer'
+                value: 302
+              }
+            ]
+          }
+          runAfter: {}
+        }
+        Calculate_From_Time: {
+          type: 'Compose'
+          inputs: '2025-10-26T14:00:00Z'
+          runAfter: {
+            Initialize_Query_Window: [
+              'Succeeded'
+            ]
+          }
+        }
+        Calculate_Until_Time: {
+          type: 'Compose'
+          inputs: '2025-10-26T20:00:00Z'
+          runAfter: {
+            Calculate_From_Time: [
+              'Succeeded'
+            ]
+          }
+        }
+        Call_TacitRed_API: {
+          type: 'Http'
+          inputs: {
+            method: 'GET'
+            uri: '@{parameters(\'tacitRedApiUrl\')}/findings?from=@{outputs(\'Calculate_From_Time\')}&until=@{outputs(\'Calculate_Until_Time\')}&page_size=100'
+            headers: {
+              Authorization: '@parameters(\'tacitRedApiKey\')'
+              Accept: 'application/json'
+              'User-Agent': 'LogicApp-Sentinel-TacitRed-Ingestion/1.0'
+            }
+          }
+          runAfter: {
+            Calculate_Until_Time: [
+              'Succeeded'
+            ]
+          }
+        }
+        // Flatten nested TacitRed response to match DCR schema
+        Flatten_TacitRed_Data: {
+          type: 'Select'
+          inputs: {
+            from: '@body(\'Call_TacitRed_API\')?[\'results\']'
+            select: {
+              email: '@item()?[\'finding\']?[\'supporting_data\']?[\'credential\']'
+              domain: '@item()?[\'finding\']?[\'supporting_data\']?[\'domain\']'
+              findingType: '@first(item()?[\'finding\']?[\'types\'])'
+              confidence: '@item()?[\'severity\']'
+              firstSeen: '@item()?[\'finding\']?[\'supporting_data\']?[\'date_compromised\']'
+              lastSeen: '@item()?[\'time\']'
+              notes: '@item()?[\'finding\']?[\'title\']'
+              source: '@item()?[\'finding\']?[\'supporting_data\']?[\'stealer\']'
+              severity: '@item()?[\'severity\']'
+              status: '@string(item()?[\'state_id\'])'
+              campaign_id: '@item()?[\'finding\']?[\'supporting_data\']?[\'machine_id\']'
+              user_id: '@item()?[\'finding\']?[\'uid\']'
+              username: '@item()?[\'finding\']?[\'supporting_data\']?[\'machine_name\']'
+              detection_ts: '@item()?[\'time\']'
+              metadata: '@string(item()?[\'finding\']?[\'supporting_data\'])'
+            }
+          }
+          runAfter: {
+            Call_TacitRed_API: [
+              'Succeeded'
+            ]
+          }
+        }
+        Send_to_DCE: {
+          type: 'Http'
+          inputs: {
+            method: 'POST'
+            uri: '@{parameters(\'dceEndpoint\')}/dataCollectionRules/@{parameters(\'dcrImmutableId\')}/streams/@{parameters(\'streamName\')}?api-version=2023-01-01'
+            headers: {
+              'Content-Type': 'application/json'
+            }
+            body: '@body(\'Flatten_TacitRed_Data\')'
+            authentication: {
+              type: 'ManagedServiceIdentity'
+              audience: 'https://monitor.azure.com/'
+            }
+            retryPolicy: {
+              type: 'Exponential'
+              interval: 'PT30S'
+              minimumInterval: 'PT30S'
+              maximumInterval: 'PT5M'
+              count: 30
+            }
+            timeout: 'PT30M'
+          }
+          runAfter: {
+            Flatten_TacitRed_Data: [
+              'Succeeded'
+            ]
+          }
+        }
+        Log_Result: {
+          type: 'Compose'
+          inputs: {
+            status: 'completed'
+            timestamp: '@utcNow()'
+            recordCount: '@length(body(\'Call_TacitRed_API\')?[\'results\'])'
+            message: 'TacitRed ingestion completed'
+          }
+          runAfter: {
+            Send_to_DCE: [
+              'Succeeded'
+            ]
+          }
+        }
+      }
+      outputs: {}
+    }
+  }
+}
+
+output logicAppId string = logicApp.id
+output logicAppName string = logicApp.name
+output principalId string = logicApp.identity.principalId
+output identityType string = logicApp.identity.type
+
+// RBAC Role Assignments - Using tenant-level deployment for proper scoping
+// Monitoring Metrics Publisher role ID
+var monitoringMetricsPublisherRoleId = '3913510d-42f4-4e42-8a64-420c390055eb'
+
+// Deploy role assignments using az CLI in the deployment script instead
+// Bicep has limitations with cross-resource-group role assignments
+// The DEPLOY-COMPLETE.ps1 script will handle RBAC after Logic App deployment

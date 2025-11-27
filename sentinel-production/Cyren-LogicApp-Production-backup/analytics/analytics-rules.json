@@ -1,0 +1,259 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.39.26.7824",
+      "templateHash": "13718686050840664553"
+    }
+  },
+  "parameters": {
+    "workspaceName": {
+      "type": "string"
+    },
+    "location": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().location]"
+    },
+    "enableHighRiskIP": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Enable or disable individual rules"
+      }
+    },
+    "enableMalwareURL": {
+      "type": "bool",
+      "defaultValue": true
+    },
+    "enablePersistentThreat": {
+      "type": "bool",
+      "defaultValue": true
+    }
+  },
+  "variables": {
+    "$fxv#0": "// Cyren High-Risk IP Detection\n// Detects IPs with high risk scores (>=80) that have been seen recently\nCyren_Indicators_CL\n| where TimeGenerated > ago(1h)\n| where isnotempty(ip_s)\n| where risk_d >= 80\n| summarize \n    DetectionCount = count(),\n    Categories = make_set(category_s),\n    FirstSeen = min(firstSeen_t),\n    LastSeen = max(lastSeen_t),\n    Sources = make_set(source_s)\n    by IP = ip_s\n| extend Severity = case(\n    DetectionCount >= 10, \"High\",\n    DetectionCount >= 5, \"Medium\",\n    \"Low\"\n)\n| project \n    IP,\n    DetectionCount,\n    Categories,\n    FirstSeen,\n    LastSeen,\n    Sources,\n    Severity\n",
+    "$fxv#1": "// Cyren Malware URL Detection\n// Detects newly reported malware URLs from Cyren feed\nCyren_Indicators_CL\n| where TimeGenerated > ago(1h)\n| where source_s contains \"Malware\"\n| where isnotempty(url_s)\n| summarize \n    DetectionCount = count(),\n    Categories = make_set(category_s),\n    Risk = max(risk_d),\n    FirstSeen = min(firstSeen_t),\n    LastSeen = max(lastSeen_t)\n    by URL = url_s, Domain = domain_s\n| where Risk >= 70\n| extend Severity = case(\n    Risk >= 90, \"High\",\n    Risk >= 70, \"Medium\",\n    \"Low\"\n)\n| project \n    URL,\n    Domain,\n    DetectionCount,\n    Risk,\n    Categories,\n    FirstSeen,\n    LastSeen,\n    Severity\n",
+    "$fxv#2": "// Cyren Persistent Threat Detection\n// Detects indicators that have been active for extended periods\nCyren_Indicators_CL\n| where TimeGenerated > ago(7d)\n| where isnotempty(ip_s) or isnotempty(url_s)\n| extend Indicator = coalesce(ip_s, url_s)\n| summarize \n    DetectionCount = count(),\n    Categories = make_set(category_s),\n    MaxRisk = max(risk_d),\n    FirstSeen = min(firstSeen_t),\n    LastSeen = max(lastSeen_t),\n    Sources = make_set(source_s)\n    by Indicator\n| extend DaysActive = datetime_diff('day', LastSeen, FirstSeen)\n| where DaysActive >= 3 and DetectionCount >= 5\n| extend Severity = case(\n    DaysActive >= 7 and MaxRisk >= 80, \"High\",\n    DaysActive >= 5 or MaxRisk >= 70, \"Medium\",\n    \"Low\"\n)\n| project \n    Indicator,\n    DetectionCount,\n    DaysActive,\n    MaxRisk,\n    Categories,\n    FirstSeen,\n    LastSeen,\n    Severity\n"
+  },
+  "resources": [
+    {
+      "condition": "[parameters('enableHighRiskIP')]",
+      "type": "Microsoft.SecurityInsights/alertRules",
+      "apiVersion": "2023-02-01",
+      "scope": "[format('Microsoft.OperationalInsights/workspaces/{0}', parameters('workspaceName'))]",
+      "name": "[guid(resourceId('Microsoft.OperationalInsights/workspaces', parameters('workspaceName')), 'CyrenHighRiskIP-v1')]",
+      "kind": "Scheduled",
+      "properties": {
+        "displayName": "Cyren - High-Risk IP Detected",
+        "description": "Detects IPs with high risk scores (>=80) from Cyren IP Reputation feed. These IPs are associated with malicious activity.",
+        "severity": "High",
+        "enabled": true,
+        "query": "[variables('$fxv#0')]",
+        "queryFrequency": "PT1H",
+        "queryPeriod": "PT1H",
+        "triggerOperator": "GreaterThan",
+        "triggerThreshold": 0,
+        "suppressionDuration": "PT1H",
+        "suppressionEnabled": false,
+        "tactics": [
+          "CommandAndControl",
+          "InitialAccess"
+        ],
+        "techniques": [
+          "T1071",
+          "T1566"
+        ],
+        "incidentConfiguration": {
+          "createIncident": true,
+          "groupingConfiguration": {
+            "enabled": true,
+            "reopenClosedIncident": false,
+            "lookbackDuration": "P1D",
+            "matchingMethod": "Selected",
+            "groupByEntities": [
+              "IP"
+            ],
+            "groupByAlertDetails": [],
+            "groupByCustomDetails": []
+          }
+        },
+        "eventGroupingSettings": {
+          "aggregationKind": "AlertPerResult"
+        },
+        "alertDetailsOverride": {
+          "alertDisplayNameFormat": "High-Risk IP: {{IP}} - {{DetectionCount}} detections",
+          "alertDescriptionFormat": "IP {{IP}} flagged by Cyren with risk score. Categories: {{Categories}}",
+          "alertSeverityColumnName": "Severity"
+        },
+        "customDetails": {
+          "DetectionCount": "DetectionCount",
+          "Categories": "Categories",
+          "FirstSeen": "FirstSeen",
+          "LastSeen": "LastSeen"
+        },
+        "entityMappings": [
+          {
+            "entityType": "IP",
+            "fieldMappings": [
+              {
+                "identifier": "Address",
+                "columnName": "IP"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "condition": "[parameters('enableMalwareURL')]",
+      "type": "Microsoft.SecurityInsights/alertRules",
+      "apiVersion": "2023-02-01",
+      "scope": "[format('Microsoft.OperationalInsights/workspaces/{0}', parameters('workspaceName'))]",
+      "name": "[guid(resourceId('Microsoft.OperationalInsights/workspaces', parameters('workspaceName')), 'CyrenMalwareURL-v1')]",
+      "kind": "Scheduled",
+      "properties": {
+        "displayName": "Cyren - Malware URL Detected",
+        "description": "Detects malicious URLs from Cyren Malware URLs feed with high risk scores (>=70).",
+        "severity": "High",
+        "enabled": true,
+        "query": "[variables('$fxv#1')]",
+        "queryFrequency": "PT1H",
+        "queryPeriod": "PT1H",
+        "triggerOperator": "GreaterThan",
+        "triggerThreshold": 0,
+        "suppressionDuration": "PT1H",
+        "suppressionEnabled": false,
+        "tactics": [
+          "InitialAccess",
+          "Execution"
+        ],
+        "techniques": [
+          "T1566",
+          "T1204"
+        ],
+        "incidentConfiguration": {
+          "createIncident": true,
+          "groupingConfiguration": {
+            "enabled": true,
+            "reopenClosedIncident": false,
+            "lookbackDuration": "P1D",
+            "matchingMethod": "Selected",
+            "groupByEntities": [
+              "URL",
+              "DNS"
+            ],
+            "groupByAlertDetails": [],
+            "groupByCustomDetails": []
+          }
+        },
+        "eventGroupingSettings": {
+          "aggregationKind": "AlertPerResult"
+        },
+        "alertDetailsOverride": {
+          "alertDisplayNameFormat": "Malware URL: {{Domain}} - Risk {{Risk}}",
+          "alertDescriptionFormat": "Malicious URL detected: {{URL}}. Risk: {{Risk}}, Categories: {{Categories}}",
+          "alertSeverityColumnName": "Severity"
+        },
+        "customDetails": {
+          "Risk": "Risk",
+          "Categories": "Categories",
+          "DetectionCount": "DetectionCount",
+          "FirstSeen": "FirstSeen",
+          "LastSeen": "LastSeen"
+        },
+        "entityMappings": [
+          {
+            "entityType": "URL",
+            "fieldMappings": [
+              {
+                "identifier": "Url",
+                "columnName": "URL"
+              }
+            ]
+          },
+          {
+            "entityType": "DNS",
+            "fieldMappings": [
+              {
+                "identifier": "DomainName",
+                "columnName": "Domain"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "condition": "[parameters('enablePersistentThreat')]",
+      "type": "Microsoft.SecurityInsights/alertRules",
+      "apiVersion": "2023-02-01",
+      "scope": "[format('Microsoft.OperationalInsights/workspaces/{0}', parameters('workspaceName'))]",
+      "name": "[guid(resourceId('Microsoft.OperationalInsights/workspaces', parameters('workspaceName')), 'CyrenPersistentThreat-v1')]",
+      "kind": "Scheduled",
+      "properties": {
+        "displayName": "Cyren - Persistent Threat Indicator",
+        "description": "Detects threat indicators that have been active for 3+ days with multiple detections. Indicates persistent malicious infrastructure.",
+        "severity": "Medium",
+        "enabled": true,
+        "query": "[variables('$fxv#2')]",
+        "queryFrequency": "PT6H",
+        "queryPeriod": "P7D",
+        "triggerOperator": "GreaterThan",
+        "triggerThreshold": 0,
+        "suppressionDuration": "PT6H",
+        "suppressionEnabled": false,
+        "tactics": [
+          "CommandAndControl",
+          "Persistence"
+        ],
+        "techniques": [
+          "T1071",
+          "T1105"
+        ],
+        "incidentConfiguration": {
+          "createIncident": true,
+          "groupingConfiguration": {
+            "enabled": true,
+            "reopenClosedIncident": false,
+            "lookbackDuration": "P7D",
+            "matchingMethod": "Selected",
+            "groupByEntities": [],
+            "groupByAlertDetails": [],
+            "groupByCustomDetails": [
+              "Indicator"
+            ]
+          }
+        },
+        "eventGroupingSettings": {
+          "aggregationKind": "AlertPerResult"
+        },
+        "alertDetailsOverride": {
+          "alertDisplayNameFormat": "Persistent Threat: {{Indicator}} - Active {{DaysActive}} days",
+          "alertDescriptionFormat": "{{Indicator}} active for {{DaysActive}} days with {{DetectionCount}} detections. Max Risk: {{MaxRisk}}",
+          "alertSeverityColumnName": "Severity"
+        },
+        "customDetails": {
+          "DaysActive": "DaysActive",
+          "DetectionCount": "DetectionCount",
+          "MaxRisk": "MaxRisk",
+          "Categories": "Categories",
+          "FirstSeen": "FirstSeen",
+          "LastSeen": "LastSeen"
+        },
+        "entityMappings": []
+      }
+    }
+  ],
+  "outputs": {
+    "ruleIds": {
+      "type": "array",
+      "value": [
+        "[if(parameters('enableHighRiskIP'), extensionResourceId(resourceId('Microsoft.OperationalInsights/workspaces', parameters('workspaceName')), 'Microsoft.SecurityInsights/alertRules', guid(resourceId('Microsoft.OperationalInsights/workspaces', parameters('workspaceName')), 'CyrenHighRiskIP-v1')), '')]",
+        "[if(parameters('enableMalwareURL'), extensionResourceId(resourceId('Microsoft.OperationalInsights/workspaces', parameters('workspaceName')), 'Microsoft.SecurityInsights/alertRules', guid(resourceId('Microsoft.OperationalInsights/workspaces', parameters('workspaceName')), 'CyrenMalwareURL-v1')), '')]",
+        "[if(parameters('enablePersistentThreat'), extensionResourceId(resourceId('Microsoft.OperationalInsights/workspaces', parameters('workspaceName')), 'Microsoft.SecurityInsights/alertRules', guid(resourceId('Microsoft.OperationalInsights/workspaces', parameters('workspaceName')), 'CyrenPersistentThreat-v1')), '')]"
+      ]
+    }
+  }
+}
