@@ -42,8 +42,8 @@ param tags object = {
   ManagedBy: 'Bicep'
 }
 
-// Logic App with managed identity
-resource logicApp 'Microsoft.Logic/workflows@2018-07-01-preview' = {
+// Logic App with managed identity (API version 2019-05-01 required for identity support)
+resource logicApp 'Microsoft.Logic/workflows@2019-05-01' = {
   name: logicAppName
   location: location
   tags: tags
@@ -135,6 +135,35 @@ resource logicApp 'Microsoft.Logic/workflows@2018-07-01-preview' = {
             ]
           }
         }
+        // Flatten nested TacitRed response to match DCR schema
+        Flatten_TacitRed_Data: {
+          type: 'Select'
+          inputs: {
+            from: '@body(\'Call_TacitRed_API\')?[\'results\']'
+            select: {
+              email: '@item()?[\'finding\']?[\'supporting_data\']?[\'credential\']'
+              domain: '@item()?[\'finding\']?[\'supporting_data\']?[\'domain\']'
+              findingType: '@first(item()?[\'finding\']?[\'types\'])'
+              confidence: '@item()?[\'severity\']'
+              firstSeen: '@item()?[\'finding\']?[\'supporting_data\']?[\'date_compromised\']'
+              lastSeen: '@item()?[\'time\']'
+              notes: '@item()?[\'finding\']?[\'title\']'
+              source: '@item()?[\'finding\']?[\'supporting_data\']?[\'stealer\']'
+              severity: '@item()?[\'severity\']'
+              status: '@string(item()?[\'state_id\'])'
+              campaign_id: '@item()?[\'finding\']?[\'supporting_data\']?[\'machine_id\']'
+              user_id: '@item()?[\'finding\']?[\'uid\']'
+              username: '@item()?[\'finding\']?[\'supporting_data\']?[\'machine_name\']'
+              detection_ts: '@item()?[\'time\']'
+              metadata: '@string(item()?[\'finding\']?[\'supporting_data\'])'
+            }
+          }
+          runAfter: {
+            Call_TacitRed_API: [
+              'Succeeded'
+            ]
+          }
+        }
         Send_to_DCE: {
           type: 'Http'
           inputs: {
@@ -143,7 +172,7 @@ resource logicApp 'Microsoft.Logic/workflows@2018-07-01-preview' = {
             headers: {
               'Content-Type': 'application/json'
             }
-            body: '@body(\'Call_TacitRed_API\')?[\'results\']'
+            body: '@body(\'Flatten_TacitRed_Data\')'
             authentication: {
               type: 'ManagedServiceIdentity'
               audience: 'https://monitor.azure.com/'
@@ -158,7 +187,7 @@ resource logicApp 'Microsoft.Logic/workflows@2018-07-01-preview' = {
             timeout: 'PT30M'
           }
           runAfter: {
-            Call_TacitRed_API: [
+            Flatten_TacitRed_Data: [
               'Succeeded'
             ]
           }

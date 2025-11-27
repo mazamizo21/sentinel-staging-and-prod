@@ -1,0 +1,26 @@
+// Cyren High-Risk IP Detection
+// Detects IPs with high risk scores (>=80) that have been seen recently
+Cyren_Indicators_CL
+| where TimeGenerated > ago(1h)
+| where isnotempty(ip_s)
+| where risk_d >= 80
+| summarize 
+    DetectionCount = count(),
+    Categories = make_set(category_s),
+    FirstSeen = min(firstSeen_t),
+    LastSeen = max(lastSeen_t),
+    Sources = make_set(source_s)
+    by IP = ip_s
+| extend Severity = case(
+    DetectionCount >= 10, "High",
+    DetectionCount >= 5, "Medium",
+    "Low"
+)
+| project 
+    IP,
+    DetectionCount,
+    Categories,
+    FirstSeen,
+    LastSeen,
+    Sources,
+    Severity

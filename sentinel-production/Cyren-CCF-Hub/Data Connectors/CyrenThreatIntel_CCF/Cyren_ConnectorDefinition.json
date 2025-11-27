@@ -6,7 +6,7 @@
   "kind": "Customizable",
   "properties": {
     "connectorUiConfig": {
-      "id": "CyrenThreatIntel",
+      "connectorId": "CyrenThreatIntel",
       "title": "Cyren Threat Intelligence",
       "publisher": "Cyren",
       "descriptionMarkdown": "Ingest IP reputation and malware URL indicators from Cyren using the Common Connector Framework (CCF).",
@@ -32,8 +32,7 @@
       ],
       "connectivityCriteria": [
         {
-          "type": "HasDataConnectors",
-          "value": []
+          "type": "HasDataConnectors"
         }
       ],
       "availability": {

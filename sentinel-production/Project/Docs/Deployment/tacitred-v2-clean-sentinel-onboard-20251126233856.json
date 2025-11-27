@@ -1,0 +1,68 @@
+{
+  "id": "/subscriptions/774bee0e-b281-4f70-8e40-199e35b65117/resourceGroups/Tacitred-CCF-Hub-v2/providers/Microsoft.Resources/deployments/tacitred-v2-clean-sentinel-onboard-20251126233856",
+  "location": null,
+  "name": "tacitred-v2-clean-sentinel-onboard-20251126233856",
+  "properties": {
+    "correlationId": "d9fb92af-7412-4c84-b24e-532f3fe04151",
+    "debugSetting": null,
+    "dependencies": [],
+    "diagnostics": null,
+    "duration": "PT0.7960893S",
+    "error": null,
+    "extensions": null,
+    "mode": "Incremental",
+    "onErrorDeployment": null,
+    "outputResources": [
+      {
+        "apiVersion": null,
+        "extension": null,
+        "id": "/subscriptions/774bee0e-b281-4f70-8e40-199e35b65117/resourceGroups/Tacitred-CCF-Hub-v2/providers/Microsoft.OperationalInsights/workspaces/Tacitred-CCF-Hub-v2-ws/providers/Microsoft.SecurityInsights/onboardingStates/default",
+        "identifiers": null,
+        "resourceGroup": "Tacitred-CCF-Hub-v2",
+        "resourceType": null
+      }
+    ],
+    "outputs": null,
+    "parameters": {
+      "workspaceName": {
+        "type": "String",
+        "value": "Tacitred-CCF-Hub-v2-ws"
+      }
+    },
+    "parametersLink": null,
+    "providers": [
+      {
+        "id": null,
+        "namespace": "Microsoft.OperationalInsights",
+        "providerAuthorizationConsentState": null,
+        "registrationPolicy": null,
+        "registrationState": null,
+        "resourceTypes": [
+          {
+            "aliases": null,
+            "apiProfiles": null,
+            "apiVersions": null,
+            "capabilities": null,
+            "defaultApiVersion": null,
+            "locationMappings": null,
+            "locations": [
+              null
+            ],
+            "properties": null,
+            "resourceType": "workspaces/providers/onboardingStates",
+            "zoneMappings": null
+          }
+        ]
+      }
+    ],
+    "provisioningState": "Succeeded",
+    "templateHash": "11175002362343879582",
+    "templateLink": null,
+    "timestamp": "2025-11-27T04:38:58.619857+00:00",
+    "validatedResources": null,
+    "validationLevel": null
+  },
+  "resourceGroup": "Tacitred-CCF-Hub-v2",
+  "tags": null,
+  "type": "Microsoft.Resources/deployments"
+}

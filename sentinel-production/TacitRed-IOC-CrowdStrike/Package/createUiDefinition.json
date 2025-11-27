@@ -1,0 +1,34 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/0.1.2-preview/CreateUIDefinition.MultiVm.json#",
+  "handler": "Microsoft.Azure.CreateUIDef",
+  "version": "0.1.2-preview",
+  "parameters": {
+    "config": {
+      "basics": {
+        "description": "<img src=\"https://raw.githubusercontent.com/Azure/Azure-Sentinel/master/Logos/Azure_Sentinel.svg\"width=\"75px\"height=\"75px\">\n\nThe TacitRed CrowdStrike IOC Automation solution provides example playbooks to help you send indicators from TacitRed data in Microsoft Sentinel to CrowdStrike.",
+        "resourceGroup": {
+          "allowExisting": true
+        }
+      }
+    },
+    "basics": [
+      {
+        "name": "logicAppName",
+        "type": "Microsoft.Common.TextBox",
+        "label": "Playbook name",
+        "defaultValue": "pb-tacitred-to-crowdstrike",
+        "toolTip": "Name of the Logic App playbook that will be deployed.",
+        "constraints": {
+          "required": true,
+          "regex": "^[a-zA-Z0-9-]{3,80}$",
+          "validationMessage": "Playbook name must be 3-80 characters, alphanumeric and hyphens."
+        }
+      }
+    ],
+    "steps": [],
+    "outputs": {
+      "logicAppName": "[basics('logicAppName')]",
+      "location": "[location()]"
+    }
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "id": "/subscriptions/774bee0e-b281-4f70-8e40-199e35b65117/resourceGroups/Cyren-CCF-Production-rg",
+  "location": "eastus",
+  "managedBy": null,
+  "name": "Cyren-CCF-Production-rg",
+  "properties": {
+    "provisioningState": "Succeeded"
+  },
+  "tags": null,
+  "type": "Microsoft.Resources/resourceGroups"
+}

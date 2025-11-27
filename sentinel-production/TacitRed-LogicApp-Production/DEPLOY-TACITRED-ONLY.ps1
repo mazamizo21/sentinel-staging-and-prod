@@ -1,6 +1,6 @@
 [CmdletBinding()]
 param(
-    [string]$ConfigFile = '..\client-config-COMPLETE.json'
+    [string]$ConfigFile = '.\client-config-COMPLETE.json'
 )
 
 $ErrorActionPreference = 'Stop'
@@ -25,11 +25,15 @@ $loc = $config.azure.value.location
 
 Write-Host "Config: $sub | $rg | $ws | $loc`n" -ForegroundColor Gray
 
-# Create logs within this package
+# Create logs directory inside package (self-contained)
 $ts = Get-Date -Format 'yyyyMMddHHmmss'
-$logDir = ".\docs\deployment-logs\tacitred-only-$ts"
+$logDir = ".\logs\deployment-$ts"
 New-Item -ItemType Directory -Path $logDir -Force | Out-Null
 Start-Transcript "$logDir\transcript.log"
+
+# Configure Azure CLI to auto-install extensions without prompting (prevents hanging)
+Write-Host 'Configuring Azure CLI for non-interactive extension install...' -ForegroundColor Gray
+az config set extension.use_dynamic_install=yes_without_prompt 2>$null
 
 # PHASE 1: Prerequisites
 Write-Host '═══ PHASE 1: PREREQUISITES ═══' -ForegroundColor Cyan
@@ -49,9 +53,10 @@ Write-Host '[1/3] Deploying or reusing DCE (dce-sentinel-ti)...' -ForegroundColo
 # Same inline ARM template pattern as DEPLOY-COMPLETE.ps1
 $dceTemplate = '{"$schema":"https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#","contentVersion":"1.0.0.0","parameters":{"loc":{"type":"string"},"name":{"type":"string"}},"resources":[{"type":"Microsoft.Insights/dataCollectionEndpoints","apiVersion":"2022-06-01","name":"[parameters(''name'')]","location":"[parameters(''loc'')]","properties":{"networkAcls":{"publicNetworkAccess":"Enabled"}}}],"outputs":{"id":{"type":"string","value":"[resourceId(''Microsoft.Insights/dataCollectionEndpoints'',parameters(''name''))]"},"endpoint":{"type":"string","value":"[reference(resourceId(''Microsoft.Insights/dataCollectionEndpoints'',parameters(''name''))).logsIngestion.endpoint]"}}}'
 
-$dceTemplate | Out-File "$env:TEMP\tacitred-dce.json" -Encoding UTF8
+$dceTemplatePath = Join-Path $logDir 'tacitred-dce.json'
+$dceTemplate | Out-File $dceTemplatePath -Encoding UTF8
 
-az deployment group create -g $rg --template-file "$env:TEMP\tacitred-dce.json" --parameters loc=$loc name='dce-sentinel-ti' -n "tacitred-dce-$ts" -o none
+az deployment group create -g $rg --template-file $dceTemplatePath --parameters loc=$loc name='dce-sentinel-ti' -n "tacitred-dce-$ts" -o none
 
 # Get DCE details via REST API
 $dceUri = "https://management.azure.com/subscriptions/$sub/resourceGroups/$rg/providers/Microsoft.Insights/dataCollectionEndpoints/dce-sentinel-ti?api-version=2022-06-01"
@@ -110,14 +115,28 @@ Write-Host "`n═══ PHASE 4: DATA COLLECTION RULE (TACITRED ONLY) ═══"
 
 Write-Host 'Deploying TacitRed DCR...' -ForegroundColor Yellow
 
-$tacitredDcrDeploy = az deployment group create -g $rg --template-file '.\infrastructure\bicep\dcr-tacitred-findings.bicep' --parameters workspaceResourceId="$($wsObj.id)" dceResourceId="$dceId" -n "dcr-tacitred-$ts" -o json | ConvertFrom-Json
+$dcrTemplatePath = './infrastructure/bicep/dcr-tacitred-findings.bicep'
+$tacitredDcrJson = az deployment group create -g $rg --template-file $dcrTemplatePath --parameters workspaceResourceId="$($wsObj.id)" dceResourceId="$dceId" -n "dcr-tacitred-$ts" -o json
+
+if ($LASTEXITCODE -ne 0 -or [string]::IsNullOrWhiteSpace($tacitredDcrJson)) {
+    Write-Host '✗ TacitRed DCR deployment failed - see logs for details' -ForegroundColor Red
+    throw 'TacitRed DCR deployment failed'
+}
+
+$tacitredDcrDeploy = $tacitredDcrJson | ConvertFrom-Json
 
 $tacitredDcrImmutableId = $tacitredDcrDeploy.properties.outputs.immutableId.value
 $tacitredDcrId          = $tacitredDcrDeploy.properties.outputs.id.value
 
 # Fallback auto-detection if outputs missing
-$dcrList = az monitor data-collection rule list --resource-group $rg -o json | ConvertFrom-Json
-if ([string]::IsNullOrEmpty($tacitredDcrImmutableId)) {
+$dcrList = $null
+try {
+    $dcrList = az monitor data-collection rule list --resource-group $rg -o json | ConvertFrom-Json
+} catch {
+    Write-Host '  ⚠ Failed to list data collection rules for fallback detection, continuing without fallback.' -ForegroundColor Yellow
+    $dcrList = @()
+}
+if ([string]::IsNullOrEmpty($tacitredDcrImmutableId) -and $dcrList) {
     Write-Host '  ⚠ TacitRed DCR immutable ID not captured, auto-detecting...' -ForegroundColor Yellow
     $tacitredDcr = $dcrList | Where-Object { $_.name -like '*tacitred*' -or $_.name -like '*findings*' } | Select-Object -First 1
     if ($tacitredDcr) {
@@ -134,21 +153,30 @@ Write-Host '✓ TacitRed DCR deployed and verified' -ForegroundColor Green
 # PHASE 5: Logic App - TacitRed ingestion only
 Write-Host "`n═══ PHASE 5: LOGIC APP (TACITRED INGESTION) ═══" -ForegroundColor Cyan
 
-if (Test-Path '.\infrastructure\bicep\logicapp-tacitred-ingestion.bicep') {
+if (Test-Path './infrastructure/bicep/logicapp-tacitred-ingestion.bicep') {
     if (-not [string]::IsNullOrEmpty($tacitredDcrImmutableId)) {
         Write-Host 'Deploying logic-tacitred-ingestion Logic App...' -ForegroundColor Yellow
         Write-Host "  → DCR: $tacitredDcrImmutableId" -ForegroundColor Cyan
         Write-Host "  → DCE: $dceEndpoint" -ForegroundColor Cyan
 
-        az deployment group create -g $rg --template-file '.\infrastructure\bicep\logicapp-tacitred-ingestion.bicep' `
+        $logicAppTemplate = './infrastructure/bicep/logicapp-tacitred-ingestion.bicep'
+        Write-Host "  → API Key: $($config.tacitRed.value.apiKey.Substring(0,8))..." -ForegroundColor Cyan
+
+        # Deploy Logic App (matching DEPLOY-COMPLETE 2.ps1 pattern - no error suppression)
+        az deployment group create -g $rg --template-file $logicAppTemplate `
             --parameters tacitRedApiKey="$($config.tacitRed.value.apiKey)" `
                         dcrImmutableId="$tacitredDcrImmutableId" `
                         dceEndpoint="$dceEndpoint" `
                         dcrResourceId="$tacitredDcrId" `
                         dceResourceId="$dceId" `
-            -n "la-tacitred-$ts" -o none 2>$null
+            -n "la-tacitred-$ts" -o none
 
-        Write-Host '✓ TacitRed Logic App deployed' -ForegroundColor Green
+        if ($LASTEXITCODE -eq 0) {
+            Write-Host '✓ TacitRed Logic App deployed' -ForegroundColor Green
+        } else {
+            Write-Host "✗ TacitRed Logic App deployment FAILED (exit code: $LASTEXITCODE)" -ForegroundColor Red
+            throw 'Logic App deployment failed'
+        }
     } else {
         Write-Host '✗ TacitRed DCR immutable ID missing - skipping Logic App deployment' -ForegroundColor Red
     }
@@ -156,76 +184,103 @@ if (Test-Path '.\infrastructure\bicep\logicapp-tacitred-ingestion.bicep') {
     Write-Host '✗ logicapp-tacitred-ingestion.bicep not found' -ForegroundColor Red
 }
 
-# PHASE 6: RBAC for TacitRed Logic App
-Write-Host "`n═══ PHASE 6: RBAC ASSIGNMENT (TACITRED ONLY) ═══" -ForegroundColor Cyan
+# Wait for managed identities to propagate (matching DEPLOY-COMPLETE 2.ps1 pattern)
+Write-Host "Waiting 120s for managed identities to propagate..." -ForegroundColor Yellow
+Start-Sleep -Seconds 120
+Write-Host "✓ Identity propagation complete`n" -ForegroundColor Green
 
-$laName = 'logic-tacitred-ingestion'
-$rbacResults = @()
+# PHASE 6: RBAC for TacitRed Logic App (pattern aligned with DEPLOY-COMPLETE)
+Write-Host "═══ PHASE 6: RBAC ASSIGNMENT (TACITRED ONLY) ═══" -ForegroundColor Cyan
+Write-Host "  ℹ Assigning Monitoring Metrics Publisher role to TacitRed Logic App" -ForegroundColor Gray
 
-try {
-    $laObj = az logic workflow show -g $rg -n $laName 2>$null | ConvertFrom-Json
-    if ($laObj -and $laObj.identity.principalId) {
-        $principalId = $laObj.identity.principalId
-        Write-Host "  [$laName]" -ForegroundColor Cyan
-        Write-Host "    Principal ID: $principalId" -ForegroundColor Gray
-
-        if ($tacitredDcrId) {
-            Write-Host '    Assigning Monitoring Metrics Publisher → DCR' -ForegroundColor Gray
-            try {
-                az role assignment create --assignee $principalId --role 'Monitoring Metrics Publisher' --scope $tacitredDcrId 2>$null | Out-Null
-                Write-Host '      ✓ Role assigned on DCR' -ForegroundColor Green
-            } catch {
-                Write-Host '      ⚠ DCR role may already exist' -ForegroundColor Yellow
-            }
-        }
-
-        if ($dceId) {
-            Write-Host '    Assigning Monitoring Metrics Publisher → DCE' -ForegroundColor Gray
-            try {
-                az role assignment create --assignee $principalId --role 'Monitoring Metrics Publisher' --scope $dceId 2>$null | Out-Null
-                Write-Host '      ✓ Role assigned on DCE' -ForegroundColor Green
-            } catch {
-                Write-Host '      ⚠ DCE role may already exist' -ForegroundColor Yellow
-            }
-        }
-
-        $rbacResults += @{
-            LogicApp  = $laName
-            Principal = $principalId
-            Status    = 'RBAC Assigned'
-        }
-    } else {
-        Write-Host '  ✗ logic-tacitred-ingestion : Not found or no identity' -ForegroundColor Red
-        $rbacResults += @{
-            LogicApp  = $laName
-            Principal = 'N/A'
-            Status    = 'Error'
-        }
+$logicAppRbacConfig = @(
+    @{
+        Name = 'logic-tacitred-ingestion'
+        DcrId = $tacitredDcrId
+        DceId = $dceId
     }
-} catch {
-    Write-Host "  ✗ $laName : Error - $($_.Exception.Message)" -ForegroundColor Red
-    $rbacResults += @{
-        LogicApp  = $laName
-        Principal = 'ERROR'
-        Status    = 'Failed'
+)
+
+Write-Host "`n  Assigning RBAC roles..." -ForegroundColor Yellow
+$rbacResults = @()
+foreach ($laConfig in $logicAppRbacConfig) {
+    $laName = $laConfig.Name
+    try {
+        Write-Host "    Checking Logic App: $laName" -ForegroundColor Gray
+        $laJson = az logic workflow show -g $rg -n $laName -o json 2>&1
+        if ($LASTEXITCODE -ne 0) {
+            Write-Host "    ✗ $laName : Not found (deployment may have failed)" -ForegroundColor Red
+            $rbacResults += @{ LogicApp = $laName; Principal = 'N/A'; Status = 'NotFound' }
+            continue
+        }
+        $laObj = $laJson | ConvertFrom-Json
+        if ($laObj -and $laObj.identity.principalId) {
+            $principalId = $laObj.identity.principalId
+            Write-Host "    [$laName]" -ForegroundColor Cyan
+            Write-Host "      Principal ID: $principalId" -ForegroundColor Gray
+
+            if ($laConfig.DcrId) {
+                $dcrName = ($laConfig.DcrId -split '/')[-1]
+                Write-Host "      Assigning to DCR: $dcrName" -ForegroundColor Gray
+                try {
+                    az role assignment create --assignee $principalId --role 'Monitoring Metrics Publisher' --scope $laConfig.DcrId 2>$null | Out-Null
+                    Write-Host "        ✓ Monitoring Metrics Publisher → DCR" -ForegroundColor Green
+                } catch {
+                    Write-Host "        ⚠ DCR role may already exist" -ForegroundColor Yellow
+                }
+            }
+
+            if ($laConfig.DceId) {
+                $dceName = ($laConfig.DceId -split '/')[-1]
+                Write-Host "      Assigning to DCE: $dceName" -ForegroundColor Gray
+                try {
+                    az role assignment create --assignee $principalId --role 'Monitoring Metrics Publisher' --scope $laConfig.DceId 2>$null | Out-Null
+                    Write-Host "        ✓ Monitoring Metrics Publisher → DCE" -ForegroundColor Green
+                } catch {
+                    Write-Host "        ⚠ DCE role may already exist" -ForegroundColor Yellow
+                }
+            }
+
+            $rbacResults += @{
+                LogicApp  = $laName
+                Principal = $principalId
+                Status    = 'RBAC Assigned'
+            }
+        } else {
+            Write-Host "    ✗ $laName : Not found or no identity" -ForegroundColor Red
+            $rbacResults += @{
+                LogicApp  = $laName
+                Principal = 'N/A'
+                Status    = 'Error'
+            }
+        }
+    } catch {
+        Write-Host "    ✗ $laName : Error - $($_.Exception.Message)" -ForegroundColor Red
+        $rbacResults += @{
+            LogicApp  = $laName
+            Principal = 'ERROR'
+            Status    = 'Failed'
+        }
     }
 }
 
 $rbacResults | ConvertTo-Json | Out-File "$logDir\rbac-tacitred.json" -Encoding UTF8
 
-Write-Host 'Waiting 60s for initial RBAC propagation...' -ForegroundColor Yellow
-Start-Sleep -Seconds 60
+Write-Host 'Waiting 30s for initial RBAC propagation...' -ForegroundColor Yellow
+Start-Sleep -Seconds 30
 Write-Host '✓ Initial RBAC wait complete' -ForegroundColor Green
 
 # PHASE 7: ANALYTICS (TACITRED-ONLY - NO CYREN CROSSFED)
 Write-Host "`n═══ PHASE 7: ANALYTICS RULES (TACITRED ONLY) ═══" -ForegroundColor Cyan
 
-if (Test-Path '.\analytics\analytics-rules.bicep') {
+if (Test-Path './analytics/analytics-rules.bicep') {
     Write-Host 'Deploying TacitRed analytics rules (no Cyren crossfeed)...' -ForegroundColor Yellow
+
+    $analyticsTemplate = './analytics/analytics-rules.bicep'
 
     az deployment group create `
         -g $rg `
-        --template-file '.\analytics\analytics-rules.bicep' `
+        --template-file $analyticsTemplate `
         --parameters workspaceName=$ws location=$loc `
                     enableRepeatCompromise=true `
                     enableHighRiskUser=false `
@@ -245,8 +300,33 @@ if (Test-Path '.\analytics\analytics-rules.bicep') {
     Write-Host '⚠ analytics/analytics-rules.bicep not found' -ForegroundColor Yellow
 }
 
-# PHASE 8: OPTIONAL INITIAL TRIGGER
-Write-Host "`n═══ PHASE 8: INITIAL TEST TRIGGER (OPTIONAL) ═══" -ForegroundColor Cyan
+# PHASE 8: WORKBOOK DEPLOYMENT
+Write-Host "`n═══ PHASE 8: WORKBOOK DEPLOYMENT ═══" -ForegroundColor Cyan
+
+if (Test-Path './workbooks/workbook-tacitred-secops.bicep') {
+    Write-Host 'Deploying TacitRed SecOps Workbook...' -ForegroundColor Yellow
+
+    $workbookTemplate = './workbooks/workbook-tacitred-secops.bicep'
+
+    az deployment group create `
+        -g $rg `
+        --template-file $workbookTemplate `
+        --parameters workspaceId="$($wsObj.id)" location=$loc `
+        -n "tacitred-workbook-$ts" `
+        -o none 2>&1 | Out-File -FilePath "$logDir\workbook-deploy.log" -Encoding utf8
+
+    if ($LASTEXITCODE -eq 0) {
+        Write-Host '✓ TacitRed SecOps Workbook deployed' -ForegroundColor Green
+    } else {
+        Write-Host "✗ Workbook deployment FAILED (exit code: $LASTEXITCODE)" -ForegroundColor Red
+        Write-Host "  Check $logDir\workbook-deploy.log for details" -ForegroundColor Gray
+    }
+} else {
+    Write-Host '⚠ workbooks/workbook-tacitred-secops.bicep not found' -ForegroundColor Yellow
+}
+
+# PHASE 9: OPTIONAL INITIAL TRIGGER
+Write-Host "`n═══ PHASE 9: INITIAL TEST TRIGGER (OPTIONAL) ═══" -ForegroundColor Cyan
 
 try {
     Write-Host 'Triggering logic-tacitred-ingestion once for initial test...' -ForegroundColor Gray
@@ -264,7 +344,8 @@ Write-Host '  • Data Collection Endpoint (dce-sentinel-ti)' -ForegroundColor G
 Write-Host '  • TacitRed_Findings_CL table (full schema)' -ForegroundColor Gray
 Write-Host '  • TacitRed DCR (dcr-tacitred-findings)' -ForegroundColor Gray
 Write-Host '  • TacitRed Logic App (logic-tacitred-ingestion) with RBAC' -ForegroundColor Gray
-Write-Host '  • TacitRed analytics rules (no Cyren crossfeed)' -ForegroundColor Gray
+Write-Host '  • TacitRed analytics rules (Sentinel detection rules)' -ForegroundColor Gray
+Write-Host '  • TacitRed SecOps Workbook (dashboard)' -ForegroundColor Gray
 Write-Host "═══════════════════════════════════════════════════════" -ForegroundColor Green
 
 Write-Host "`nDeployment Logs: $logDir" -ForegroundColor Gray

@@ -40,20 +40,35 @@ function Remove-ResourceLocks {
         [string]$ResourceId
     )
 
-    try {
-        $locks = Get-AzResourceLock -Scope $ResourceId -ErrorAction SilentlyContinue
-        if ($locks) {
-            foreach ($lock in $locks) {
-                Remove-AzResourceLock -LockId $lock.LockId -Force -ErrorAction SilentlyContinue
+    $scopes = @()
+
+    if ($ResourceId) {
+        $scopes += $ResourceId
+    }
+
+    if ($SubscriptionId -and $ResourceGroupName) {
+        $rgScope = "/subscriptions/$SubscriptionId/resourceGroups/$ResourceGroupName"
+        $scopes += $rgScope
+    }
+
+    foreach ($scope in $scopes) {
+        try {
+            $locks = Get-AzResourceLock -Scope $scope -ErrorAction SilentlyContinue
+            if ($locks) {
+                foreach ($lock in $locks) {
+                    Write-Host "  Removing lock: $($lock.Name) (Scope: $scope)" -ForegroundColor Gray
+                    Remove-AzResourceLock -LockId $lock.LockId -Force -ErrorAction SilentlyContinue
+                }
             }
+        } catch {
         }
-    } catch {
     }
 }
 
 # Create log directory
 $timestamp = Get-Date -Format "yyyyMMdd-HHmmss"
-$logDir = "d:\REPO\Upwork-Clean\Sentinel-Full-deployment-production\sentinel-production\Project\Docs\ccf-deletion-$timestamp"
+$logRoot = Join-Path -Path $PSScriptRoot -ChildPath "Project/Docs"
+$logDir = Join-Path -Path $logRoot -ChildPath "ccf-deletion-$timestamp"
 New-Item -ItemType Directory -Path $logDir -Force | Out-Null
 
 # Start transcript
@@ -64,33 +79,48 @@ Write-Host "║  CCF CONNECTOR PERMANENT DELETION SCRIPT                      �
 Write-Host "╚═══════════════════════════════════════════════════════════════╝`n" -ForegroundColor Cyan
 
 # Get Azure context
+$azContextCmd = $null
 try {
-    $context = Get-AzContext
-    if (-not $context) {
-        Write-Host "No Azure context found. Logging in..." -ForegroundColor Yellow
-        Connect-AzAccount
+    $azContextCmd = Get-Command -Name Get-AzContext -ErrorAction SilentlyContinue
+} catch {
+    $azContextCmd = $null
+}
+
+if ($azContextCmd) {
+    try {
         $context = Get-AzContext
+        if (-not $context) {
+            Write-Host "No Azure context found. Logging in..." -ForegroundColor Yellow
+            Connect-AzAccount
+            $context = Get-AzContext
+        }
+        
+        # Use provided or default values - no prompts
+        Write-Host "Using configuration:" -ForegroundColor Yellow
+        Write-Host "  Subscription: $SubscriptionId" -ForegroundColor Gray
+        Write-Host "  Resource Group: $ResourceGroupName" -ForegroundColor Gray
+        Write-Host "  Workspace: $WorkspaceName" -ForegroundColor Gray
+        
+        Write-Host "✓ Azure Context (Az module):" -ForegroundColor Green
+        Write-Host "  Subscription: $SubscriptionId" -ForegroundColor Gray
+        Write-Host "  Resource Group: $ResourceGroupName" -ForegroundColor Gray
+        Write-Host "  Workspace: $WorkspaceName`n" -ForegroundColor Gray
+
+        # Set Az context when module is available
+        Set-AzContext -SubscriptionId $SubscriptionId | Out-Null
+    } catch {
+        Write-Host "✗ Failed to get Azure context via Az module: $_" -ForegroundColor Yellow
     }
-    
-    # Use provided or default values - no prompts
+} else {
+    Write-Host "Az PowerShell module not found - using Azure CLI context only" -ForegroundColor Yellow
     Write-Host "Using configuration:" -ForegroundColor Yellow
     Write-Host "  Subscription: $SubscriptionId" -ForegroundColor Gray
     Write-Host "  Resource Group: $ResourceGroupName" -ForegroundColor Gray
-    Write-Host "  Workspace: $WorkspaceName" -ForegroundColor Gray
-    
-    Write-Host "✓ Azure Context:" -ForegroundColor Green
-    Write-Host "  Subscription: $SubscriptionId" -ForegroundColor Gray
-    Write-Host "  Resource Group: $ResourceGroupName" -ForegroundColor Gray
     Write-Host "  Workspace: $WorkspaceName`n" -ForegroundColor Gray
-    
-} catch {
-    Write-Host "✗ Failed to get Azure context: $_" -ForegroundColor Red
-    Stop-Transcript
-    exit 1
 }
 
-# Set subscription context
-Set-AzContext -SubscriptionId $SubscriptionId | Out-Null
+# Set subscription context for Azure CLI
+az account set --subscription $SubscriptionId 2>&1 | Out-Null
 
 # Define connector names and IDs
 $connectorDefinitionName = "ThreatIntelligenceFeeds"
@@ -124,6 +154,8 @@ $results = @{
 
 Write-Host "`n═══ PHASE 1: DELETE DATA CONNECTORS ═══" -ForegroundColor Cyan
 
+$dataConnectorApiVersion = "2024-09-01"
+
 foreach ($connectorName in $dataConnectorNames) {
     Write-Host "`nDeleting data connector: $connectorName" -ForegroundColor Yellow
     
@@ -136,56 +168,47 @@ foreach ($connectorName in $dataConnectorNames) {
         Remove-ResourceLocks -ResourceId $connectorId
         
         # Check if connector exists
-        $checkUrl = "https://management.azure.com$connectorId`?api-version=2022-10-01-preview"
+        $checkUrl = "https://management.azure.com$connectorId`?api-version=$dataConnectorApiVersion"
         
-        try {
-            $existingJson = az rest --method GET --url $checkUrl 2>&1
-            $existing = $existingJson | ConvertFrom-Json
-            
-            if ($existing) {
-                Write-Host "  ✓ Connector found, proceeding with deletion..." -ForegroundColor Yellow
-                
-                # Delete the connector
-                $deleteUrl = "https://management.azure.com$connectorId`?api-version=2022-10-01-preview"
-                az rest --method DELETE --url $deleteUrl 2>&1 | Out-File "$logDir\delete-$connectorName.log"
-                
-                # Verify deletion
-                Start-Sleep -Seconds 3
-                try {
-                    $verify = az rest --method GET --url $checkUrl 2>&1
-                    if ($verify -match "ResourceNotFound" -or $verify -match "NotFound") {
-                        Write-Host "  ✓ Successfully deleted: $connectorName" -ForegroundColor Green
-                        $results.DataConnectors += [PSCustomObject]@{
-                            Name = $connectorName
-                            Status = "Deleted"
-                            Timestamp = (Get-Date).ToString("yyyy-MM-dd HH:mm:ss")
-                        }
-                    } else {
-                        throw "Connector still exists after deletion"
-                    }
-                } catch {
-                    if ($_.Exception.Message -match "ResourceNotFound" -or $_.Exception.Message -match "NotFound") {
-                        Write-Host "  ✓ Successfully deleted: $connectorName" -ForegroundColor Green
-                        $results.DataConnectors += [PSCustomObject]@{
-                            Name = $connectorName
-                            Status = "Deleted"
-                            Timestamp = (Get-Date).ToString("yyyy-MM-dd HH:mm:ss")
-                        }
-                    } else {
-                        throw $_
-                    }
-                }
+        $existing = az rest --method GET --url $checkUrl 2>&1
+
+        if ($existing -match "ResourceNotFound" -or $existing -match "NotFound") {
+            Write-Host "  ℹ Connector not found (already deleted): $connectorName" -ForegroundColor Gray
+            $results.DataConnectors += [PSCustomObject]@{
+                Name = $connectorName
+                Status = "NotFound"
+                Timestamp = (Get-Date).ToString("yyyy-MM-dd HH:mm:ss")
             }
-        } catch {
-            if ($_.Exception.Message -match "ResourceNotFound" -or $_.Exception.Message -match "NotFound") {
-                Write-Host "  ℹ Connector not found (already deleted): $connectorName" -ForegroundColor Gray
+        } elseif ([string]::IsNullOrWhiteSpace($existing)) {
+            Write-Host "  ℹ Empty response when checking connector (treating as not found): $connectorName" -ForegroundColor Gray
+            $results.DataConnectors += [PSCustomObject]@{
+                Name = $connectorName
+                Status = "NotFound"
+                Timestamp = (Get-Date).ToString("yyyy-MM-dd HH:mm:ss")
+            }
+        } else {
+            Write-Host "  ✓ Connector found, proceeding with deletion..." -ForegroundColor Yellow
+            
+            $deleteUrl = "https://management.azure.com$connectorId`?api-version=$dataConnectorApiVersion"
+            az rest --method DELETE --url $deleteUrl 2>&1 | Out-File "$logDir\delete-$connectorName.log"
+            
+            Start-Sleep -Seconds 3
+            
+            $verify = az rest --method GET --url $checkUrl 2>&1
+            if ($verify -match "ResourceNotFound" -or $verify -match "NotFound") {
+                Write-Host "  ✓ Successfully deleted: $connectorName" -ForegroundColor Green
                 $results.DataConnectors += [PSCustomObject]@{
                     Name = $connectorName
-                    Status = "NotFound"
+                    Status = "Deleted"
                     Timestamp = (Get-Date).ToString("yyyy-MM-dd HH:mm:ss")
                 }
             } else {
-                throw $_
+                Write-Host "  ⚠ Connector still returned a response after delete request" -ForegroundColor Yellow
+                $results.DataConnectors += [PSCustomObject]@{
+                    Name = $connectorName
+                    Status = "DeleteRequested"
+                    Timestamp = (Get-Date).ToString("yyyy-MM-dd HH:mm:ss")
+                }
             }
         }
         
@@ -214,30 +237,29 @@ try {
     $checkUrl = "https://management.azure.com$connDefId`?api-version=2024-09-01"
     
     try {
-        $existing = az rest --method GET --url $checkUrl 2>&1 | ConvertFrom-Json
+        $existing = az rest --method GET --url $checkUrl 2>&1
         
-        if ($existing) {
+        if ($existing -match "ResourceNotFound" -or $existing -match "NotFound") {
+            Write-Host "  ℹ Connector definition not found (already deleted)" -ForegroundColor Gray
+            $results.ConnectorDefinition = "NotFound"
+        } elseif ([string]::IsNullOrWhiteSpace($existing)) {
+            Write-Host "  ℹ Empty response when checking connector definition (treating as not found)" -ForegroundColor Gray
+            $results.ConnectorDefinition = "NotFound"
+        } else {
             Write-Host "  ✓ Connector definition found, proceeding with deletion..." -ForegroundColor Yellow
             
             $deleteUrl = "https://management.azure.com$connDefId`?api-version=2024-09-01"
             az rest --method DELETE --url $deleteUrl 2>&1 | Out-File "$logDir\delete-connector-definition.log"
             
             Start-Sleep -Seconds 3
-            try {
-                $verify = az rest --method GET --url $checkUrl 2>&1
-                if ($verify -match "ResourceNotFound" -or $verify -match "NotFound") {
-                    Write-Host "  ✓ Successfully deleted connector definition" -ForegroundColor Green
-                    $results.ConnectorDefinition = "Deleted"
-                } else {
-                    throw "Connector definition still exists after deletion"
-                }
-            } catch {
-                if ($_.Exception.Message -match "ResourceNotFound" -or $_.Exception.Message -match "NotFound") {
-                    Write-Host "  ✓ Successfully deleted connector definition" -ForegroundColor Green
-                    $results.ConnectorDefinition = "Deleted"
-                } else {
-                    throw $_
-                }
+            
+            $verify = az rest --method GET --url $checkUrl 2>&1
+            if ($verify -match "ResourceNotFound" -or $verify -match "NotFound") {
+                Write-Host "  ✓ Successfully deleted connector definition" -ForegroundColor Green
+                $results.ConnectorDefinition = "Deleted"
+            } else {
+                Write-Host "  ⚠ Connector definition still returned a response after delete request" -ForegroundColor Yellow
+                $results.ConnectorDefinition = "DeleteRequested"
             }
         }
     } catch {
@@ -269,12 +291,14 @@ foreach ($dcrName in $dcrNames) {
         if ($dcr) {
             Write-Host "  ✓ DCR found: $($dcr.id)" -ForegroundColor Yellow
             
+            Remove-ResourceLocks -ResourceId $dcr.id
+            
             $deleteUrl = "https://management.azure.com$($dcr.id)?api-version=2022-06-01"
             az rest --method DELETE --url $deleteUrl 2>&1 | Out-File "$logDir\delete-dcr-$dcrName.log"
             
             Start-Sleep -Seconds 3
-            $verifyJson = az rest --method GET --url $deleteUrl 2>&1
             
+            $verifyJson = az rest --method GET --url $deleteUrl 2>&1
             if ($verifyJson -match "ResourceNotFound" -or $verifyJson -match "NotFound") {
                 Write-Host "  ✓ Successfully deleted DCR: $dcrName" -ForegroundColor Green
                 $results.DCRs += [PSCustomObject]@{
@@ -325,12 +349,14 @@ try {
         foreach ($dce in $matchingDCE) {
             Write-Host "  ✓ DCE found: $($dce.name)" -ForegroundColor Yellow
             
+            Remove-ResourceLocks -ResourceId $dce.id
+            
             $deleteUrl = "https://management.azure.com$($dce.id)?api-version=2022-06-01"
             az rest --method DELETE --url $deleteUrl 2>&1 | Out-File "$logDir\delete-dce-$($dce.name).log"
             
             Start-Sleep -Seconds 3
-            $verifyJson = az rest --method GET --url $deleteUrl 2>&1
             
+            $verifyJson = az rest --method GET --url $deleteUrl 2>&1
             if ($verifyJson -match "ResourceNotFound" -or $verifyJson -match "NotFound") {
                 Write-Host "  ✓ Successfully deleted DCE: $($dce.name)" -ForegroundColor Green
                 $results.DCE = "Deleted: $($dce.name)"

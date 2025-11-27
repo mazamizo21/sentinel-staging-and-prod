@@ -1,0 +1,30 @@
+// Cyren Persistent Threat Detection
+// Detects indicators that have been active for extended periods
+Cyren_Indicators_CL
+| where TimeGenerated > ago(7d)
+| where isnotempty(ip_s) or isnotempty(url_s)
+| extend Indicator = coalesce(ip_s, url_s)
+| summarize 
+    DetectionCount = count(),
+    Categories = make_set(category_s),
+    MaxRisk = max(risk_d),
+    FirstSeen = min(firstSeen_t),
+    LastSeen = max(lastSeen_t),
+    Sources = make_set(source_s)
+    by Indicator
+| extend DaysActive = datetime_diff('day', LastSeen, FirstSeen)
+| where DaysActive >= 3 and DetectionCount >= 5
+| extend Severity = case(
+    DaysActive >= 7 and MaxRisk >= 80, "High",
+    DaysActive >= 5 or MaxRisk >= 70, "Medium",
+    "Low"
+)
+| project 
+    Indicator,
+    DetectionCount,
+    DaysActive,
+    MaxRisk,
+    Categories,
+    FirstSeen,
+    LastSeen,
+    Severity

@@ -1,0 +1,23 @@
+{
+  "Tables": [],
+  "DataConnectors": [
+    {
+      "Name": "TacitRedFindings",
+      "Status": "NotFound",
+      "Timestamp": "2025-11-26 15:23:55"
+    },
+    {
+      "Name": "CyrenIPReputation",
+      "Status": "Deleted",
+      "Timestamp": "2025-11-26 15:24:02"
+    },
+    {
+      "Name": "CyrenMalwareURLs",
+      "Status": "Deleted",
+      "Timestamp": "2025-11-26 15:24:09"
+    }
+  ],
+  "DCRs": [],
+  "ConnectorDefinition": null,
+  "DCE": null
+}

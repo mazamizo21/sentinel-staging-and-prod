@@ -1,0 +1,1 @@
+https://github.com/Azure/Azure-Sentinel/tree/master/Tools/Create-Azure-Sentinel-Solution/V3/ccfimages

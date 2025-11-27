@@ -1,6 +1,6 @@
 // =============================================================================
 // Logic App - Cyren IP Reputation Feed Ingestion
-// Polls Cyren IP Reputation API and sends data to DCE using Logs Ingestion API
+// Polls Cyren API, flattens payload, sends to DCE
 // =============================================================================
 
 @description('Logic App name')
@@ -9,46 +9,17 @@ param logicAppName string = 'logic-cyren-ip-reputation'
 @description('Location for resources')
 param location string = resourceGroup().location
 
-@description('Cyren IP Reputation JWT token')
 @secure()
 param cyrenIpReputationToken string
 
-@description('Cyren API base URL')
-param cyrenApiBaseUrl string = 'https://api-feeds.cyren.com/v1/feed/data'
-
-@description('Cyren IP Reputation feed ID')
-param cyrenIpReputationFeedId string = 'ip_reputation'
-
-@description('DCR Immutable ID')
 param dcrImmutableId string
-
-@description('DCE Ingestion Endpoint')
 param dceEndpoint string
-
-@description('DCR resource ID for RBAC assignment')
 param dcrResourceId string
-
-@description('DCE resource ID for RBAC assignment')
 param dceResourceId string
-
- 
-
-@description('Stream name for ingestion')
 param streamName string = 'Custom-Cyren_IpReputation_Raw'
-
-@description('Fetch count per request')
 param fetchCount int = 500
-
-@description('Polling interval in hours')
 param pollingIntervalHours int = 6
 
-@description('Start date for data filter (YYYY-MM-DD)')
-param startDate string = '2024-10-26'
-
-@description('End date for data filter (YYYY-MM-DD)')
-param endDate string = '2024-10-27'
-
-// Logic App with managed identity
 resource logicApp 'Microsoft.Logic/workflows@2019-05-01' = {
   name: logicAppName
   location: location
@@ -61,212 +32,100 @@ resource logicApp 'Microsoft.Logic/workflows@2019-05-01' = {
       '$schema': 'https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#'
       contentVersion: '1.0.0.0'
       parameters: {
-        cyrenToken: {
-          type: 'securestring'
-          defaultValue: cyrenIpReputationToken
-        }
-        cyrenApiUrl: {
-          type: 'string'
-          defaultValue: cyrenApiBaseUrl
-        }
-        feedId: {
-          type: 'string'
-          defaultValue: cyrenIpReputationFeedId
-        }
-        fetchCount: {
-          type: 'int'
-          defaultValue: fetchCount
-        }
-        dcrImmutableId: {
-          type: 'string'
-          defaultValue: dcrImmutableId
-        }
-        dceEndpoint: {
-          type: 'string'
-          defaultValue: dceEndpoint
-        }
-        streamName: {
-          type: 'string'
-          defaultValue: streamName
-        }
-        startDate: {
-          type: 'string'
-          defaultValue: startDate
-        }
-        endDate: {
-          type: 'string'
-          defaultValue: endDate
-        }
+        cyrenToken: { type: 'securestring', defaultValue: cyrenIpReputationToken }
+        fetchCount: { type: 'int', defaultValue: fetchCount }
+        dcrImmutableId: { type: 'string', defaultValue: dcrImmutableId }
+        dceEndpoint: { type: 'string', defaultValue: dceEndpoint }
+        streamName: { type: 'string', defaultValue: streamName }
       }
       triggers: {
         Recurrence: {
           type: 'Recurrence'
-          recurrence: {
-            frequency: 'Hour'
-            interval: pollingIntervalHours
-          }
+          recurrence: { frequency: 'Hour', interval: pollingIntervalHours }
         }
       }
       actions: {
-        Initialize_Offset: {
-          type: 'InitializeVariable'
-          inputs: {
-            variables: [
-              {
-                name: 'offset'
-                type: 'integer'
-                value: 0
-              }
-            ]
-          }
-          runAfter: {}
-        }
-        Initialize_Records: {
-          type: 'InitializeVariable'
-          inputs: {
-            variables: [
-              {
-                name: 'records'
-                type: 'array'
-                value: []
-              }
-            ]
-          }
-          runAfter: {
-            Initialize_Offset: [
-              'Succeeded'
-            ]
-          }
-        }
-        Fetch_Feed_Data: {
+        Call_Cyren_API: {
           type: 'Http'
           inputs: {
             method: 'GET'
-            uri: '@{parameters(''cyrenApiUrl'')}?feedId=@{parameters(''feedId'')}&offset=@{variables(''offset'')}&count=@{parameters(''fetchCount'')}&format=jsonl'
+            uri: 'https://api-feeds.cyren.com/v1/feed/data?feedId=ip_reputation&count=@{parameters(\'fetchCount\')}&offset=0&format=jsonl'
             headers: {
-              Authorization: 'Bearer @{parameters(''cyrenToken'')}'
+              Authorization: 'Bearer @{parameters(\'cyrenToken\')}'
+              Accept: 'application/json'
             }
           }
-          runAfter: {
-            Initialize_Records: [
-              'Succeeded'
-            ]
-          }
+          runAfter: {}
         }
-        Process_JSONL: {
+        Response_As_String: {
           type: 'Compose'
-          inputs: '@if(or(equals(body(''Fetch_Feed_Data''), null), equals(body(''Fetch_Feed_Data''), '')), json(''[]''), split(string(body(''Fetch_Feed_Data'')), decodeUriComponent(''%0A'')))'
-          runAfter: {
-            Fetch_Feed_Data: [
-              'Succeeded'
-            ]
-          }
+          inputs: '@string(body(\'Call_Cyren_API\'))'
+          runAfter: { Call_Cyren_API: ['Succeeded'] }
+        }
+        Split_Lines: {
+          type: 'Compose'
+          inputs: '@split(outputs(\'Response_As_String\'), decodeUriComponent(\'%0A\'))'
+          runAfter: { Response_As_String: ['Succeeded'] }
         }
         Filter_Empty_Lines: {
           type: 'Query'
           inputs: {
-            from: '@outputs(''Process_JSONL'')'
-            where: '@not(equals(trim(item()), ''))'
+            from: '@outputs(\'Split_Lines\')'
+            where: '@greater(length(trim(item())), 0)'
           }
-          runAfter: {
-            Process_JSONL: [
-              'Succeeded'
-            ]
-          }
+          runAfter: { Split_Lines: ['Succeeded'] }
         }
-        For_Each_Line: {
-          type: 'Foreach'
-          foreach: '@body(''Filter_Empty_Lines'')'
-          actions: {
-            Parse_JSON_Line: {
-              type: 'ParseJson'
-              inputs: {
-                content: '@items(''For_Each_Line'')'
-                schema: {
-                  type: 'object'
-                  properties: {}
-                }
-              }
-            }
-            Transform_Data: {
-              type: 'Compose'
-              inputs: {
-                url: '@{body(''Parse_JSON_Line'')?[''payload'']?[''url'']}'
-                ip: '@{body(''Parse_JSON_Line'')?[''payload'']?[''identifier'']}'
-                domain: '@{body(''Parse_JSON_Line'')?[''payload'']?[''domain'']}'
-                fileHash: '@{body(''Parse_JSON_Line'')?[''payload'']?[''fileHash'']}'
-                protocol: '@{body(''Parse_JSON_Line'')?[''payload'']?[''meta'']?[''protocol'']}'
-                port: '@{body(''Parse_JSON_Line'')?[''payload'']?[''meta'']?[''port'']}'
-                category: '@{join(body(''Parse_JSON_Line'')?[''payload'']?[''detection'']?[''category''], '', '')}'
-                risk: '@{body(''Parse_JSON_Line'')?[''payload'']?[''detection'']?[''risk'']}'
-                firstSeen: '@{body(''Parse_JSON_Line'')?[''payload'']?[''first_seen'']}'
-                lastSeen: '@{body(''Parse_JSON_Line'')?[''payload'']?[''last_seen'']}'
-                source: 'Cyren IP Reputation'
-                relationships: '@{string(body(''Parse_JSON_Line'')?[''payload'']?[''relationships''])}'
-                detection_methods: '@{join(body(''Parse_JSON_Line'')?[''payload'']?[''detection_methods''], '', '')}'
-                action: '@{body(''Parse_JSON_Line'')?[''payload'']?[''action'']}'
-                type: '@{body(''Parse_JSON_Line'')?[''payload'']?[''type'']}'
-                identifier: '@{body(''Parse_JSON_Line'')?[''payload'']?[''identifier'']}'
-                detection_ts: '@{body(''Parse_JSON_Line'')?[''payload'']?[''detection'']?[''detection_ts'']}'
-                object_type: '@{body(''Parse_JSON_Line'')?[''payload'']?[''meta'']?[''object_type'']}'
-              }
-              runAfter: {
-                'Parse_JSON_Line': [
-                  'Succeeded'
-                ]
-              }
-            }
-            Append_Record: {
-              type: 'AppendToArrayVariable'
-              inputs: {
-                name: 'records'
-                value: '@outputs(''Transform_Data'')'
-              }
-              runAfter: {
-                'Transform_Data': [
-                  'Succeeded'
-                ]
-              }
+        Parse_JSON_Lines: {
+          type: 'Select'
+          inputs: {
+            from: '@body(\'Filter_Empty_Lines\')'
+            select: '@json(item())'
+          }
+          runAfter: { Filter_Empty_Lines: ['Succeeded'] }
+        }
+        Flatten_Payload: {
+          type: 'Select'
+          inputs: {
+            from: '@body(\'Parse_JSON_Lines\')'
+            select: {
+              url: '@item()?[\'payload\']?[\'url\']'
+              ip: '@item()?[\'payload\']?[\'identifier\']'
+              fileHash: '@item()?[\'payload\']?[\'fileHash\']'
+              domain: '@item()?[\'payload\']?[\'domain\']'
+              protocol: '@item()?[\'payload\']?[\'meta\']?[\'protocol\']'
+              port: '@item()?[\'payload\']?[\'meta\']?[\'port\']'
+              category: '@first(item()?[\'payload\']?[\'detection\']?[\'category\'])'
+              risk: '@item()?[\'payload\']?[\'detection\']?[\'risk\']'
+              firstSeen: '@item()?[\'payload\']?[\'first_seen\']'
+              lastSeen: '@item()?[\'payload\']?[\'last_seen\']'
+              source: 'Cyren IP Reputation'
+              relationships: '@string(item()?[\'payload\']?[\'relationships\'])'
+              detection_methods: '@first(item()?[\'payload\']?[\'detection_methods\'])'
+              action: '@item()?[\'payload\']?[\'action\']'
+              type: '@item()?[\'payload\']?[\'type\']'
+              identifier: '@item()?[\'payload\']?[\'identifier\']'
+              detection_ts: '@item()?[\'payload\']?[\'detection\']?[\'detection_ts\']'
+              object_type: '@item()?[\'payload\']?[\'meta\']?[\'object_type\']'
             }
           }
-          runAfter: {
-            Filter_Empty_Lines: [
-              'Succeeded'
-            ]
-          }
-          runtimeConfiguration: {
-            concurrency: {
-              repetitions: 1
-            }
-          }
+          runAfter: { Parse_JSON_Lines: ['Succeeded'] }
         }
         Send_to_DCE: {
           type: 'Http'
           inputs: {
             method: 'POST'
             uri: '@{parameters(\'dceEndpoint\')}/dataCollectionRules/@{parameters(\'dcrImmutableId\')}/streams/@{parameters(\'streamName\')}?api-version=2023-01-01'
-            headers: {
-              'Content-Type': 'application/json'
-            }
-            body: '@variables(\'records\')'
-            authentication: {
-              type: 'ManagedServiceIdentity'
-              audience: 'https://monitor.azure.com/'
-            }
-            retryPolicy: {
-              type: 'Exponential'
-              interval: 'PT30S'
-              minimumInterval: 'PT30S'
-              maximumInterval: 'PT5M'
-              count: 30
-            }
-            timeout: 'PT30M'
+            headers: { 'Content-Type': 'application/json' }
+            body: '@body(\'Flatten_Payload\')'
+            authentication: { type: 'ManagedServiceIdentity', audience: 'https://monitor.azure.com/' }
+            retryPolicy: { type: 'Exponential', interval: 'PT30S', count: 5 }
           }
-          runAfter: {
-            For_Each_Line: [
-              'Succeeded'
-            ]
-          }
+          runAfter: { Flatten_Payload: ['Succeeded'] }
+        }
+        Log_Result: {
+          type: 'Compose'
+          inputs: { status: 'completed', timestamp: '@utcNow()', recordCount: '@length(body(\'Flatten_Payload\'))' }
+          runAfter: { Send_to_DCE: ['Succeeded'] }
         }
       }
       outputs: {}
@@ -278,13 +137,8 @@ output logicAppId string = logicApp.id
 output logicAppName string = logicApp.name
 output principalId string = logicApp.identity.principalId
 
-resource dcr 'Microsoft.Insights/dataCollectionRules@2022-06-01' existing = {
-  name: last(split(dcrResourceId, '/'))
-}
-
-resource dce 'Microsoft.Insights/dataCollectionEndpoints@2022-06-01' existing = {
-  name: last(split(dceResourceId, '/'))
-}
+resource dcr 'Microsoft.Insights/dataCollectionRules@2022-06-01' existing = { name: last(split(dcrResourceId, '/')) }
+resource dce 'Microsoft.Insights/dataCollectionEndpoints@2022-06-01' existing = { name: last(split(dceResourceId, '/')) }
 
 resource roleAssignmentDcr 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
   name: guid(dcr.id, logicApp.id, '3913510d-42f4-4e42-8a64-420c390055eb')
@@ -294,9 +148,6 @@ resource roleAssignmentDcr 'Microsoft.Authorization/roleAssignments@2022-04-01' 
     principalType: 'ServicePrincipal'
     roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '3913510d-42f4-4e42-8a64-420c390055eb')
   }
-  dependsOn: [
-    logicApp
-  ]
 }
 
 resource roleAssignmentDce 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
@@ -307,7 +158,4 @@ resource roleAssignmentDce 'Microsoft.Authorization/roleAssignments@2022-04-01' 
     principalType: 'ServicePrincipal'
     roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '3913510d-42f4-4e42-8a64-420c390055eb')
   }
-  dependsOn: [
-    logicApp
-  ]
 }

@@ -1,0 +1,51 @@
+{
+  "DCE": "Deleted: dce-threatintel-feeds",
+  "Tables": [
+    {
+      "Name": "TacitRed_Findings_CL",
+      "Status": "Failed",
+      "Error": "Conversion from JSON failed with error: Unexpected character encountered while parsing value: E. Path '', line 0, position 0.",
+      "Timestamp": "2025-11-26 11:59:29"
+    },
+    {
+      "Name": "Cyren_Indicators_CL",
+      "Status": "Deleted",
+      "Timestamp": "2025-11-26 11:59:35"
+    }
+  ],
+  "DCRs": [
+    {
+      "Name": "dcr-tacitred-findings",
+      "Status": "NotFound",
+      "Timestamp": "2025-11-26 11:59:10"
+    },
+    {
+      "Name": "dcr-cyren-ip-reputation",
+      "Status": "Deleted",
+      "Timestamp": "2025-11-26 11:59:16"
+    },
+    {
+      "Name": "dcr-cyren-malware-urls",
+      "Status": "Deleted",
+      "Timestamp": "2025-11-26 11:59:22"
+    }
+  ],
+  "ConnectorDefinition": "NotFound",
+  "DataConnectors": [
+    {
+      "Name": "TacitRedFindings",
+      "Status": "NotFound",
+      "Timestamp": "2025-11-26 11:58:55"
+    },
+    {
+      "Name": "CyrenIPReputation",
+      "Status": "Deleted",
+      "Timestamp": "2025-11-26 11:59:02"
+    },
+    {
+      "Name": "CyrenMalwareURLs",
+      "Status": "Deleted",
+      "Timestamp": "2025-11-26 11:59:09"
+    }
+  ]
+}

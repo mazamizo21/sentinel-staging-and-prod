@@ -1,0 +1,29 @@
+{
+  "createdDate": "2025-11-25T17:42:56.6378408Z",
+  "customerId": "c9727646-a4c1-418b-8127-85f7fbafe9d7",
+  "etag": "\"9c09c1e4-0000-0100-0000-6925eaac0000\"",
+  "features": {
+    "enableLogAccessUsingOnlyResourcePermissions": true,
+    "legacy": 0,
+    "searchVersion": 1
+  },
+  "id": "/subscriptions/774bee0e-b281-4f70-8e40-199e35b65117/resourceGroups/Cyren-CCF-Production-rg/providers/Microsoft.OperationalInsights/workspaces/Cyren-CCF-Production-ws",
+  "location": "eastus",
+  "modifiedDate": "2025-11-25T17:43:08.9757204Z",
+  "name": "Cyren-CCF-Production-ws",
+  "provisioningState": "Succeeded",
+  "publicNetworkAccessForIngestion": "Enabled",
+  "publicNetworkAccessForQuery": "Enabled",
+  "resourceGroup": "Cyren-CCF-Production-rg",
+  "retentionInDays": 30,
+  "sku": {
+    "lastSkuUpdate": "2025-11-25T17:42:56.6378408Z",
+    "name": "PerGB2018"
+  },
+  "type": "Microsoft.OperationalInsights/workspaces",
+  "workspaceCapping": {
+    "dailyQuotaGb": -1.0,
+    "dataIngestionStatus": "RespectQuota",
+    "quotaNextResetTime": "2025-11-25T18:00:00Z"
+  }
+}

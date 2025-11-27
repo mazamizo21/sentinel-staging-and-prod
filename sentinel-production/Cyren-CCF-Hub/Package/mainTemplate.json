@@ -6,6 +6,13 @@
     "comments": "Cyren Threat Intelligence Solution for Microsoft Sentinel"
   },
   "parameters": {
+    "location": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().location]",
+      "metadata": {
+        "description": "Location for all resources"
+      }
+    },
     "workspace": {
       "type": "string",
       "metadata": {
@@ -125,12 +132,9 @@
     "dceName": "dce-threatintel-feeds",
     "cyrenIPDcrName": "dcr-cyren-ip-reputation",
     "cyrenMalwareDcrName": "dcr-cyren-malware-urls",
-    "_solutionName": "ThreatIntelligenceFeeds",
-    "_solutionVersion": "1.0.0",
-    "solutionId": "threatintel.sentinel-solution-threatintel-feeds",
     "uamiName": "uami-ccf-deployment",
     "keyVaultResourceId": "[if(parameters('enableKeyVault'), if(equals(parameters('keyVaultOption'), 'new'), resourceId('Microsoft.KeyVault/vaults', parameters('keyVaultName')), resourceId(parameters('keyVaultResourceGroup'), 'Microsoft.KeyVault/vaults', parameters('keyVaultName'))), '')]",
-    "useKeyVault": "[parameters('enableKeyVault')]"
+    "connectorId": "CyrenThreatIntel"
   },
   "resources": [
     {
@@ -602,7 +606,7 @@
       ],
       "properties": {
         "subnet": {
-          "id": "[parameters('subnetId')]"
+          "id": "[if(empty(parameters('subnetId')), resourceId('Microsoft.Network/virtualNetworks/subnets', 'placeholder-vnet', 'placeholder-subnet'), parameters('subnetId'))]"
         },
         "privateLinkServiceConnections": [
           {
@@ -715,9 +719,13 @@
           {
             "name": "CYREN_MALWARE_JWT",
             "secureValue": "[parameters('cyrenMalwareJwtToken')]"
+          },
+          {
+            "name": "ARM_ENDPOINT",
+            "value": "[environment().resourceManager]"
           }
         ],
-        "scriptContent": "#!/usr/bin/env bash\nset -euo pipefail\n\necho 'Logging in with managed identity'\naz login --identity --allow-no-subscriptions >/dev/null\n\necho \"Setting subscription ${SUBSCRIPTION_ID}\"\naz account set --subscription \"${SUBSCRIPTION_ID}\"\n\n# Allow RBAC propagation before calling SecurityInsights APIs\nsleep 20\n\nBASE_URL=\"https://management.azure.com${WORKSPACE_ID}/providers/Microsoft.SecurityInsights\"\n\necho 'Creating connector definition (CyrenThreatIntel)...'\naz rest --method PUT --url \"${BASE_URL}/dataConnectorDefinitions/CyrenThreatIntel?api-version=2024-09-01\" --headers \"Content-Type=application/json\" --body @- <<'DEF_EOF' || true\n{\n  \"kind\": \"Customizable\",\n  \"properties\": {\n    \"connectorUiConfig\": {\n      \"id\": \"CyrenThreatIntel\",\n      \"title\": \"Threat Intelligence Feeds (Cyren)\",\n      \"publisher\": \"Cyren\",\n      \"descriptionMarkdown\": \"Ingest threat intelligence from TacitRed (compromised credentials) and Cyren (IP reputation, malware URLs) to identify and respond to threats targeting your organization.\",\n      \"graphQueriesTableName\": \"ThreatIntel_CL\",\n      \"graphQueries\": [{\n        \"metricName\": \"Total threat indicators received\",\n        \"legend\": \"Threat Indicators\",\n        \"baseQuery\": \"Cyren_Indicators_CL\"\n      }],\n      \"sampleQueries\": [\n        {\n          \"description\": \"{\n          \"description\": \"Cyren - High-risk indicators (risk >= 70)\",\n          \"query\": \"Cyren_Indicators_CL | where risk_d >= 70 | summarize count() by category_s, bin(TimeGenerated, 1h) | render timechart\"\n        },\n        {\n          \"description\": \"Cross-feed correlation - Compromised users accessing malicious IPs\",\n          \"query\": \"TacitRed_Findings_CL | join kind=inner (Cyren_Indicators_CL | where category_s == 'malware') on $left.domain_s == $right.domain_s | project TimeGenerated, email_s, domain_s, risk_d, category_s\"\n        }\n      ],\n      \"dataTypes\": [\n        { \"name\": \"Cyren_Indicators_CL\", \"lastDataReceivedQuery\": \"Cyren_Indicators_CL | summarize Time = max(TimeGenerated) | where isnotempty(Time)\" }\n      ],\n      \"connectivityCriteria\": [{ \"type\": \"HasDataConnectors\", \"value\": [] }],\n      \"availability\": { \"status\": \"Available\", \"isPreview\": false }\n    }\n  }\n}\nDEF_EOF || true\n\necho 'Patching connector definition with required permissions (minimal)...'\naz rest --method PUT --url \"${BASE_URL}/dataConnectorDefinitions/CyrenThreatIntel?api-version=2024-09-01\" --headers \"Content-Type=application/json\" --body @- <<'DEF_MIN'\n{\n  \"kind\": \"Customizable\",\n  \"properties\": {\n    \"connectorUiConfig\": {\n      \"id\": \"CyrenThreatIntel\",\n      \"title\": \"Threat Intelligence Feeds (Cyren)\",\n      \"publisher\": \"Cyren\",\n      \"permissions\": {\n        \"resourceProvider\": [\n          {\n            \"provider\": \"Microsoft.OperationalInsights/workspaces\",\n            \"permissionsDisplayText\": \"read and write permissions are required\",\n            \"providerDisplayName\": \"Workspace\",\n            \"scope\": \"Workspace\",\n            \"requiredPermissions\": { \"write\": true, \"read\": true, \"delete\": false }\n          },\n          {\n            \"provider\": \"Microsoft.OperationalInsights/workspaces/sharedKeys\",\n            \"permissionsDisplayText\": \"read permissions to shared keys for the workspace are required\",\n            \"providerDisplayName\": \"Keys\",\n            \"scope\": \"Workspace\",\n            \"requiredPermissions\": { \"action\": true }\n          }\n        ],\n        \"customs\": [\n          { \"name\": \"Cyren JWT Tokens\", \"description\": \"Cyren JWT tokens are required for both IP Reputation and Malware URLs feeds. Obtain from Cyren portal.\" }\n        ]\n      },\n      \"instructionSteps\": [\n        { \"title\": \"1. Configure TacitRed API Access\", \"description\": \"Obtain your TacitRed API key from the TacitRed admin console\", \"instructions\": [ { \"parameters\": { \"label\": \"TacitRed API Key\", \"placeholder\": \"Enter your TacitRed API Key\", \"type\": \"password\", \"name\": \"tacitRedApiKey\" }, \"type\": \"Textbox\" } ] },\n        { \"title\": \"2. Configure Cyren API Access\", \"description\": \"Obtain your Cyren JWT tokens for IP Reputation and Malware URLs feeds\", \"instructions\": [ { \"parameters\": { \"label\": \"Cyren IP Reputation JWT Token\", \"placeholder\": \"Enter JWT token for IP Reputation feed\", \"type\": \"password\", \"name\": \"cyrenIPJwtToken\" }, \"type\": \"Textbox\" }, { \"parameters\": { \"label\": \"Cyren Malware URLs JWT Token\", \"placeholder\": \"Enter JWT token for Malware URLs feed\", \"type\": \"password\", \"name\": \"cyrenMalwareJwtToken\" }, \"type\": \"Textbox\" } ] }\n      ]\n    }\n  }\n}\nDEF_MIN\n\necho 'Creating data connector: CyrenIPReputation'\naz rest --method PUT --url \"${BASE_URL}/dataConnectors/CyrenIPReputation?api-version=2022-10-01-preview\" --headers \"Content-Type=application/json\" --body @- <<EOF\n{\n  \"kind\": \"RestApiPoller\",\n  \"properties\": {\n    \"connectorDefinitionName\": \"CyrenThreatIntel\",\n    \"dataType\": \"Cyren_Indicators_CL\",\n    \"dcrConfig\": {\n      \"streamName\": \"Custom-Cyren_Indicators_CL\",\n      \"dataCollectionEndpoint\": \"${DCE_ENDPOINT}\",\n      \"dataCollectionRuleImmutableId\": \"${DCR_CYRENIP}\"\n    },\n    \"auth\": {\n      \"type\": \"APIKey\",\n      \"ApiKey\": \"${CYREN_IP_JWT}\",\n      \"ApiKeyName\": \"Authorization\",\n      \"ApiKeyIdentifier\": \"Bearer\"\n    },\n    \"request\": {\n      \"apiEndpoint\": \"https://api-feeds.cyren.com/v1/feed/data\",\n      \"httpMethod\": \"GET\",\n      \"queryParameters\": { \"feedId\": \"ip_reputation\", \"count\": 100, \"offset\": 0, \"format\": \"jsonl\" },\n      \"rateLimitQps\": 10,\n      \"retryCount\": 3,\n      \"timeoutInSeconds\": 60,\n      \"headers\": { \"Accept\": \"application/json\", \"User-Agent\": \"Microsoft-Sentinel-Cyren/1.0\" }\n    },\n    \"paging\": { \"pagingType\": \"Offset\", \"offsetParameterName\": \"offset\", \"pageSize\": 100 },\n    \"response\": { \"eventsJsonPaths\": [\"$\"], \"format\": \"jsonl\" }\n  }\n}\nEOF\n\necho 'Creating data connector: CyrenMalwareURLs'\naz rest --method PUT --url \"${BASE_URL}/dataConnectors/CyrenMalwareURLs?api-version=2022-10-01-preview\" --headers \"Content-Type=application/json\" --body @- <<EOF\n{\n  \"kind\": \"RestApiPoller\",\n  \"properties\": {\n    \"connectorDefinitionName\": \"CyrenThreatIntel\",\n    \"dataType\": \"Cyren_Indicators_CL\",\n    \"dcrConfig\": {\n      \"streamName\": \"Custom-Cyren_Indicators_CL\",\n      \"dataCollectionEndpoint\": \"${DCE_ENDPOINT}\",\n      \"dataCollectionRuleImmutableId\": \"${DCR_CYRENMALWARE}\"\n    },\n    \"auth\": {\n      \"type\": \"APIKey\",\n      \"ApiKey\": \"${CYREN_MALWARE_JWT}\",\n      \"ApiKeyName\": \"Authorization\",\n      \"ApiKeyIdentifier\": \"Bearer\"\n    },\n    \"request\": {\n      \"apiEndpoint\": \"https://api-feeds.cyren.com/v1/feed/data\",\n      \"httpMethod\": \"GET\",\n      \"queryParameters\": { \"feedId\": \"malware_urls\", \"count\": 100, \"offset\": 0, \"format\": \"jsonl\" },\n      \"rateLimitQps\": 10,\n      \"retryCount\": 3,\n      \"timeoutInSeconds\": 60,\n      \"headers\": { \"Accept\": \"application/json\", \"User-Agent\": \"Microsoft-Sentinel-Cyren/1.0\" }\n    },\n    \"paging\": { \"pagingType\": \"Offset\", \"offsetParameterName\": \"offset\", \"pageSize\": 100 },\n    \"response\": { \"eventsJsonPaths\": [\"$\"], \"format\": \"jsonl\" }\n  }\n}\nEOF\n\necho 'All CCF connectors configured.'\n"
+        "scriptContent": "#!/usr/bin/env bash\nset -euo pipefail\n\necho 'Logging in with managed identity'\naz login --identity --allow-no-subscriptions >/dev/null\n\necho \"Setting subscription ${SUBSCRIPTION_ID}\"\naz account set --subscription \"${SUBSCRIPTION_ID}\"\n\n# Allow RBAC propagation before calling SecurityInsights APIs\nsleep 20\n\nBASE_URL=\"${ARM_ENDPOINT}${WORKSPACE_ID}/providers/Microsoft.SecurityInsights\"\n\necho 'Creating connector definition (CyrenThreatIntel)...'\naz rest --method PUT --url \"${BASE_URL}/dataConnectorDefinitions/CyrenThreatIntel?api-version=2024-09-01\" --headers \"Content-Type=application/json\" --body @- <<'DEF_EOF' || true\n{\n  \"kind\": \"Customizable\",\n  \"properties\": {\n    \"connectorUiConfig\": {\n      \"connectorId\": \"CyrenThreatIntel\",\n      \"title\": \"Threat Intelligence Feeds (Cyren)\",\n      \"publisher\": \"Cyren\",\n      \"descriptionMarkdown\": \"Ingest threat intelligence from TacitRed (compromised credentials) and Cyren (IP reputation, malware URLs) to identify and respond to threats targeting your organization.\",\n      \"graphQueriesTableName\": \"ThreatIntel_CL\",\n      \"graphQueries\": [{\n        \"metricName\": \"Total threat indicators received\",\n        \"legend\": \"Threat Indicators\",\n        \"baseQuery\": \"Cyren_Indicators_CL\"\n      }],\n      \"sampleQueries\": [\n        {\n          \"description\": \"{\n          \"description\": \"Cyren - High-risk indicators (risk >= 70)\",\n          \"query\": \"Cyren_Indicators_CL | where risk_d >= 70 | summarize count() by category_s, bin(TimeGenerated, 1h) | render timechart\"\n        },\n        {\n          \"description\": \"Cross-feed correlation - Compromised users accessing malicious IPs\",\n          \"query\": \"TacitRed_Findings_CL | join kind=inner (Cyren_Indicators_CL | where category_s == 'malware') on $left.domain_s == $right.domain_s | project TimeGenerated, email_s, domain_s, risk_d, category_s\"\n        }\n      ],\n      \"dataTypes\": [\n        { \"name\": \"Cyren_Indicators_CL\", \"lastDataReceivedQuery\": \"Cyren_Indicators_CL | summarize Time = max(TimeGenerated) | where isnotempty(Time)\" }\n      ],\n      \"connectivityCriteria\": [{ \"type\": \"HasDataConnectors\" }],\n      \"availability\": { \"status\": \"Available\", \"isPreview\": false }\n    }\n  }\n}\nDEF_EOF || true\n\necho 'Patching connector definition with required permissions (minimal)...'\naz rest --method PUT --url \"${BASE_URL}/dataConnectorDefinitions/CyrenThreatIntel?api-version=2024-09-01\" --headers \"Content-Type=application/json\" --body @- <<'DEF_MIN'\n{\n  \"kind\": \"Customizable\",\n  \"properties\": {\n    \"connectorUiConfig\": {\n      \"connectorId\": \"CyrenThreatIntel\",\n      \"title\": \"Threat Intelligence Feeds (Cyren)\",\n      \"publisher\": \"Cyren\",\n      \"permissions\": {\n        \"resourceProvider\": [\n          {\n            \"provider\": \"Microsoft.OperationalInsights/workspaces\",\n            \"permissionsDisplayText\": \"read and write permissions are required\",\n            \"providerDisplayName\": \"Workspace\",\n            \"scope\": \"Workspace\",\n            \"requiredPermissions\": { \"write\": true, \"read\": true, \"delete\": false }\n          },\n          {\n            \"provider\": \"Microsoft.OperationalInsights/workspaces/sharedKeys\",\n            \"permissionsDisplayText\": \"read permissions to shared keys for the workspace are required\",\n            \"providerDisplayName\": \"Keys\",\n            \"scope\": \"Workspace\",\n            \"requiredPermissions\": { \"action\": true }\n          }\n        ],\n        \"customs\": [\n          { \"name\": \"Cyren JWT Tokens\", \"description\": \"Cyren JWT tokens are required for both IP Reputation and Malware URLs feeds. Obtain from Cyren portal.\" }\n        ]\n      },\n      \"instructionSteps\": [\n        { \"title\": \"1. Configure TacitRed API Access\", \"description\": \"Obtain your TacitRed API key from the TacitRed admin console\", \"instructions\": [ { \"parameters\": { \"label\": \"TacitRed API Key\", \"placeholder\": \"Enter your TacitRed API Key\", \"type\": \"password\", \"name\": \"tacitRedApiKey\" }, \"type\": \"Textbox\" } ] },\n        { \"title\": \"2. Configure Cyren API Access\", \"description\": \"Obtain your Cyren JWT tokens for IP Reputation and Malware URLs feeds\", \"instructions\": [ { \"parameters\": { \"label\": \"Cyren IP Reputation JWT Token\", \"placeholder\": \"Enter JWT token for IP Reputation feed\", \"type\": \"password\", \"name\": \"cyrenIPJwtToken\" }, \"type\": \"Textbox\" }, { \"parameters\": { \"label\": \"Cyren Malware URLs JWT Token\", \"placeholder\": \"Enter JWT token for Malware URLs feed\", \"type\": \"password\", \"name\": \"cyrenMalwareJwtToken\" }, \"type\": \"Textbox\" } ] }\n      ]\n    }\n  }\n}\nDEF_MIN\n\necho 'Creating data connector: CyrenIPReputation'\naz rest --method PUT --url \"${BASE_URL}/dataConnectors/CyrenIPReputation?api-version=2022-10-01-preview\" --headers \"Content-Type=application/json\" --body @- <<EOF\n{\n  \"kind\": \"RestApiPoller\",\n  \"properties\": {\n    \"connectorDefinitionName\": \"CyrenThreatIntel\",\n    \"dataType\": \"Cyren_Indicators_CL\",\n    \"dcrConfig\": {\n      \"streamName\": \"Custom-Cyren_Indicators_CL\",\n      \"dataCollectionEndpoint\": \"${DCE_ENDPOINT}\",\n      \"dataCollectionRuleImmutableId\": \"${DCR_CYRENIP}\"\n    },\n    \"auth\": {\n      \"type\": \"APIKey\",\n      \"ApiKey\": \"${CYREN_IP_JWT}\",\n      \"ApiKeyName\": \"Authorization\",\n      \"ApiKeyIdentifier\": \"Bearer\"\n    },\n    \"request\": {\n      \"apiEndpoint\": \"https://api-feeds.cyren.com/v1/feed/data\",\n      \"httpMethod\": \"GET\",\n      \"queryParameters\": { \"feedId\": \"ip_reputation\", \"count\": 100, \"offset\": 0, \"format\": \"jsonl\" },\n      \"rateLimitQps\": 10,\n      \"retryCount\": 3,\n      \"timeoutInSeconds\": 60,\n      \"headers\": { \"Accept\": \"application/json\", \"User-Agent\": \"Microsoft-Sentinel-Cyren/1.0\" }\n    },\n    \"paging\": { \"pagingType\": \"Offset\", \"offsetParameterName\": \"offset\", \"pageSize\": 100 },\n    \"response\": { \"eventsJsonPaths\": [\"$\"], \"format\": \"jsonl\" }\n  }\n}\nEOF\n\necho 'Creating data connector: CyrenMalwareURLs'\naz rest --method PUT --url \"${BASE_URL}/dataConnectors/CyrenMalwareURLs?api-version=2022-10-01-preview\" --headers \"Content-Type=application/json\" --body @- <<EOF\n{\n  \"kind\": \"RestApiPoller\",\n  \"properties\": {\n    \"connectorDefinitionName\": \"CyrenThreatIntel\",\n    \"dataType\": \"Cyren_Indicators_CL\",\n    \"dcrConfig\": {\n      \"streamName\": \"Custom-Cyren_Indicators_CL\",\n      \"dataCollectionEndpoint\": \"${DCE_ENDPOINT}\",\n      \"dataCollectionRuleImmutableId\": \"${DCR_CYRENMALWARE}\"\n    },\n    \"auth\": {\n      \"type\": \"APIKey\",\n      \"ApiKey\": \"${CYREN_MALWARE_JWT}\",\n      \"ApiKeyName\": \"Authorization\",\n      \"ApiKeyIdentifier\": \"Bearer\"\n    },\n    \"request\": {\n      \"apiEndpoint\": \"https://api-feeds.cyren.com/v1/feed/data\",\n      \"httpMethod\": \"GET\",\n      \"queryParameters\": { \"feedId\": \"malware_urls\", \"count\": 100, \"offset\": 0, \"format\": \"jsonl\" },\n      \"rateLimitQps\": 10,\n      \"retryCount\": 3,\n      \"timeoutInSeconds\": 60,\n      \"headers\": { \"Accept\": \"application/json\", \"User-Agent\": \"Microsoft-Sentinel-Cyren/1.0\" }\n    },\n    \"paging\": { \"pagingType\": \"Offset\", \"offsetParameterName\": \"offset\", \"pageSize\": 100 },\n    \"response\": { \"eventsJsonPaths\": [\"$\"], \"format\": \"jsonl\" }\n  }\n}\nEOF\n\necho 'All CCF connectors configured.'\n"
       }
     },
     {
@@ -733,7 +741,7 @@
       "kind": "Customizable",
       "properties": {
         "connectorUiConfig": {
-          "id": "CyrenThreatIntel",
+          "connectorId": "[variables('connectorId')]",
           "title": "Cyren Threat Intelligence",
           "publisher": "Cyren",
           "descriptionMarkdown": "Ingest IP reputation and malware URL indicators from Cyren using the Common Connector Framework (CCF).",
@@ -759,8 +767,7 @@
           ],
           "connectivityCriteria": [
             {
-              "type": "HasDataConnectors",
-              "value": []
+              "type": "HasDataConnectors"
             }
           ],
           "availability": {
@@ -825,7 +832,7 @@
           "apiEndpoint": "https://api-feeds.cyren.com/v1/feed/data",
           "httpMethod": "GET",
           "queryParameters": {
-            "feedId": "ip_reputation",
+            "feed": "ip_reputation",
             "count": 100,
             "offset": 0,
             "format": "jsonl"
@@ -880,7 +887,7 @@
           "apiEndpoint": "https://api-feeds.cyren.com/v1/feed/data",
           "httpMethod": "GET",
           "queryParameters": {
-            "feedId": "malware_urls",
+            "feed": "malware_urls",
             "count": 100,
             "offset": 0,
             "format": "jsonl"
@@ -938,9 +945,7 @@
             "matchingMethod": "Selected",
             "groupByEntities": [
               "IP"
-            ],
-            "groupByAlertDetails": [],
-            "groupByCustomDetails": []
+            ]
           }
         },
         "eventGroupingSettings": {
@@ -996,9 +1001,7 @@
             "matchingMethod": "Selected",
             "groupByEntities": [
               "URL"
-            ],
-            "groupByAlertDetails": [],
-            "groupByCustomDetails": []
+            ]
           }
         },
         "eventGroupingSettings": {
@@ -1053,9 +1056,7 @@
             "reopenClosedIncident": false,
             "lookbackDuration": "P1D",
             "matchingMethod": "Selected",
-            "groupByEntities": [],
-            "groupByAlertDetails": [],
-            "groupByCustomDetails": []
+            "groupByEntities": ["Host"]
           }
         },
         "eventGroupingSettings": {
@@ -1092,7 +1093,7 @@
       "kind": "shared",
       "properties": {
         "displayName": "Cyren Ingestion & Risk Overview",
-        "serializedData": "{\"$schema\":\"https://github.com/Microsoft/Application-Insights-Workbooks/blob/master/schema/workbook.json\",\"version\":\"Notebook/1.0\",\"items\":[{\"type\":1,\"content\":{\"json\":\"## Cyren Ingestion & Risk\\n\\nIngestion volume and risk distribution over time.\\n\\n---\"}},{\"type\":3,\"content\":{\"version\":\"KqlItem/1.0\",\"query\":\"Cyren_Indicators_CL | where TimeGenerated >= ago(7d) | summarize Count = count() by bin(TimeGenerated, 1h) | order by TimeGenerated asc\",\"size\":0,\"title\":\"📦 Ingestion Volume (Last 7 Days)\",\"queryType\":0,\"resourceType\":\"microsoft.operationalinsights/workspaces\",\"visualization\":\"timechart\"},\"name\":\"query - ingestion\"},{\"type\":3,\"content\":{\"version\":\"KqlItem/1.0\",\"query\":\"Cyren_Indicators_CL | where TimeGenerated > ago(24h) | extend Risk = iif(isnull(risk_d), 50, toint(risk_d)) | extend RiskBucket = case(Risk >= 80, 'Critical', Risk >= 60, 'High', Risk >= 40, 'Medium', 'Low') | summarize Count = count() by RiskBucket, bin(TimeGenerated, 1h) | order by TimeGenerated asc\",\"size\":0,\"title\":\"📦 Risk Distribution Over Time (Last 24h)\",\"queryType\":0,\"resourceType\":\"microsoft.operationalinsights/workspaces\",\"visualization\":\"areachart\"},\"name\":\"query - risk\"}],\"styleSettings\":{}}",
+        "serializedData": "{\"$schema\":\"https://github.com/Microsoft/Application-Insights-Workbooks/blob/master/schema/workbook.json\",\"version\":\"Notebook/1.0\",\"items\":[{\"type\":1,\"content\":{\"json\":\"## Cyren Ingestion & Risk\\n\\nIngestion volume and risk distribution over time.\\n\\n---\"}},{\"type\":3,\"content\":{\"version\":\"KqlItem/1.0\",\"query\":\"Cyren_Indicators_CL | where TimeGenerated >= ago(7d) | summarize Count = count() by bin(TimeGenerated, 1h) | order by TimeGenerated asc\",\"size\":0,\"title\":\"📦 Ingestion Volume (Last 7 Days)\",\"queryType\":0,\"resourceType\":\"microsoft.operationalinsights/workspaces\",\"visualization\":\"timechart\"},\"name\":\"query - ingestion\"},{\"type\":3,\"content\":{\"version\":\"KqlItem/1.0\",\"query\":\"Cyren_Indicators_CL | where TimeGenerated > ago(24h) | extend Risk = iif(isnull(risk_d), 50, toint(risk_d)) | extend RiskBucket = case(Risk >= 80, 'Critical', Risk >= 60, 'High', Risk >= 40, 'Medium', 'Low') | summarize Count = count() by RiskBucket, bin(TimeGenerated, 1h) | order by TimeGenerated asc\",\"size\":0,\"title\":\"📦 Risk Distribution Over Time (Last 24h)\",\"queryType\":0,\"resourceType\":\"microsoft.operationalinsights/workspaces\",\"visualization\":\"areachart\"},\"name\":\"query - risk\"}],\"isLocked\":false}",
         "version": "1.0",
         "sourceId": "[variables('workspaceResourceId')]",
         "category": "sentinel"
@@ -1100,6 +1101,10 @@
     }
   ],
   "outputs": {
+    "location": {
+      "type": "string",
+      "value": "[parameters('location')]"
+    },
     "dceEndpoint": {
       "type": "string",
       "value": "[reference(resourceId('Microsoft.Insights/dataCollectionEndpoints', variables('dceName'))).logsIngestion.endpoint]"

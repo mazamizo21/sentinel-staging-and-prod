@@ -54,19 +54,26 @@ if (Test-Path $solutionPath) {
 
 New-Item -ItemType Directory -Path $solutionPath -Force | Out-Null
 New-Item -ItemType Directory -Path "$solutionPath\Package" -Force | Out-Null
+New-Item -ItemType Directory -Path "$solutionPath\Data" -Force | Out-Null
+New-Item -ItemType Directory -Path "$solutionPath\Data Connectors" -Force | Out-Null
 
 Write-Host "Copying Cyren solution files..." -ForegroundColor Cyan
 
 # Source folders
 $sourceFolder = "d:\REPO\Upwork-Clean\Sentinel-Full-deployment-production\sentinel-production\Cyren-CCF-Clean"
-$sourceHubPackageFolder = "d:\REPO\Upwork-Clean\Sentinel-Full-deployment-production\sentinel-production\Cyren-CCF-Hub\Package"
+$sourceHubRootFolder = "d:\REPO\Upwork-Clean\Sentinel-Full-deployment-production\sentinel-production\Cyren-CCF-Hub"
+$sourceHubPackageFolder = "$sourceHubRootFolder\Package"
 
 # Use Hub package for ARM/UI/metadata, keep existing README from clean solution
-Copy-Item "$sourceHubPackageFolder\mainTemplate.json" "$solutionPath\mainTemplate.json"
-Copy-Item "$sourceHubPackageFolder\createUiDefinition.json" "$solutionPath\createUiDefinition.json"
+Copy-Item "$sourceHubPackageFolder\mainTemplate.json" "$solutionPath\Package\mainTemplate.json"
+Copy-Item "$sourceHubPackageFolder\createUiDefinition.json" "$solutionPath\Package\createUiDefinition.json"
 Copy-Item "$sourceFolder\README.md" "$solutionPath\README.md"
 Copy-Item "$sourceHubPackageFolder\packageMetadata.json" "$solutionPath\Package\packageMetadata.json"
 Copy-Item "$sourceHubPackageFolder\testParameters.json" "$solutionPath\Package\testParameters.json"
+Copy-Item "$sourceHubRootFolder\SolutionMetadata.json" "$solutionPath\SolutionMetadata.json"
+Copy-Item "$sourceHubRootFolder\ReleaseNotes.md" "$solutionPath\ReleaseNotes.md"
+Copy-Item "$sourceHubRootFolder\Data\Solution_Cyren.json" "$solutionPath\Data\Solution_Cyren.json"
+Copy-Item "$sourceHubRootFolder\Data Connectors\*" "$solutionPath\Data Connectors" -Recurse -Force
 
 Write-Host "Files copied successfully." -ForegroundColor Green
 

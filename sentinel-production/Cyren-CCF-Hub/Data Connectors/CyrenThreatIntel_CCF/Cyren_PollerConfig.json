@@ -22,7 +22,7 @@
         "apiEndpoint": "https://api-feeds.cyren.com/v1/feed/data",
         "httpMethod": "GET",
         "queryParameters": {
-          "feedId": "ip_reputation",
+          "feed": "ip_reputation",
           "count": 100,
           "offset": 0,
           "format": "jsonl"
@@ -70,7 +70,7 @@
         "apiEndpoint": "https://api-feeds.cyren.com/v1/feed/data",
         "httpMethod": "GET",
         "queryParameters": {
-          "feedId": "malware_urls",
+          "feed": "malware_urls",
           "count": 100,
           "offset": 0,
           "format": "jsonl"

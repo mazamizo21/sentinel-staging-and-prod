@@ -1,0 +1,14 @@
+{
+  "id": "/subscriptions/774bee0e-b281-4f70-8e40-199e35b65117/resourceGroups/Cyren-CCF-Production-rg/providers/Microsoft.OperationalInsights/workspaces/Cyren-CCF-Production-ws/providers/Microsoft.SecurityInsights/onboardingStates/default",
+  "name": "default",
+  "properties": {},
+  "systemData": {
+    "createdAt": "2025-11-25T17:48:49.2423032Z",
+    "createdBy": "jason@data443.com",
+    "createdByType": "User",
+    "lastModifiedAt": "2025-11-25T17:48:49.2423032Z",
+    "lastModifiedBy": "jason@data443.com",
+    "lastModifiedByType": "User"
+  },
+  "type": "Microsoft.SecurityInsights/onboardingStates"
+}

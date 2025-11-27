@@ -219,6 +219,7 @@
     ],
     "outputs": {
       "workspace-location": "[location()]",
+      "location": "[location()]",
       "workspace": "[basics('workspace')]",
       "cyrenIPJwtToken": "[steps('dataconnectors').cyrenIPJwtToken]",
       "cyrenMalwareJwtToken": "[steps('dataconnectors').cyrenMalwareJwtToken]",
