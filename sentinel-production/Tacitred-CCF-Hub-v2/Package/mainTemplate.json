@@ -32,18 +32,11 @@
         "description": "TacitRed API Key for authentication"
       }
     },
-    "tacitRedDcrImmutableId": {
-      "type": "string",
-      "defaultValue": "",
-      "metadata": {
-        "description": "[REQUIRED for Content Hub] immutableId of the TacitRed data collection rule. Content Hub packaging pipeline must deploy DCR first, read its immutableId, and pass it here. For local testing, deploy DCR first then get ID via: az monitor data-collection rule show --name dcr-tacitred-findings --query immutableId -o tsv"
-      }
-    },
     "deployAnalytics": {
       "type": "bool",
-      "defaultValue": true,
+      "defaultValue": false,
       "metadata": {
-        "description": "Deploy 3 pre-configured analytics rules for threat detection"
+        "description": "Deploy analytics rules for threat detection. Set to false for initial deployment (table must exist first). Enable after data starts flowing."
       }
     },
     "deployWorkbooks": {
@@ -476,7 +469,7 @@
         "dcrConfig": {
           "streamName": "Custom-TacitRed_Findings_Raw",
           "dataCollectionEndpoint": "[reference(resourceId('Microsoft.Insights/dataCollectionEndpoints', variables('dceName')), '2024-03-11').logsIngestion.endpoint]",
-          "dataCollectionRuleImmutableId": "[if(equals(parameters('tacitRedDcrImmutableId'), ''), reference(resourceId('Microsoft.Insights/dataCollectionRules', variables('tacitRedDcrName')), '2024-03-11').immutableId, parameters('tacitRedDcrImmutableId'))]"
+          "dataCollectionRuleImmutableId": "[reference(resourceId('Microsoft.Insights/dataCollectionRules', variables('tacitRedDcrName')), '2024-03-11').immutableId]"
         },
         "auth": {
           "type": "APIKey",
@@ -487,14 +480,13 @@
           "apiEndpoint": "https://app.tacitred.com/api/v1/findings",
           "httpMethod": "GET",
           "queryParameters": {
-            "page_size": 50,
-            "types[]": "compromised_credentials"
+            "page_size": 100
           },
-          "queryWindowInMin": 5,
+          "queryWindowInMin": 600,
           "queryTimeFormat": "yyyy-MM-ddTHH:mm:ssZ",
           "startTimeAttributeName": "from",
           "endTimeAttributeName": "until",
-          "rateLimitQps": 10,
+          "rateLimitQPS": 10,
           "retryCount": 3,
           "timeoutInSeconds": 60,
           "headers": {
@@ -504,12 +496,11 @@
         },
         "paging": {
           "pagingType": "LinkHeader",
-          "linkHeaderTokenJsonPath": "$.next"
+          "linkHeaderRelLinkName": "next",
+          "pageSize": 100
         },
         "response": {
-          "eventsJsonPaths": [
-            "$.results"
-          ],
+          "eventsJsonPaths": ["$.results"],
           "format": "json"
         },
         "shouldJoinNestedData": false
@@ -588,13 +579,13 @@
       "name": "[guid(resourceGroup().id, 'RepeatCompromise')]",
       "kind": "Scheduled",
       "dependsOn": [
-        "[resourceId('Microsoft.OperationalInsights/workspaces/tables', parameters('workspace'), 'TacitRed_Findings_CL')]"
+        "[resourceId('Microsoft.Insights/dataCollectionRules', variables('tacitRedDcrName'))]"
       ],
       "properties": {
         "displayName": "TacitRed - Repeat Compromise Detection",
         "description": "Detects users who have been compromised multiple times within a 7-day window. This may indicate a persistent threat or inadequate remediation.",
         "severity": "High",
-        "enabled": true,
+        "enabled": false,
         "query": "let lookbackPeriod = 7d;\nlet threshold = 2;\nTacitRed_Findings_CL\n| where TimeGenerated >= ago(lookbackPeriod)\n| extend Email = tostring(email_s), Username = tostring(username_s), Domain = tostring(domain_s), FindingType = tostring(findingType_s), Confidence = todouble(confidence_d), FirstSeen = todatetime(firstSeen_t), LastSeen = todatetime(lastSeen_t), Notes = tostring(notes_s)\n| summarize CompromiseCount = count(), FindingTypes = make_set(FindingType), FirstCompromise = min(FirstSeen), LatestCompromise = max(LastSeen), AverageConfidence = avg(Confidence), Domains = make_set(Domain), AllNotes = make_list(Notes) by Email, Username\n| where CompromiseCount >= threshold\n| extend CompromiseWindow = datetime_diff('day', LatestCompromise, FirstCompromise), Severity = case(CompromiseCount >= 5, 'Critical', CompromiseCount >= 3, 'High', 'Medium')\n| project Email, Username, CompromiseCount, Severity, FirstCompromise, LatestCompromise, CompromiseWindow, AverageConfidence, FindingTypes, Domains, AllNotes\n| order by CompromiseCount desc, LatestCompromise desc",
         "queryFrequency": "PT1H",
         "queryPeriod": "P7D",

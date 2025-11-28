@@ -1,0 +1,12 @@
+to Here’s the direct az command to delete the TacitRedFindings CCF connector via ARM:
+
+bash
+az rest --method DELETE \
+  --uri "https://management.azure.com/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/<RESOURCE_GROUP>/providers/Microsoft.OperationalInsights/workspaces/<WORKSPACE_NAME>/providers/Microsoft.SecurityInsights/dataConnectors/TacitRedFindings?api-version=2024-09-01" \
+  -o none
+For your TacitRed CCF Hub v2 environment, that would be:
+
+bash
+az rest --method DELETE \
+  --uri "https://management.azure.com/subscriptions/774bee0e-b281-4f70-8e40-199e35b65117/resourceGroups/Tacitred-CCF-Hub-v2/providers/Microsoft.OperationalInsights/workspaces/Tacitred-CCF-Hub-v1-ws/providers/Microsoft.SecurityInsights/dataConnectors/TacitRedFindings?api-version=2024-09-01" \
+  -o none
