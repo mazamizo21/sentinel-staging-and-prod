@@ -794,35 +794,35 @@
                 ],
                 "entityMappings": [
                   {
-                    "entityType": "IP",
                     "fieldMappings": [
                       {
-                        "columnName": "IPAddress",
-                        "identifier": "Address"
+                        "identifier": "Address",
+                        "columnName": "IPAddress"
                       }
-                    ]
+                    ],
+                    "entityType": "IP"
                   }
                 ],
                 "eventGroupingSettings": {
                   "aggregationKind": "AlertPerResult"
                 },
                 "customDetails": {
-                  "DetectionCount": "DetectionCount",
                   "RiskScore": "MaxRisk",
-                  "Source": "Source",
-                  "Categories": "ThreatCategories"
+                  "DetectionCount": "DetectionCount",
+                  "Categories": "ThreatCategories",
+                  "Source": "Source"
                 },
                 "incidentConfiguration": {
-                  "createIncident": true,
                   "groupingConfiguration": {
+                    "matchingMethod": "Selected",
                     "lookbackDuration": "1d",
                     "reopenClosedIncident": false,
                     "groupByEntities": [
                       "IP"
                     ],
-                    "enabled": true,
-                    "matchingMethod": "Selected"
-                  }
+                    "enabled": true
+                  },
+                  "createIncident": true
                 }
               }
             },
@@ -921,36 +921,36 @@
                 ],
                 "entityMappings": [
                   {
-                    "entityType": "URL",
                     "fieldMappings": [
                       {
-                        "columnName": "MaliciousURL",
-                        "identifier": "Url"
+                        "identifier": "Url",
+                        "columnName": "MaliciousURL"
                       }
-                    ]
+                    ],
+                    "entityType": "URL"
                   }
                 ],
                 "eventGroupingSettings": {
                   "aggregationKind": "AlertPerResult"
                 },
                 "customDetails": {
-                  "DetectionCount": "DetectionCount",
                   "RiskScore": "MaxRisk",
-                  "Source": "Source",
+                  "DetectionCount": "DetectionCount",
                   "Categories": "ThreatCategories",
-                  "Domain": "Domain"
+                  "Domain": "Domain",
+                  "Source": "Source"
                 },
                 "incidentConfiguration": {
-                  "createIncident": true,
                   "groupingConfiguration": {
+                    "matchingMethod": "Selected",
                     "lookbackDuration": "1d",
                     "reopenClosedIncident": false,
                     "groupByEntities": [
                       "URL"
                     ],
-                    "enabled": true,
-                    "matchingMethod": "Selected"
-                  }
+                    "enabled": true
+                  },
+                  "createIncident": true
                 }
               }
             },
@@ -1049,18 +1049,18 @@
                   "aggregationKind": "SingleAlert"
                 },
                 "customDetails": {
+                  "LatestEventTime": "LatestEventTime",
                   "TotalEventsLast24h": "TotalEventsLast24h",
-                  "HoursSinceLastEvent": "HoursSinceLastEvent",
-                  "LatestEventTime": "LatestEventTime"
+                  "HoursSinceLastEvent": "HoursSinceLastEvent"
                 },
                 "incidentConfiguration": {
-                  "createIncident": true,
                   "groupingConfiguration": {
+                    "matchingMethod": "Selected",
                     "lookbackDuration": "1d",
                     "reopenClosedIncident": false,
-                    "enabled": false,
-                    "matchingMethod": "Selected"
-                  }
+                    "enabled": false
+                  },
+                  "createIncident": true
                 }
               }
             },
