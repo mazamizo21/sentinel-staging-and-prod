@@ -1,0 +1,163 @@
+TacitRed & Cyren Integrations – Landing Page Content
+
+====================================================
+
+1. TacitRed Threat Intelligence for Microsoft Sentinel (CCF)
+-----------------------------------------------------------
+
+Full Name + Platform Support
+- Integration name: TacitRed Threat Intelligence for Microsoft Sentinel
+- Supported platforms:
+  - Microsoft Sentinel on Azure (Log Analytics–based workspaces)
+  - Codeless Connector Framework (CCF) / Data Collection Rules–based ingestion
+
+What the Integration Does / Problem It Solves
+- Continuously ingests TacitRed threat intelligence findings (compromised accounts, risky identities, suspicious activity) into Microsoft Sentinel.
+- Solves the gap between raw identity telemetry and actionable, correlated findings by pushing enriched TacitRed detections into Sentinel for correlation, alerting, and hunting.
+
+Screenshots / Visual Examples (Suggested)
+- Microsoft Sentinel Data connectors blade showing the TacitRed connector connected/healthy.
+- Example Sentinel analytic alert or incident created from TacitRed findings.
+- A Sentinel workbook/dashboard summarizing TacitRed findings over time (trends, top risky identities, severity breakdown).
+
+Customer Benefits / Primary Use Cases
+- Identity compromise detection: Quickly identify users and entities that TacitRed flags as compromised or high‑risk.
+- Centralized SOC view: See TacitRed intel side‑by‑side with other Sentinel telemetry (SIEM/SOAR, EDR, identity).
+- Incident enrichment: Add TacitRed context into Sentinel incidents to speed triage and response.
+- Compliance & reporting: Demonstrate continuous monitoring of identities and risky behavior.
+
+Key Features / Value Points
+- Native Sentinel experience: Delivered as a Microsoft Sentinel Content Hub solution using ARM and CCF.
+- Enriched threat context: Findings include severity, category, and rich context to drive investigations.
+- Analytics and workbooks included: Prebuilt analytic rules and dashboards tailored to TacitRed signals.
+- Scalable and configurable: Polling interval and scope tuned for cost and performance.
+
+Installation / Onboarding & Trials (High Level)
+- Prerequisites:
+  - Microsoft Sentinel enabled on a Log Analytics workspace.
+  - TacitRed account/API credentials.
+- Install steps:
+  1. From Microsoft Sentinel Content Hub, search for “TacitRed Threat Intelligence” and install the solution.
+  2. Open the Data connector page for TacitRed, provide TacitRed API details (URL/keys), and enable ingestion.
+  3. Deploy the bundled analytic rules and workbook.
+- Trial approach:
+  - Start with a limited‑scope deployment (single workspace/tenant) and a smaller polling interval.
+  - Use the workbook and analytics to validate that TacitRed data is flowing and driving useful detections before scaling up.
+
+
+2. Cyren Threat Intelligence for Microsoft Sentinel (CCF)
+--------------------------------------------------------
+
+Full Name + Platform Support
+- Integration name: Cyren Threat Intelligence for Microsoft Sentinel
+- Supported platforms:
+  - Microsoft Sentinel on Azure
+  - CCF‑based ingestion into a custom log table for Cyren indicators
+
+What the Integration Does / Problem It Solves
+- Ingests Cyren IP reputation and malware URL indicators into Microsoft Sentinel via CCF.
+- Addresses the need to operationalize Cyren intel inside Sentinel—turning raw indicator feeds into detections, dashboards, and automated responses.
+
+Screenshots / Visual Examples (Suggested)
+- Connector status view showing healthy ingestion of Cyren indicators (custom table with recent events).
+- Cyren Threat Intelligence Dashboard workbook: data pipeline health, counts of indicators, latest activity.
+- Example analytic rule hits for:
+  - High‑risk IP indicators
+  - Malware URL indicators
+  - Feed‑outage detection
+
+Customer Benefits / Primary Use Cases
+- Threat intel–driven detections: Use Cyren IP/URL intel to detect malicious traffic and connections in Sentinel.
+- Feed health & coverage: Monitor Cyren feed ingestion (latency, volume) to ensure continuous protection.
+- Faster investigation: Pivot from Sentinel alerts to Cyren intel context (reputation, category, geography, etc.).
+- Improved blocking decisions: Use Cyren reputation to drive custom blocking rules and policies.
+
+Key Features / Value Points
+- Single solution deployment: Data connector, custom table, analytics, and workbook are deployed as one Sentinel solution.
+- Multiple analytic rules: For high‑risk indicators and feed availability/health.
+- Rich workbook: Out‑of‑the‑box dashboard for pipeline health and indicator insights.
+- Flexible integration: Designed to plug into existing Sentinel analytics and SOAR playbooks.
+
+Installation / Onboarding & Trials (High Level)
+- Prerequisites:
+  - Microsoft Sentinel workspace.
+  - Cyren Threat Intelligence subscription/API access.
+- Install steps:
+  1. From Content Hub, install “Cyren Threat Intelligence”.
+  2. Configure the Cyren data connector with API keys/endpoint and select the Sentinel workspace.
+  3. Deploy recommended analytic rules and the Cyren Threat Intelligence Dashboard workbook.
+- Trial approach:
+  - Start with a lower polling frequency and a small subset of feeds.
+  - Use the workbook to verify data freshness and coverage before fully operationalizing.
+
+
+3. TacitRed IOC Automation for CrowdStrike Falcon
+------------------------------------------------
+
+Full Name + Platform Support
+- Integration name: TacitRed IOC Automation for CrowdStrike Falcon
+- Supported platforms:
+  - TacitRed threat intelligence platform
+  - CrowdStrike Falcon (IOC management APIs enabled)
+
+What the Integration Does / Problem It Solves
+- Automatically pushes high‑confidence IOCs from TacitRed into CrowdStrike Falcon as detection/prevention indicators.
+- Solves the “last mile” problem: turning TacitRed intel into enforced blocking and detections in Falcon without manual IOC upload.
+
+Screenshots / Visual Examples (Suggested)
+- Example TacitRed detection that generates IOCs.
+- CrowdStrike IOC management or indicators page showing TacitRed‑origin IOCs.
+- Simple flow diagram: TacitRed → automation playbook → CrowdStrike Falcon IOC store.
+
+Customer Benefits / Primary Use Cases
+- Faster protection: New TacitRed indicators are automatically enforced in Falcon, reducing dwell time.
+- Operational efficiency: Avoid manual CSV uploads or hand‑curated IOC lists.
+- Consistent policy: Ensure all endpoints covered by Falcon benefit from TacitRed intelligence.
+- Design‑partner ready: Ideal for customers who want to trial TacitRed intel in their existing Falcon estate.
+
+Key Features / Value Points
+- Automated IOC lifecycle: Create/update IOCs in CrowdStrike based on TacitRed findings.
+- Filtering logic: Ability to send only high‑confidence or selected‑severity indicators into Falcon.
+- Field mapping: Maps TacitRed fields (type, value, description, severity) to CrowdStrike IOC schema.
+- Auditable: Activity visible both in TacitRed and CrowdStrike IOC views.
+
+Installation / Onboarding & Trials (High Level)
+- Prerequisites:
+  - TacitRed account with access to findings/indicators.
+  - CrowdStrike Falcon tenant with API client/secret and IOC permissions.
+- Install steps (conceptual):
+  1. Deploy the TacitRed→CrowdStrike automation (for example, playbook or function) in your integration environment.
+  2. Configure TacitRed API credentials and CrowdStrike API credentials.
+  3. Choose indicator types, severity thresholds, and any filters (for example, only active or high‑confidence IOCs).
+- Trial approach:
+  - Start with a limited subset of IOCs (certain categories or severities).
+  - Monitor impact in Falcon and adjust filters before scaling to full coverage.
+
+
+4. TacitRed Threat Intelligence for SentinelOne (Planned Integration)
+---------------------------------------------------------------------
+
+Full Name + Platform Support
+- Integration name: TacitRed Threat Intelligence for SentinelOne
+- Planned platforms:
+  - TacitRed threat intelligence platform
+  - SentinelOne Singularity platform (threat intel / IOC ingestion capabilities)
+
+What the Integration Will Do / Problem It Will Solve
+- Onboard TacitRed threat intel feeds directly into SentinelOne, so risky indicators and findings from TacitRed are actionable inside SentinelOne.
+- Bridges the gap between identity‑focused threat intel and endpoint/EDR enforcement, enabling SentinelOne to react to TacitRed intelligence.
+
+Planned Customer Benefits / Use Cases
+- Unified defense: Use TacitRed intelligence to drive SentinelOne detections and blocking decisions.
+- Consistent IOC coverage: Ensure endpoints protected by SentinelOne receive up‑to‑date TacitRed indicators.
+- Cross‑platform correlation: Align SentinelOne detections with TacitRed and Sentinel intel for full attack‑surface visibility.
+
+Planned Key Features / Value Points
+- Automated publishing of selected TacitRed indicators/findings into SentinelOne.
+- Configurable severity/indicator‑type filters to control what is sent.
+- Designed to complement the existing Microsoft Sentinel and CrowdStrike integrations as part of a multi‑platform strategy.
+
+Installation / Onboarding & Trials (Planned)
+- Design‑partner trials:
+  - Early customers can participate as design partners once the integration is available.
+  - Initial deployments will focus on a pilot (limited tenants and indicator scope) to validate workflows and performance.

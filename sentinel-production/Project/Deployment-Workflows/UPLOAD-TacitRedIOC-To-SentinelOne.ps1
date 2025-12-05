@@ -1,21 +1,20 @@
-
-#pwsh -NoLogo -ExecutionPolicy Bypass -File ./UPLOAD-TacitRedCCF-To-AzureSentinel.ps1
+#pwsh -NoLogo -ExecutionPolicy Bypass -File ./UPLOAD-TacitRedIOC-To-SentinelOne.ps1
 
 [CmdletBinding()]
 param(
     [string]$BranchName = "feature/tacitred-ccf-hub-v2threatintelligence",
     [string]$RemoteName = "fork",
-    [string]$CommitMessage = "fix: sync TacitRedThreatIntelligence package from staging"
+    [string]$CommitMessage = "fix: sync TacitRed-SentinelOne package from staging"
 )
 
 $ErrorActionPreference = "Stop"
 
 $scriptDir = Split-Path -Parent $PSCommandPath
-$sentinelProdRoot = Split-Path -Parent $scriptDir
+$sentinelProdRoot = Split-Path -Parent (Split-Path -Parent $scriptDir)
 $repoRoot = Split-Path -Parent $sentinelProdRoot
 
-$solutionName = "TacitRedThreatIntelligence"
-$stagingSolutionPath = Join-Path $repoRoot "Solutions/Tacitred-CCF-Hub-v2ThreatIntelligence"
+$solutionName = "TacitRed-SentinelOne"
+$stagingSolutionPath = Join-Path $sentinelProdRoot $solutionName
 $stagingPackagePath = Join-Path $stagingSolutionPath "Package"
 $azureSentinelRoot = Join-Path $sentinelProdRoot "Project/Tools/Azure-Sentinel"
 $azureSolutionPath = Join-Path $azureSentinelRoot "Solutions/$solutionName"
@@ -23,7 +22,7 @@ $azurePackagePath = Join-Path $azureSolutionPath "Package"
 
 $timestamp = Get-Date -Format "yyyyMMdd-HHmmss"
 $logsRoot = Join-Path $sentinelProdRoot "Project/Docs/Logs/$solutionName"
-New-Item -ItemType Directory -Force -Path $logsRoot | Out-Null
+if (-not (Test-Path $logsRoot)) { New-Item -ItemType Directory -Force -Path $logsRoot | Out-Null }
 $logPath = Join-Path $logsRoot "upload-$solutionName-$timestamp.log"
 
 Start-Transcript -Path $logPath -Force | Out-Null
@@ -34,6 +33,19 @@ try {
     Write-Host "Staging solution path: $stagingSolutionPath"
     Write-Host "Azure-Sentinel repo: $azureSentinelRoot"
     Write-Host "Azure solution path: $azureSolutionPath"
+
+    # Run TruffleHog Security Scan
+    $scanScript = Join-Path $scriptDir "TruffleHog/run_safe_scan.sh"
+    if (Test-Path $scanScript) {
+        Write-Host "=== Running TruffleHog Security Scan ===" -ForegroundColor Cyan
+        bash $scanScript
+        if ($LASTEXITCODE -ne 0) {
+            Write-Warning "TruffleHog scan script returned an error. Please check the logs."
+        }
+    }
+    else {
+        Write-Warning "TruffleHog scan script not found at $scanScript"
+    }
 
     if (-not (Test-Path -LiteralPath $stagingSolutionPath)) {
         throw "Staging solution path not found: $stagingSolutionPath"
@@ -58,13 +70,42 @@ try {
     git -C $azureSentinelRoot fetch $RemoteName
     git -C $azureSentinelRoot pull --rebase $RemoteName $BranchName
 
+    # Add upstream sync
+    Write-Host "Fetching from upstream (Microsoft) ..."
+    git -C $azureSentinelRoot fetch upstream
+    Write-Host "Merging upstream/master into current branch ..."
+    git -C $azureSentinelRoot merge upstream/master
+
     if (-not (Test-Path -LiteralPath $azurePackagePath)) {
         New-Item -ItemType Directory -Force -Path $azurePackagePath | Out-Null
     }
 
+    # Import Versioning Helper
+    . (Join-Path $scriptDir "Helpers/Update-SolutionVersion.ps1")
+
+    # Auto-Increment Version
+    $newVersion = Update-SolutionVersion -PackagePath $stagingPackagePath
+    $zipFileName = "$newVersion.zip"
+    Write-Host "New Version: $newVersion" -ForegroundColor Green
+    Write-Host "Zip File: $zipFileName"
+
     Write-Host "Synchronizing Package folder from staging to Azure-Sentinel ..."
 
-    $filesToSync = @("3.0.0.zip", "mainTemplate.json", "createUiDefinition.json", "packageMetadata.json", "testParameters.json")
+    # Create Zip Package (Playbooks)
+    $playbooksPath = Join-Path $stagingSolutionPath "Playbooks"
+    $zipPath = Join-Path $stagingPackagePath $zipFileName
+    if (Test-Path $playbooksPath) {
+        Write-Host "Creating $zipPath from $playbooksPath ..."
+        # Remove ANY old zips
+        Get-ChildItem $stagingPackagePath -Filter "*.zip" | Remove-Item -Force
+
+        Compress-Archive -Path "$playbooksPath/*" -DestinationPath $zipPath -Force
+    }
+    else {
+        Write-Warning "Playbooks folder not found at $playbooksPath. Skipping zip creation."
+    }
+
+    $filesToSync = @($zipFileName, "mainTemplate.json", "createUiDefinition.json", "packageMetadata.json", "testParameters.json", "deploymentParameters.json")
     foreach ($file in $filesToSync) {
         $source = Join-Path $stagingPackagePath $file
         $dest = Join-Path $azurePackagePath $file

@@ -1,0 +1,20 @@
+{
+    "publisherId": "tacitred",
+    "offerId": "azure-sentinel-solution-tacitred-sentinelone-ioc-automation",
+    "firstPublishDate": "2025-12-01",
+    "providers": [
+        "TacitRed"
+    ],
+    "categories": {
+        "domains": [
+            "Security - Threat Intelligence"
+        ],
+        "verticals": []
+    },
+    "support": {
+        "name": "TacitRed",
+        "email": "support@tacitred.com",
+        "tier": "Partner",
+        "link": "https://tacitred.com"
+    }
+}

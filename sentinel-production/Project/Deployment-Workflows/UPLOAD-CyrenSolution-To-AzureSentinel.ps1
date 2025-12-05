@@ -11,14 +11,14 @@ param(
 $ErrorActionPreference = "Stop"
 
 $scriptDir = Split-Path -Parent $PSCommandPath
-$sentinelProdRoot = Split-Path -Parent $scriptDir
+$sentinelProdRoot = Split-Path -Parent (Split-Path -Parent $scriptDir)
 $repoRoot = Split-Path -Parent $sentinelProdRoot
 
-$stagingSolutionPath = Join-Path $repoRoot "Solutions/$SolutionName"
+$stagingSolutionPath = Join-Path $sentinelProdRoot "Cyren-CCF-Hub"
 $azureSentinelRoot = Join-Path $sentinelProdRoot "Project/Tools/Azure-Sentinel"
 $azureSolutionPath = Join-Path $azureSentinelRoot "Solutions/$SolutionName"
- $stagingPackagePath = Join-Path $stagingSolutionPath "Package"
- $azurePackagePath = Join-Path $azureSolutionPath "Package"
+$stagingPackagePath = Join-Path $stagingSolutionPath "Package"
+$azurePackagePath = Join-Path $azureSolutionPath "Package"
 
 $timestamp = Get-Date -Format "yyyyMMdd-HHmmss"
 $logsRoot = Join-Path $sentinelProdRoot "Project/Docs/Logs/$SolutionName"
@@ -33,6 +33,19 @@ try {
     Write-Host "Staging solution path: $stagingSolutionPath"
     Write-Host "Azure-Sentinel repo: $azureSentinelRoot"
     Write-Host "Azure solution path: $azureSolutionPath"
+
+    # Run TruffleHog Security Scan
+    $scanScript = Join-Path $scriptDir "TruffleHog/run_safe_scan.sh"
+    if (Test-Path $scanScript) {
+        Write-Host "=== Running TruffleHog Security Scan ===" -ForegroundColor Cyan
+        bash $scanScript
+        if ($LASTEXITCODE -ne 0) {
+            Write-Warning "TruffleHog scan script returned an error. Please check the logs."
+        }
+    }
+    else {
+        Write-Warning "TruffleHog scan script not found at $scanScript"
+    }
 
     if (-not (Test-Path -LiteralPath $stagingSolutionPath)) {
         throw "Staging solution path not found: $stagingSolutionPath"
@@ -57,13 +70,42 @@ try {
     git -C $azureSentinelRoot fetch $RemoteName
     git -C $azureSentinelRoot pull --rebase $RemoteName $BranchName
 
+    # Add upstream sync
+    Write-Host "Fetching from upstream (Microsoft) ..."
+    git -C $azureSentinelRoot fetch upstream
+    Write-Host "Merging upstream/master into current branch ..."
+    git -C $azureSentinelRoot merge upstream/master
+
     if (-not (Test-Path -LiteralPath $azurePackagePath)) {
         New-Item -ItemType Directory -Force -Path $azurePackagePath | Out-Null
     }
 
+    # Import Versioning Helper
+    . (Join-Path $scriptDir "Helpers/Update-SolutionVersion.ps1")
+
+    # Auto-Increment Version
+    $newVersion = Update-SolutionVersion -PackagePath $stagingPackagePath
+    $zipFileName = "$newVersion.zip"
+    Write-Host "New Version: $newVersion" -ForegroundColor Green
+    Write-Host "Zip File: $zipFileName"
+
     Write-Host "Synchronizing Package folder from staging to Azure-Sentinel ..."
 
-    $filesToSync = @("3.0.0.zip", "mainTemplate.json", "createUiDefinition.json", "packageMetadata.json", "testParameters.json")
+    # Create Zip Package (Data Connectors)
+    $dataConnectorsPath = Join-Path $stagingSolutionPath "Data Connectors"
+    $zipPath = Join-Path $stagingPackagePath $zipFileName
+    if (Test-Path $dataConnectorsPath) {
+        Write-Host "Creating $zipPath from $dataConnectorsPath ..."
+        # Remove ANY old zips
+        Get-ChildItem $stagingPackagePath -Filter "*.zip" | Remove-Item -Force
+
+        Compress-Archive -Path "$dataConnectorsPath/*" -DestinationPath $zipPath -Force
+    }
+    else {
+        Write-Warning "Data Connectors folder not found at $dataConnectorsPath. Skipping zip creation."
+    }
+
+    $filesToSync = @($zipFileName, "mainTemplate.json", "createUiDefinition.json", "packageMetadata.json", "testParameters.json")
     foreach ($file in $filesToSync) {
         $source = Join-Path $stagingPackagePath $file
         $dest = Join-Path $azurePackagePath $file
